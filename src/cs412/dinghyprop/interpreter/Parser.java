@@ -59,6 +59,7 @@ public class Parser {
                 throw new ParsingException("Unknown token type: " + t.type);
             }
             expr.addOperand(obj);
+            t = lex.nextToken();
         }
 
         if (t.type == Token.TYPE.EOF) {
