@@ -18,6 +18,25 @@ public final class Parser {
     public Parser(InputStream inputStream) throws ParsingException {
         originator = true;
         lex = new Lexer(inputStream);
+        checkStart();
+    }
+
+    /**
+     * Convenience constructor for a program in string form.
+     * @param inputString    The program text.
+     * @throws ParsingException if a parsing error occurs.
+     */
+    public Parser(String inputString) throws ParsingException {
+        originator = true;
+        lex = new Lexer(new ByteArrayInputStream(inputString.getBytes()));
+        checkStart();
+    }
+
+    /**
+     * Ensures the program's first token is a '('.
+     * @throws ParsingException if this assumption fails
+     */
+    private void checkStart() throws ParsingException {
         Token t = lex.nextToken();
         if (t.type != Token.TYPE.PAREN_OPEN) {
             throw new ParsingException("Program does not begin with '('.");
