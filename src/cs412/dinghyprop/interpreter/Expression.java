@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Holds a section of a program tree.
  */
-public class Expression {
+public final class Expression {
     private String operator;
     private List<Object> operands;
 

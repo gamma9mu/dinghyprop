@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 /**
  * Performs lexical analysis on a program.
  */
-public class Lexer {
+public final class Lexer {
     private static Logger log = Logger.getLogger("Lexer");
     private static final Pattern NUMBER = Pattern.compile("\\d+");
     private BufferedReader in;

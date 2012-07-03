@@ -6,7 +6,7 @@ import java.io.InputStream;
 /**
  * A (very) recursive descent parser for the generated programs.
  */
-public class Parser {
+public final class Parser {
     private boolean originator;
     private Lexer lex = null;
 
@@ -72,7 +72,7 @@ public class Parser {
                 throw new ParsingException("Expected end of input.  Got: " + last.type);
             }
         }
-        
+
         return expr;
     }
 
