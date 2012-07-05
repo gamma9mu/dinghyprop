@@ -10,6 +10,11 @@ public final class Expression {
     private String operator;
     private List<Object> operands;
 
+    public static Expression fromString(String program) throws ParsingException {
+        Parser p = new Parser(program);
+        return p.parse();
+    }
+
     /**
      * Create a new expression tree node.
      * @param operator    The operator at this node.
