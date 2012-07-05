@@ -42,4 +42,24 @@ public final class Expression {
     public Object[] getOperands() {
         return operands.toArray();
     }
+
+    /**
+     * Create a string representation of an expression.
+     * @return  A flat S-expression representing {@code expr}.
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder('(' + operator);
+        for (Object obj : getOperands()) {
+            sb.append(' ');
+            try {
+                Expression internal = (Expression) obj;
+                sb.append(internal.toString());
+            } catch (ClassCastException cce) {
+                sb.append(obj);
+            }
+        }
+        sb.append(')');
+        return sb.toString();
+    }
 }

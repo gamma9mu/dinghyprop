@@ -103,37 +103,19 @@ public final class Parser {
     public static void main(String[] args) throws ParsingException {
         String[] exprs = {
             "(hey der (broder) 6)",
+            "(hey der(broder) 6)",
             "(hey der \n(broder) 6)",
             "(hey der\n(broder)6)",
             "(hey der \r\n(broder)\n6)",
             "(hey der\r\n(broder)\r\n6)"
         };
 
+        int i = 0;
         for (String str : exprs) {
             System.out.println(" Original: " + str);
-            System.out.println("From expr: " + printExpression(
-                    new Parser(new ByteArrayInputStream(str.getBytes())).parse()));
+            Expression expr = new Parser(new ByteArrayInputStream(str.getBytes())).parse();
+            System.out.println("From expr: " + expr);
             System.out.println();
         }
-    }
-
-    /**
-     * Create a string representation of an expression.
-     * @param expr    The expression object to represent.
-     * @return  A flat S-expression representing {@code expr}.
-     */
-    private static String printExpression(Expression expr) {
-        StringBuilder sb = new StringBuilder('(' + expr.getOperator());
-        for (Object obj : expr.getOperands()) {
-            sb.append(' ');
-            try {
-                Expression internal = (Expression) obj;
-                sb.append(printExpression(internal));
-            } catch (ClassCastException cce) {
-                sb.append(obj);
-            }
-        }
-        sb.append(')');
-        return sb.toString();
     }
 }
