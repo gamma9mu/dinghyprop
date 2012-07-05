@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
-* gamma @ 7/5/12 1:20 PM
+* A drawable node in a tree.
 */
 final class Node extends JComponent {
     private static Logger log = Logger.getLogger("Node");
