@@ -5,7 +5,6 @@ import cs412.dinghyprop.simulator.Simulator;
 public class Interpreter {
     private Simulator simulator;
     private Expression program = null;
-    private int fitness = 0;
 
     public Interpreter(Simulator simulator, String program) {
         this.simulator = simulator;
@@ -21,11 +20,7 @@ public class Interpreter {
         if (program == null) {
             return;
         }
-
         evaluateExpression(program);
-        fitness = simulator.getTravelMetric() +
-                simulator.getGoalDistanceMetric() +
-                simulator.getSuccessMetric();
     }
 
     private Object evaluateExpression(Expression expr) {
@@ -129,7 +124,11 @@ public class Interpreter {
         return null;
     }
 
+    /**
+     * Get the fitness of the program as computed by the simulator.
+     * @return  The fitness of the program
+     */
     public int getFitness() {
-        return fitness;
+        return simulator.getFitness();
     }
 }

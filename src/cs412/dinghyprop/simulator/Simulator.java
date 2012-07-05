@@ -9,4 +9,8 @@ public class Simulator {
     public int getTravelMetric() { return 0; }
     public int getGoalDistanceMetric() { return 0; }
     public int getSuccessMetric() { return 0; }
+
+    public int getFitness() {
+        return getGoalDistanceMetric() + getSuccessMetric() + getTravelMetric();
+    }
 }
