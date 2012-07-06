@@ -1,16 +1,9 @@
 package cs412.dinghyprop.simulator;
 
-public class Goal{
-	private int positionX;
-	private int positionY;
+public class Goal extends Point{
 	
 	public Goal(int x, int y){
-		positionX = x;
-		positionY = y;
+		super(x, y);
 	}
 	
-	public int[] getPosition(){
-		int position[] = {positionX, positionY};
-		return position;
-	}
 }
