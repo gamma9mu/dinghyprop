@@ -48,18 +48,37 @@ public final class GeneticProgram {
         }
     }
 
+    /**
+     * Choose a random terminal.
+     * @return  A randomly chosen terminal
+     */
     private String randomTerminal() {
         return (String) terminals.toArray()[rand.nextInt(terminals.size())];
     }
 
+    /**
+     * Choose a random function.
+     * @return  A randomly chosen function
+     */
     private String randomFunction() {
         return (String) functions.toArray()[rand.nextInt(functions.size())];
     }
 
+    /**
+     * Choose a random comparison operator.
+     * @return  A randomly chosen comparison operator
+     */
     private String randomComparison() {
         return (String) comparitors.toArray()[rand.nextInt(comparitors.size())];
     }
 
+    /**
+     * Grow an individual by randomly choosing from the available
+     * functions and terminals at every point (except leaf nodes,
+     * which are always terminals).
+     * @param maxHeight    The maximum height of the individual
+     * @return  A randomly grown individual
+     */
     private String grow(int maxHeight) {
         String res = grow_help(maxHeight);
         if (!res.startsWith("(") && !res.endsWith(")")) {
@@ -68,6 +87,11 @@ public final class GeneticProgram {
         return res;
     }
 
+    /**
+     * Performs the majority of the work of {@code grow(int)}.
+     * @param maxHeight    The maximum height of the individual
+     * @return  A randomly grown individual
+     */
     private String grow_help(int maxHeight) {
         int nextMax = maxHeight - 1;
         if (maxHeight >= 2 && rand.nextDouble() < ifDensity) {
@@ -81,6 +105,12 @@ public final class GeneticProgram {
         return '(' + randomFunction() + ' ' + grow(nextMax) + ' ' + grow(nextMax) + ')';
     }
 
+    /**
+     * Grow an individual to fill a tree to a given maximum height.  Only leaf
+     * nodes will be terminals.
+     * @param maxHeight    The maximum height of the individual
+     * @return  A newly grown individual
+     */
     private String fill(int maxHeight) {
         int nextMax = maxHeight - 1;
         if (maxHeight >= 2 && rand.nextDouble() < ifDensity) {
@@ -94,6 +124,11 @@ public final class GeneticProgram {
         return '(' + randomFunction() + ' ' + fill(nextMax) + ' ' + fill(nextMax) + ')';
     }
 
+    /**
+     * Initialize a population using the grow method on half of the individuals
+     * and the fill method on the rest.
+     * @param maxDepth    The maximum depth of any individuals tree
+     */
     private void rampedHalfAndHalf(int maxDepth) {
         int half = population.length / 2;
         int i = 0;
@@ -107,18 +142,35 @@ public final class GeneticProgram {
         }
     }
 
+    /**
+     * Get the population size.
+     * @return  The size of the population.
+     */
     public int getPopulationSize() {
         return populationSize;
     }
 
+    /**
+     * Get the density of if statements to use when growing individuals.
+     * @return  The density of if statements to use when growing individuals
+     */
     public double getIfDensity() {
         return ifDensity;
     }
 
+    /**
+     * Set the density of if statements to use when growing individuals.
+     * @param ifDensity    The density of if statements to use when growing
+     *                     individuals
+     */
     public void setIfDensity(double ifDensity) {
         this.ifDensity = ifDensity;
     }
 
+    /**
+     * Test main
+     * @param args    ignored
+     */
     public static void main(String[] args) {
         GeneticProgram gp = new GeneticProgram(10, INIT_POP_METHOD.FILL, 10);
         for (String ind : gp.population) {
