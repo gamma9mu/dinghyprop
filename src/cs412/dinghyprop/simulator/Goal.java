@@ -1,4 +1,4 @@
-package cs312.dinghyprop.simulator;
+package cs412.dinghyprop.simulator;
 
 public class Goal{
 	private int positionX;
