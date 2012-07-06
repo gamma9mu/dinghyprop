@@ -10,7 +10,17 @@ import java.util.Set;
  * GP overseer.
  */
 public final class GeneticProgram {
+    /**
+     * When creating individuals for the initial population, this is the default
+     * density of if statements that will be generated (expressed as a
+     * fractional percent).
+     */
     public static final double DEFAULT_IF_DENSITY = 0.1;
+
+    /**
+     * The methods used to generate initial populations: grow, fill, and ramped
+     * half-and-half.
+     */
     public static enum INIT_POP_METHOD { GROW, FILL, RHALF_AND_HALF }
 
     private static final Set<String> functions =
@@ -28,6 +38,13 @@ public final class GeneticProgram {
     private double ifDensity = DEFAULT_IF_DENSITY;
     private Random rand = new SecureRandom();
 
+    /**
+     * Create a new GP object and initialize its population.
+     * @param populationSize    the size of population to use
+     * @param method            the initialization method
+     * @param maxDepth          the maximum initial depth of any individual's
+     *                          program tree
+     */
     public GeneticProgram(int populationSize, INIT_POP_METHOD method, int maxDepth) {
         this.populationSize = populationSize;
         population = new String[populationSize];
