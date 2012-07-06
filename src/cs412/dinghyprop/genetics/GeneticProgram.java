@@ -33,7 +33,7 @@ public final class GeneticProgram {
                     "right", "rear", "position-x", "position-y", "goal-position-x",
                     "goal-position-y", "heading"));
 
-    private String[] population;
+    private Program[] population;
     private int populationSize;
     private double ifDensity = DEFAULT_IF_DENSITY;
     private Random rand = new SecureRandom();
@@ -47,16 +47,16 @@ public final class GeneticProgram {
      */
     public GeneticProgram(int populationSize, INIT_POP_METHOD method, int maxDepth) {
         this.populationSize = populationSize;
-        population = new String[populationSize];
+        population = new Program[populationSize];
         switch (method) {
             case GROW:
                 for (int i = 0; i < population.length; i++) {
-                    population[i] = grow(maxDepth);
+                    population[i] = new Program(grow(maxDepth));
                 }
                 break;
             case FILL:
                 for (int i = 0; i < population.length; i++) {
-                    population[i] = fill(maxDepth);
+                    population[i] = new Program(fill(maxDepth));
                 }
                 break;
             case RHALF_AND_HALF:
@@ -150,11 +150,11 @@ public final class GeneticProgram {
         int half = population.length / 2;
         int i = 0;
         while (i < half) {
-            population[i] = grow(maxDepth);
+            population[i] = new Program(grow(maxDepth));
             i++;
         }
         while (i < population.length) {
-            population[i] = fill(maxDepth);
+            population[i] = new Program(fill(maxDepth));
             i++;
         }
     }
@@ -190,7 +190,7 @@ public final class GeneticProgram {
      */
     public static void main(String[] args) {
         GeneticProgram gp = new GeneticProgram(10, INIT_POP_METHOD.FILL, 10);
-        for (String ind : gp.population) {
+        for (Program ind : gp.population) {
             System.out.println(ind);
         }
     }
