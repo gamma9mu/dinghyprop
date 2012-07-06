@@ -1,25 +1,21 @@
 package cs412.dinghyprop.simulator;
 
-import java.util.Random;
+import java.lang.Math;
 /**
  * Simulator skeleton.
  */
 public class Simulator {
 	private Goal goal;
 	private Obstacle[] obstacles;
+	private Dinghy dinghy;
 	private int sizeX, sizeY, numObstacles;
-	private final int MAX_OBSTACLES = 20;
-	private Random rand = new Random();
 	
-	public Simulator(int maxX, int maxY) {
+	public Simulator(int maxX, int maxY, int numObstacles, int dinghyX, int dinghyY) {
 		sizeX = maxX;
 		sizeY = maxY;
-		numObstacles = rand.nextInt(MAX_OBSTACLES) + 1;
-		obstacles = new Obstacle[numObstacles];
-		
-		
-		
-		
+		this.numObstacles = numObstacles;
+		obstacles = new Obstacle[this.numObstacles];	
+		dinghy = new Dinghy(dinghyX, dinghyY);
 		
 	}
 	
@@ -34,7 +30,14 @@ public class Simulator {
     public void invoke(String function) {}
     public int  reference(String variable) { return 0; }
     public int getTravelMetric() { return 0; }
-    public int getGoalDistanceMetric() { return 0; }
+	
+    public int getGoalDistanceMetric() { 
+		int dinghyPos[] = dinghy.getPosition();
+		int goalPos[] = goal.getPosition();
+		int result = 0;
+		result = (int)Math.sqrt(Math.pow(dinghyPos[1] - goalPos[1], 2) + Math.pow(dinghyPos[0] - goalPos[0], 2));
+		return result;
+	}
     public int getSuccessMetric() { return 0; }
 
     public int getFitness() {
