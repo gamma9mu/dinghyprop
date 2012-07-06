@@ -10,19 +10,18 @@ import java.util.Set;
  * GP overseer.
  */
 public final class GeneticProgram {
-    public enum INIT_POP_METHOD { GROW, FILL, RHALF_AND_HALF }
-
-    private static final Set<String> arithmetics = new HashSet<String>(Arrays.asList("+", "-", "*", "/", "^"));
-    private static final Set<String> comparitors = new HashSet<String>(Arrays.asList("<", "<=", ">", ">=", "==", "!="));
-
-    private static final Set<String> navigators = new HashSet<String>(Arrays.asList("(move)", "(turn-left)", "(turn-right)"));
-
-    private static final Set<String> hazards = new HashSet<String>(Arrays.asList("front", "short-left", "short-right", "left", "right", "rear"));
-    private static final Set<String> positions = new HashSet<String>(Arrays.asList("position-x", "position-y", "goal-position-x", "goal-position-y", "heading"));
-
-    private static final Object[] functions = {arithmetics};
-    private static final Object[] terminals = {navigators, hazards, positions};
     public static final double DEFAULT_IF_DENSITY = 0.1;
+    public static enum INIT_POP_METHOD { GROW, FILL, RHALF_AND_HALF }
+
+    private static final Set<String> functions =
+            new HashSet<String>(Arrays.asList("+", "-", "*", "/", "^"));
+    private static final Set<String> comparitors =
+            new HashSet<String>(Arrays.asList("<", "<=", ">", ">=", "==", "!="));
+    private static final Set<String> terminals =
+            new HashSet<String>(Arrays.asList("(move)", "(turn-left)",
+                    "(turn-right)", "front", "short-left", "short-right", "left",
+                    "right", "rear", "position-x", "position-y", "goal-position-x",
+                    "goal-position-y", "heading"));
 
     private String[] population;
     private int populationSize;
@@ -50,13 +49,11 @@ public final class GeneticProgram {
     }
 
     private String randomTerminal() {
-        Set<String> termSet = (Set<String>) terminals[rand.nextInt(terminals.length)];
-        return (String) termSet.toArray()[rand.nextInt(termSet.size())];
+        return (String) terminals.toArray()[rand.nextInt(terminals.size())];
     }
 
     private String randomFunction() {
-        Set<String> termSet = (Set<String>) functions[rand.nextInt(functions.length)];
-        return (String) termSet.toArray()[rand.nextInt(termSet.size())];
+        return (String) functions.toArray()[rand.nextInt(functions.size())];
     }
 
     private String randomComparison() {
