@@ -1,7 +1,15 @@
 package cs412.dinghyprop.simulator;
 
+import javax.swing.JFileChooser;
+import java.io.*;
+
 public class SimulatorFileTest{
 	public static void main(String args[]){
-		SimulatorFile test = new SimulatorFile("C:\\Users\\kevin\\Google Drive\\github\\dinghyprop\\dinghyprop\\src\\cs412\\dinghyprop\\simulator\\test.txt");
+	
+		JFileChooser fc = new JFileChooser();
+		
+		fc.showOpenDialog(null);
+		File selFile = fc.getSelectedFile();
+		SimulatorFile test = new SimulatorFile(selFile);
 	}
 }

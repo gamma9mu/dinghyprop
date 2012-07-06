@@ -22,8 +22,8 @@ public class SimulatorFile {
 	int[] size, dinghy, goal;
 	int numObstacles;
 	
-	public SimulatorFile(String filename) {
-		file = new File(filename);
+	public SimulatorFile(File filename) {
+		file = filename;
 		try{
 			in = new Scanner(file);}
 		catch(IOException e){

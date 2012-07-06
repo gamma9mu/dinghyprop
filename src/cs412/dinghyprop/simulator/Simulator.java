@@ -92,7 +92,7 @@ public class Simulator {
 	
 	public double getTotalDistance() {
 		double result = 0;
-		result = (int)Math.sqrt(Math.pow(sizeX, 2) + Math.pow(sizeY, 2));
+		result = Math.sqrt(Math.pow(sizeX, 2) + Math.pow(sizeY, 2));
 		return result;
 	}
 	
