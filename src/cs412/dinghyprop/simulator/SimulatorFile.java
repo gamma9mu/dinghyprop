@@ -15,7 +15,7 @@ import java.util.Scanner;
 * Obstacle2X Obstacle2Y
 * (Other obstacles)
 */
-public class SimulatorFile{
+public class SimulatorFile {
 	File file;
 	Scanner in;
 	Simulator sim;
