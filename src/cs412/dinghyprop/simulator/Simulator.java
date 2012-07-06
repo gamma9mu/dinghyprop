@@ -39,12 +39,20 @@ public class Simulator {
 		dinghy.movePos(x, y);
 	}
 	
+	public double getTotalDistance() {
+		double result = 0;
+		result = (int)Math.sqrt(Math.pow(sizeX, 2) + Math.pow(sizeY, 2));
+		return result;
+	}
+	
     public int getGoalDistanceMetric() { 
 		int dinghyPos[] = dinghy.getPosition();
 		int goalPos[] = goal.getPosition();
-		int result = 0;
-		result = (int)Math.sqrt(Math.pow(goalPos[1] - dinghyPos[1], 2) + Math.pow(goalPos[0] - dinghyPos[0], 2));
-		return result;
+		double goalDist = 0;
+		double result = 0;
+		goalDist = Math.sqrt(Math.pow(goalPos[1] - dinghyPos[1], 2) + Math.pow(goalPos[0] - dinghyPos[0], 2));
+		result = 100 - (goalDist / getTotalDistance()) * 100;
+		return (int)result;
 	}
     public int getSuccessMetric() { 
 		boolean success = goal.success(dinghy);
