@@ -41,12 +41,14 @@ public class SimulatorRandom {
 			
 			sim.addObstacle(i, posX, posY);
 			
+			System.out.println("Obstacle " + i + ": " + posX + " " + posY);
+			
 		}
 	}
 	
 	public String toString(){
 		String result = "";
-		result += "Distance to goal: " + sim.getGoalDistanceMetric();
+		result += "Distance metric: " + sim.getGoalDistanceMetric();
 		return result;
 	}
 }
