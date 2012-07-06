@@ -22,10 +22,11 @@ public final class GeneticProgram {
 
     private static final Object[] functions = {arithmetics};
     private static final Object[] terminals = {navigators, hazards, positions};
+    public static final double DEFAULT_IF_DENSITY = 0.1;
 
     private String[] population;
     private int populationSize;
-    private double ifDensity = 0.1;
+    private double ifDensity = DEFAULT_IF_DENSITY;
     private Random rand = new SecureRandom();
 
     public GeneticProgram(int populationSize, INIT_POP_METHOD method, int maxDepth) {
