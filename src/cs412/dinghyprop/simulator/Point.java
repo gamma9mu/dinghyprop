@@ -23,6 +23,14 @@ public class Point {
 		posY = y;
 	}
 	
+	protected void incX(int x) {
+		posX += x;
+	}
+	
+	protected void incY(int y) {
+		posY += y;
+	}
+	
 	protected int getDistance(Point p) {
 		int result = 0;
 		

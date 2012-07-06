@@ -19,13 +19,36 @@ public class Dinghy extends Point{
 	
 	protected void movePos(int distX, int distY){
 		int currPos[] = this.getPosition();
-		distTravelled += Math.sqrt(Math.pow(distY - currPos[1], 2) + Math.pow(distX - currPos[0], 2));
+		distTravelled += calculateDistTravel(distX, distY, currPos);
 		this.setX(currPos[0] + distX);
 		this.setY(currPos[1] + distY);
 	}
 	
-	protected int getDistTravelled() {
-		return distTravelled;
+	protected void move(int dist) {
+		int currPos[] = this.getPosition();
+		switch(direc) {
+			case NORTH:
+				distTravelled += calculateDistTravel(0, dist, currPos);
+				this.incY(dist);
+				break;
+				
+			case EAST:
+				distTravelled += calculateDistTravel(dist, 0, currPos);
+				this.incX(dist);
+				break;
+				
+			case SOUTH:
+				dist = 0 - dist;
+				distTravelled += calculateDistTravel(0, dist, currPos);
+				this.incY(dist);
+				break;
+				
+			case WEST:
+				dist = 0 - dist;
+				distTravelled += calculateDistTravel(dist, 0, currPos);
+				this.incX(dist);
+				break;
+		}
 	}
 	
 	protected void turnRight() {
@@ -43,5 +66,30 @@ public class Dinghy extends Point{
 				direc = Direction.NORTH;
 				break;
 		}
+	}
+	
+	protected void turnLeft() {
+		switch(direc) {
+			case NORTH:
+				direc = Direction.WEST;
+				break;
+			case WEST:
+				direc = Direction.SOUTH;
+				break;
+			case SOUTH:
+				direc = Direction.EAST;
+				break;
+			case EAST:
+				direc = Direction.NORTH;
+				break;
+		}
+	}
+	
+	protected int getDistTravelled() {
+		return distTravelled;
+	}
+	
+	private int calculateDistTravel(int changeX, int changeY, int[] currPos) {
+		return (int)Math.sqrt(Math.pow(changeY - currPos[1], 2) + Math.pow(changeX - currPos[0], 2));
 	}
 }
