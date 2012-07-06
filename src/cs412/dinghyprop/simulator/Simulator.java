@@ -27,7 +27,12 @@ public class Simulator {
 		goal = new Goal(x, y);
 	}
 	
-    public void invoke(String function) {}
+    public void invoke(String function) {
+		// I guess I should work on this part next... ugh 
+		switch(function) {
+			case("move"):
+		}
+	}
     public int  reference(String variable) { return 0; }
 	
 	
