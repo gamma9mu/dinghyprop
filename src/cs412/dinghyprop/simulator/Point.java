@@ -42,4 +42,24 @@ public class Point {
 		result = (int)Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
 		return result;
 	}
+	
+	protected int getDistanceX(Point p) {
+		int result = 0;
+	
+		int pos[] = p.getPosition();
+		
+		result = pos[0] - this.posX;
+		
+		return result;
+	}
+	
+	protected int getDistanceY(Point p) {
+		int result = 0;
+		
+		int pos[] = p.getPosition();
+		
+		result = pos[1] - this.posY;
+		
+		return result;
+	}
 }

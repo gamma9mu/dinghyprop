@@ -43,15 +43,42 @@ public class Simulator {
 	}
     public int  reference(String variable) { 
 		// Time to work on this now... hurray
+		int value = 0;
+		int goalPos[];
+		int pos[] = dinghy.getPosition();
 		
 		switch(variable) {
 			case("front"):
 				break;
 			case("short-left"):
 				break;
+			case("short-right"):
+				break;
+			case("left"):
+				break;
+			case("right"):
+				break;
+			case("rear"):
+				break;
+			case("positionX"):
+				value = pos[0];
+				break;
+			case("positionY"):
+				value = pos[1];
+				break;
+			case("goal-position-x"):
+				goalPos = goal.getPosition();
+				value = pos[0];
+				break;
+			case("goal-position-y"):
+				goalPos = goal.getPosition();
+				value = goalPos[1];
+				break;
+			case("heading"):
+				break;
 		}
 		
-		return 0;
+		return value;
 	}
 	
 	
