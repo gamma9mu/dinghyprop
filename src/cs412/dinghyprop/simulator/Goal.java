@@ -9,11 +9,8 @@ public class Goal{
 		positionY = y;
 	}
 	
-	public int getPositionX() {
-		return positionX;
-	}
-	
-	public int getPositionY() {
-		return positionY;
+	public int[] getPosition(){
+		int position[] = {positionX, positionY};
+		return position;
 	}
 }

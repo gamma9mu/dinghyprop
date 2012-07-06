@@ -1,4 +1,4 @@
-package cs412.dinghyprop.simulation;
+package cs412.dinghyprop.simulator;
 
 /**
 *  This class stores current information about the
@@ -13,7 +13,7 @@ public class Dinghy{
 		positionY = startY;
 	}
 	
-	public int[] getPostion(){
+	public int[] getPosition(){
 		int position[] = {positionX, positionY};
 		return position;
 	}
