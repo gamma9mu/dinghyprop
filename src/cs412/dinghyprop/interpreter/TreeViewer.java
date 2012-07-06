@@ -9,11 +9,31 @@ import java.util.logging.Logger;
 
 /**
  * A creatively named class that displays trees.
+ *
+ * For all but the smallest trees, objects of this class should be placed in a
+ * {@code JScrollPane}.  A convenience method is provided that creates a
+ * {@code JFrame} with the created TreeViewer in a {@code JScrollPane}.
  */
 public final class TreeViewer extends JPanel {
     private static final long serialVersionUID = -447063110938138711L;
     private Node root;
     private boolean sizeComputed = false;
+
+    /**
+     * Create a {@code JFrame} containing a TreeViewer wrapped in a
+     * {@code JScrollPane}.
+     * @param expression    The expression to display/
+     * @return  A JFrame displaying a scrollable TreeViewer
+     */
+    public static JFrame frameExpression(Expression expression) {
+        JFrame jf = new JFrame("Random Tree");
+        TreeViewer tv = new TreeViewer(expression);
+        JScrollPane jsp = new JScrollPane();
+        jsp.setViewportView(tv);
+        jf.add(jsp);
+        jf.pack();
+        return jf;
+    }
 
     /**
      * Create a TreeViewer.
@@ -62,8 +82,7 @@ public final class TreeViewer extends JPanel {
     public Dimension getPreferredSize() {
         computeSize();
         Dimension scr = Toolkit.getDefaultToolkit().getScreenSize();
-        return new Dimension((root.w < scr.width) ? root.w : scr.width,
-                (root.h < scr.height) ? root.h + root.strHeight : scr.height);
+        return new Dimension(root.w, root.h + root.strHeight);
     }
 
     @Override
