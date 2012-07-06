@@ -42,7 +42,14 @@ public class Simulator {
 		result = (int)Math.sqrt(Math.pow(dinghyPos[1] - goalPos[1], 2) + Math.pow(dinghyPos[0] - goalPos[0], 2));
 		return result;
 	}
-    public int getSuccessMetric() { return 0; }
+    public int getSuccessMetric() { 
+		boolean success = goal.success(dinghy);
+		int points = 0;
+		if(success){
+			points = 100;
+		}
+		return points;
+	}
 
     public int getFitness() {
         return getGoalDistanceMetric() + getSuccessMetric() + getTravelMetric();
