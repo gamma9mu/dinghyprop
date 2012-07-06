@@ -8,10 +8,13 @@ import java.lang.Math;
 
 public class Dinghy extends Point{
 	private int distTravelled;
+	private enum Direction { NORTH, EAST, SOUTH, WEST };
+	private Direction direc;
 	
 	public Dinghy(int startX, int startY) {
 		super(startX, startY);
 		distTravelled = 0;
+		direc = Direction.NORTH;
 	}
 	
 	protected void movePos(int distX, int distY){
@@ -23,5 +26,22 @@ public class Dinghy extends Point{
 	
 	protected int getDistTravelled() {
 		return distTravelled;
+	}
+	
+	protected void turnRight() {
+		switch(direc) {
+			case NORTH:
+				direc = Direction.EAST;
+				break;
+			case EAST:
+				direc = Direction.SOUTH;
+				break;
+			case SOUTH:
+				direc = Direction.WEST;
+				break;
+			case WEST:
+				direc = Direction.NORTH;
+				break;
+		}
 	}
 }
