@@ -14,14 +14,14 @@ public class Dinghy extends Point{
 		distTravelled = 0;
 	}
 	
-	public void movePos(int distX, int distY){
+	protected void movePos(int distX, int distY){
 		int currPos[] = this.getPosition();
 		distTravelled += Math.sqrt(Math.pow(distY - currPos[1], 2) + Math.pow(distX - currPos[0], 2));
 		this.setX(currPos[0] + distX);
 		this.setY(currPos[1] + distY);
 	}
 	
-	public int getDistTravelled() {
+	protected int getDistTravelled() {
 		return distTravelled;
 	}
 }

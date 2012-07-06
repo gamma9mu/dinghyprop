@@ -50,7 +50,7 @@ public class Simulator {
 		int goalPos[] = goal.getPosition();
 		double goalDist = 0;
 		double result = 0;
-		goalDist = Math.sqrt(Math.pow(goalPos[1] - dinghyPos[1], 2) + Math.pow(goalPos[0] - dinghyPos[0], 2));
+		goalDist = goal.getDistance(dinghy);
 		result = 100 - (goalDist / getTotalDistance()) * 100;
 		return (int)result;
 	}
