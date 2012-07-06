@@ -25,14 +25,26 @@ public final class TreeViewer extends JPanel {
      * @param expression    The expression to display/
      * @return  A JFrame displaying a scrollable TreeViewer
      */
-    public static JFrame frameExpression(Expression expression) {
-        JFrame jf = new JFrame("Random Tree");
+    public static JFrame createFramedExpression(Expression expression) {
+        JFrame jf = new JFrame();
         TreeViewer tv = new TreeViewer(expression);
         JScrollPane jsp = new JScrollPane();
         jsp.setViewportView(tv);
         jf.add(jsp);
         jf.pack();
         return jf;
+    }
+
+    /**
+     * Create a TreeViewer wrapped in a {@code JScrollPane}.
+     * @param expression    The expression to display/
+     * @return  A scrollable TreeViewer
+     */
+    public static JScrollPane createScrollableExpression(Expression expression) {
+        TreeViewer tv = new TreeViewer(expression);
+        JScrollPane jsp = new JScrollPane();
+        jsp.setViewportView(tv);
+        return jsp;
     }
 
     /**
