@@ -85,6 +85,25 @@ public class Dinghy extends Point{
 		}
 	}
 	
+	protected String getDirection() {
+		String result = "";
+		switch(direc) {
+			case NORTH:
+				result = "north";
+				break;
+			case EAST:
+				result = "east";
+				break;
+			case SOUTH:
+				result = "south";
+				break;
+			case WEST:
+				result = "west";
+				break;
+		}
+		return result;
+	}
+	
 	protected int getDistTravelled() {
 		return distTravelled;
 	}

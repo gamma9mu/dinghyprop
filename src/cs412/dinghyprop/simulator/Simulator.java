@@ -31,9 +31,28 @@ public class Simulator {
 		// I guess I should work on this part next... ugh 
 		switch(function) {
 			case("move"):
+				dinghy.move(3);
+				break;
+			case("turn-left"):
+				dinghy.turnLeft();
+				break;
+			case("turn-right"):
+				dinghy.turnRight();
+				break;
 		}
 	}
-    public int  reference(String variable) { return 0; }
+    public int  reference(String variable) { 
+		// Time to work on this now... hurray
+		
+		switch(variable) {
+			case("front"):
+				break;
+			case("short-left"):
+				break;
+		}
+		
+		return 0;
+	}
 	
 	
     public int getTravelMetric() { 
