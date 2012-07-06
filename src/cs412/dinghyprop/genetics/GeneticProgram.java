@@ -25,6 +25,7 @@ public final class GeneticProgram {
 
     private String[] population;
     private int populationSize;
+    private double ifDensity = 0.1;
     private Random rand = new SecureRandom();
 
     public GeneticProgram(int populationSize, INIT_POP_METHOD method, int maxDepth) {
@@ -70,18 +71,28 @@ public final class GeneticProgram {
     }
 
     private String grow_help(int maxHeight) {
+        int nextMax = maxHeight - 1;
+        if (maxHeight >= 2 && rand.nextDouble() < ifDensity) {
+            return "(if (" + randomComparison() + ' ' + grow_help(nextMax)
+                    + ' ' + grow_help(nextMax) + ") " + grow_help(nextMax)
+                    + ' ' + grow_help(nextMax) + ')';
+        }
         if (maxHeight == 1 || rand.nextBoolean()) {
             return randomTerminal();
         }
-        int nextMax = maxHeight - 1;
         return '(' + randomFunction() + ' ' + grow(nextMax) + ' ' + grow(nextMax) + ')';
     }
 
     private String fill(int maxHeight) {
+        int nextMax = maxHeight - 1;
+        if (maxHeight >= 2 && rand.nextDouble() < ifDensity) {
+            return "(if (" + randomComparison() + ' ' + grow_help(nextMax)
+                    + ' ' + grow_help(nextMax) + ") " + grow_help(nextMax)
+                    + ' ' + grow_help(nextMax) + ')';
+        }
         if (maxHeight == 1) {
             return randomTerminal();
         }
-        int nextMax = maxHeight - 1;
         return '(' + randomFunction() + ' ' + fill(nextMax) + ' ' + fill(nextMax) + ')';
     }
 
@@ -100,6 +111,14 @@ public final class GeneticProgram {
 
     public int getPopulationSize() {
         return populationSize;
+    }
+
+    public double getIfDensity() {
+        return ifDensity;
+    }
+
+    public void setIfDensity(double ifDensity) {
+        this.ifDensity = ifDensity;
     }
 
     public static void main(String[] args) {
