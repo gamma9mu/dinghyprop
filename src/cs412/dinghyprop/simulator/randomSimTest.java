@@ -25,5 +25,7 @@ public class randomSimTest{
 		System.out.println("Goal: " + goalX + " " + goalY);
 		
 		System.out.println("Distance from goal: " + sim.getGoalDistanceMetric());
+		sim.moveDinghy(20, 40);
+		System.out.println("Distance from goal: " + sim.getGoalDistanceMetric());
 	}
 }
