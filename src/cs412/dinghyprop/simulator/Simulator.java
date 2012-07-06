@@ -29,7 +29,11 @@ public class Simulator {
 	
     public void invoke(String function) {}
     public int  reference(String variable) { return 0; }
-    public int getTravelMetric() { return 0; }
+	
+	
+    public int getTravelMetric() { 
+		return dinghy.getDistTravelled();
+	}
 	
     public int getGoalDistanceMetric() { 
 		int dinghyPos[] = dinghy.getPosition();
