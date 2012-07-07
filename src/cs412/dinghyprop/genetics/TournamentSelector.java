@@ -27,13 +27,12 @@ public class TournamentSelector implements Selector {
         Program[] programs = new Program[size];
 
         for (int i = 0; i < size; i++) {
-            Program selected = population[rand.nextInt(popSize)];
-            programs[i] = selected;
+            programs[i] = population[rand.nextInt(popSize)];
         }
 
-        int max = -1;
-        Program winner = null;
-        for (int i = 0; i < size; i++) {
+        int max = programs[0].fitness;
+        Program winner = programs[0];
+        for (int i = 1; i < size; i++) {
             if (programs[i].fitness > max) {
                 max = programs[i].fitness;
                 winner = programs[i];
