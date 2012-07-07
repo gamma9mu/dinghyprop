@@ -37,6 +37,7 @@ public final class GeneticProgram {
     private int populationSize;
     private double ifDensity = DEFAULT_IF_DENSITY;
     private Random rand = new SecureRandom();
+    private Selector selector = new TournamentSelector(2);
 
     /**
      * Create a new GP object and initialize its population.
@@ -185,13 +186,87 @@ public final class GeneticProgram {
     }
 
     /**
+     * Crossover 2 selected individuals producing one offspring.
+     * @return  A program produced by replacing one part of its first parent by
+     * a part of its second parent.
+     */
+    private Program crossover() {
+        Program p0 = selector.select(population);
+        Program p1 = selector.select(population);
+
+        int start0 = randomStartParen(p0.program);
+        int end0 = findMatchingParen(p0.program, start0);
+
+        int start1 = randomStartParen(p1.program);
+        int end1 = findMatchingParen(p1.program, start1);
+
+        String newProgram = p0.program.substring(0, start0)
+                + p1.program.substring(start1, end1 + 1)
+                + p0.program.substring(end0);
+
+        return new Program(newProgram);
+    }
+
+    /**
+     * Select a random opening parenthesis from within a string.
+     * @param str    The string to select from
+     * @return  The index of a randomly chosen '('
+     */
+    private int randomStartParen(String str) {
+        int parens = 0;
+        for (int i = 0; i < str.length(); i++)
+            if (str.charAt(i) == '(') parens++;
+
+        int off = rand.nextInt(parens + 1);
+        int idx = str.indexOf('(', 0) + 1;
+        while (off > 0) {
+            idx = str.indexOf('(', idx) + 1;
+            off--;
+        }
+        return idx - 1;
+    }
+
+    /**
+     * Find the matching closing parenthesis to a given opening parenthesis in
+     * an S-expression.
+     * @param str      The S-epxression
+     * @param start    The index of the opening parenthesis
+     * @return  The index of the matched closing parenthesis or -1 if none
+     * could be found
+     */
+    private int findMatchingParen(String str, int start) {
+        if (str.charAt(start) != '(') {
+            return -1;
+        }
+        int match = 0;
+        for (int i = start + 1; i < str.length(); i++) {
+            switch (str.charAt(i)) {
+                case '(':
+                    match++;
+                    break;
+                case ')':
+                    if (match == 0) {
+                        return i;
+                    }
+                    match--;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Test main
      * @param args    ignored
      */
     public static void main(String[] args) {
-        GeneticProgram gp = new GeneticProgram(10, INIT_POP_METHOD.FILL, 10);
+        GeneticProgram gp = new GeneticProgram(2, INIT_POP_METHOD.FILL, 5);
         for (Program ind : gp.population) {
             System.out.println(ind);
         }
+
+        System.out.println("CX: " + gp.crossover().program);
     }
 }
