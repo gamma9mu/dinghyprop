@@ -18,18 +18,29 @@ public final class GeneticProgram {
     public static final double DEFAULT_IF_DENSITY = 0.1;
 
     /**
+     * The default rate of crossover.
+     */
+    public static final double DEFAULT_CROSSOVER_RATE = 0.9;
+
+    /**
+     * The default rate of individual mutation.
+     */
+    public static final double DEFAULT_MUTATION_RATE = 0.08;
+
+    /**
+     * The default rate of individual reproduction.
+     */
+    public static final double DEFAULT_REPRODUCTION_RATE =
+            1 - (DEFAULT_CROSSOVER_RATE + DEFAULT_MUTATION_RATE);
+
+    /**
      * The methods used to generate initial populations: grow, fill, and ramped
      * half-and-half.
      */
     public static enum INIT_POP_METHOD { GROW, FILL, RHALF_AND_HALF }
 
-    private static final double DEFAULT_CROSSOVER_RATE = 0.9;
-    private static final double DEFAULT_MUTATION_RATE = 0.08;
-    private static final double DEFAULT_REPRODUCTION_RATE = 0.02;
-
     private static final Set<String> functions =
             new HashSet<String>(Arrays.asList("+", "-", "*", "/", "^"));
-
     private static final Set<String> comparitors =
             new HashSet<String>(Arrays.asList("<", "<=", ">", ">=", "==", "!="));
     private static final Set<String> terminals =
@@ -37,11 +48,12 @@ public final class GeneticProgram {
                     "(turn-right)", "front", "short-left", "short-right", "left",
                     "right", "rear", "position-x", "position-y", "goal-position-x",
                     "goal-position-y", "heading"));
+
     private Program[] population;
 
-    private int populationSize;
+    private final int populationSize;
     private double ifDensity = DEFAULT_IF_DENSITY;
-    private Random rand = new SecureRandom();
+    private final Random rand = new SecureRandom();
     private Selector selector = new TournamentSelector(2);
 
     private double crossoverRate = DEFAULT_CROSSOVER_RATE;
