@@ -55,9 +55,9 @@ public class Simulator {
             ;
         else if (variable.compareTo("rear") == 0)
             ;
-        else if (variable.compareTo("positionX") == 0)
+        else if (variable.compareTo("position-x") == 0)
             value = dinghy.getPosition()[0];
-        else if (variable.compareTo("positionY") == 0)
+        else if (variable.compareTo("position-y") == 0)
             value = dinghy.getPosition()[1];
         else if (variable.compareTo("goal-position-x") == 0)
             value = goal.getPosition()[0];
