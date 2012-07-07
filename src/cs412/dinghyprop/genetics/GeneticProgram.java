@@ -258,6 +258,14 @@ public final class GeneticProgram {
     }
 
     /**
+     * Reproduce a selected individual.
+     * @return  A program selected from the population by the {@code selector}.
+     */
+    private Program reproduce() {
+        return selector.select(population);
+    }
+
+    /**
      * Test main
      * @param args    ignored
      */
