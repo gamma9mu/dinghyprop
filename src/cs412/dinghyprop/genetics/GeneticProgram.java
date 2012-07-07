@@ -229,7 +229,7 @@ public final class GeneticProgram {
     /**
      * Find the matching closing parenthesis to a given opening parenthesis in
      * an S-expression.
-     * @param str      The S-epxression
+     * @param str      The S-expression
      * @param start    The index of the opening parenthesis
      * @return  The index of the matched closing parenthesis or -1 if none
      * could be found
