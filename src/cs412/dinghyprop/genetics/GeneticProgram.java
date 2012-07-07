@@ -23,8 +23,13 @@ public final class GeneticProgram {
      */
     public static enum INIT_POP_METHOD { GROW, FILL, RHALF_AND_HALF }
 
+    private static final double DEFAULT_CROSSOVER_RATE = 0.9;
+    private static final double DEFAULT_MUTATION_RATE = 0.08;
+    private static final double DEFAULT_REPRODUCTION_RATE = 0.02;
+
     private static final Set<String> functions =
             new HashSet<String>(Arrays.asList("+", "-", "*", "/", "^"));
+
     private static final Set<String> comparitors =
             new HashSet<String>(Arrays.asList("<", "<=", ">", ">=", "==", "!="));
     private static final Set<String> terminals =
@@ -32,12 +37,16 @@ public final class GeneticProgram {
                     "(turn-right)", "front", "short-left", "short-right", "left",
                     "right", "rear", "position-x", "position-y", "goal-position-x",
                     "goal-position-y", "heading"));
-
     private Program[] population;
+
     private int populationSize;
     private double ifDensity = DEFAULT_IF_DENSITY;
     private Random rand = new SecureRandom();
     private Selector selector = new TournamentSelector(2);
+
+    private double crossoverRate = DEFAULT_CROSSOVER_RATE;
+    private double mutationRate = DEFAULT_MUTATION_RATE;
+    private double reproductionRate = DEFAULT_REPRODUCTION_RATE;
 
     /**
      * Create a new GP object and initialize its population.
@@ -161,11 +170,11 @@ public final class GeneticProgram {
     }
 
     /**
-     * Get the population size.
-     * @return  The size of the population.
+     * Retrieve the rate of crossover.
+     * @return  The (average) percent of individuals created through crossover.
      */
-    public int getPopulationSize() {
-        return populationSize;
+    public double getCrossoverRate() {
+        return crossoverRate;
     }
 
     /**
@@ -177,12 +186,54 @@ public final class GeneticProgram {
     }
 
     /**
+     * Retrieve the rate of mutation.
+     * @return  The (average) percent of individuals created through mutation.
+     */
+    public double getMutationRate() {
+        return mutationRate;
+    }
+
+    /**
+     * Get the population size.
+     * @return  The size of the population.
+     */
+    public int getPopulationSize() {
+        return populationSize;
+    }
+
+    /**
+     * Retrieve the reproduction rate (1 - (mutation_rate + crossover_rate).
+     * @return  The (average) percent of individuals that will be reproduced
+     */
+    public double getReproductionRate() {
+        return reproductionRate;
+    }
+
+    /**
+     * Set the crossover rate.
+     * @param crossoverRate    A percent expressed as a decimal [0,1].
+     */
+    public void setCrossoverRate(double crossoverRate) {
+        this.crossoverRate = crossoverRate;
+        ensureValidRates();
+    }
+
+    /**
      * Set the density of if statements to use when growing individuals.
      * @param ifDensity    The density of if statements to use when growing
      *                     individuals
      */
     public void setIfDensity(double ifDensity) {
         this.ifDensity = ifDensity;
+    }
+
+    /**
+     * Set the mutation rate.
+     * @param mutationRate    A percent expressed as a decimal [0,1].
+     */
+    public void setMutationRate(double mutationRate) {
+        this.mutationRate = mutationRate;
+        ensureValidRates();
     }
 
     /**
@@ -312,6 +363,50 @@ public final class GeneticProgram {
             return randomTerminal();
         }
         return str; // fallback: no mutation
+    }
+
+    /**
+     * Ensure the values for {@code crossoverRate}, {@code mutationRate}, and
+     * {@code reproductionRate} are sane; crossover is preferred to mutation is
+     * preferred to reproduction.
+     */
+    private void ensureValidRates() {
+        double total = crossoverRate + mutationRate + reproductionRate;
+
+        if (total > 1) {
+            double over = total - 1;
+            if (reproductionRate > 0) {
+                if (reproductionRate > over) {
+                    reproductionRate -= over;
+                    over = 0;
+                } else {
+                    over -= reproductionRate;
+                    reproductionRate = 0;
+                }
+            }
+            if (mutationRate > 0 && over > 0) {
+                if (mutationRate > over) {
+                    mutationRate -= over;
+                    over = 0;
+                } else {
+                    over -= mutationRate;
+                    mutationRate = 0;
+                }
+            }
+            if (crossoverRate > 0 && over > 0) {
+                if (crossoverRate > over) {
+                    crossoverRate -= over;
+                } else {
+                    System.err.println("ensureValidRates: unreachable code has been reached.");
+                    crossoverRate = 0;
+                }
+            }
+        } else if (total < 1) {
+            double under = 1 - total;
+            reproductionRate += under;
+        } else {
+            // sanity achieved
+        }
     }
 
     /**
