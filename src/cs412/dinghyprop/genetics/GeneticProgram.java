@@ -266,6 +266,55 @@ public final class GeneticProgram {
     }
 
     /**
+     * Mutate a single point of a selected individual.
+     * @return  A new individual with a single point replaced by a new function
+     * or terminal (as appropriate).
+     */
+    private Program pointMutation() {
+        Program program = selector.select(population);
+        int offset = randomStartParen(program.program);
+        int next;
+
+        if (program.program.indexOf(' ', offset) < program.program.indexOf(')', offset)) {
+            // Handle non-simulator functions
+
+            while (program.program.charAt(offset) == '(') {offset++;}
+            int oparen = program.program.indexOf('(', offset);
+            int cparen = program.program.indexOf(')', offset);
+            int space  = program.program.indexOf(' ', offset);
+            next = Math.min(oparen, Math.min(cparen, space));
+        } else {
+            // Handle simulator functions
+            next = program.program.indexOf(')', offset);
+        }
+
+        String newProgram = program.program.substring(0, offset)
+                + getMutationReplacement(program.program.substring(offset, next))
+                + program.program.substring(next);
+        return new Program(newProgram);
+
+    }
+
+    /**
+     * Obtain a replacement for any member of an individual
+     * @param str    A function or terminal to replace
+     * @return  A function or terminal drawn from the same pool as {@code str}.
+     */
+    private String getMutationReplacement(String str) {
+        str = str.trim();
+        if (functions.contains(str)) {
+            return randomFunction();
+        }
+        if (comparitors.contains(str)) {
+            return randomComparison();
+        }
+        if (terminals.contains(str)) {
+            return randomTerminal();
+        }
+        return str; // fallback: no mutation
+    }
+
+    /**
      * Test main
      * @param args    ignored
      */
@@ -275,6 +324,8 @@ public final class GeneticProgram {
             System.out.println(ind);
         }
 
+        System.out.println("RX: " + gp.reproduce().program);
+        System.out.println("MX: " + gp.pointMutation().program);
         System.out.println("CX: " + gp.crossover().program);
     }
 }
