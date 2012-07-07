@@ -216,6 +216,18 @@ public final class GeneticProgram {
     }
 
     /**
+     * Obtain an individual from the population.
+     * @param index    The individuals index into the population
+     * @return  The individual at the requested position
+     */
+    public Program getProgram(int index) {
+        if (index < 0 || index > populationSize) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        return population[index];
+    }
+
+    /**
      * Retrieve the reproduction rate (1 - (mutation_rate + crossover_rate).
      * @return  The (average) percent of individuals that will be reproduced
      */
