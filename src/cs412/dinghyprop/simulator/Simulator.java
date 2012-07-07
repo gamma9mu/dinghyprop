@@ -29,55 +29,45 @@ public class Simulator {
 	
     public void invoke(String function) {
 		// I guess I should work on this part next... ugh 
-		switch(function) {
-			case("move"):
-				dinghy.move(3);
-				break;
-			case("turn-left"):
-				dinghy.turnLeft();
-				break;
-			case("turn-right"):
-				dinghy.turnRight();
-				break;
-		}
+		if (function.compareTo("move") == 0)
+            dinghy.move(3);
+        else if (function.compareTo("turn-left") == 0)
+            dinghy.turnLeft();
+        else if (function.compareTo("turn-right") == 0)
+            dinghy.turnRight();
+        else
+            System.err.println("Simulator: Unknown function called: " + function);
 	}
+
     public int  reference(String variable) { 
 		// Time to work on this now... hurray
 		int value = 0;
-		int goalPos[];
-		int pos[] = dinghy.getPosition();
-		
-		switch(variable) {
-			case("front"):
-				break;
-			case("short-left"):
-				break;
-			case("short-right"):
-				break;
-			case("left"):
-				break;
-			case("right"):
-				break;
-			case("rear"):
-				break;
-			case("positionX"):
-				value = pos[0];
-				break;
-			case("positionY"):
-				value = pos[1];
-				break;
-			case("goal-position-x"):
-				goalPos = goal.getPosition();
-				value = pos[0];
-				break;
-			case("goal-position-y"):
-				goalPos = goal.getPosition();
-				value = goalPos[1];
-				break;
-			case("heading"):
-				break;
-		}
-		
+
+        if (variable.compareTo("front") == 0)
+            ;
+        else if (variable.compareTo("short-left") == 0)
+            ;
+        else if (variable.compareTo("short-right") == 0)
+            ;
+        else if (variable.compareTo("left") == 0)
+            ;
+        else if (variable.compareTo("right") == 0)
+            ;
+        else if (variable.compareTo("rear") == 0)
+            ;
+        else if (variable.compareTo("positionX") == 0)
+            value = dinghy.getPosition()[0];
+        else if (variable.compareTo("positionY") == 0)
+            value = dinghy.getPosition()[1];
+        else if (variable.compareTo("goal-position-x") == 0)
+            value = goal.getPosition()[0];
+        else if (variable.compareTo("goal-position-y") == 0)
+            value = goal.getPosition()[1];
+        else if (variable.compareTo("heading") == 0)
+            ;
+        else
+            System.err.println("Simulator: Unknown variable referenced: " + variable);
+
 		return value;
 	}
 	
