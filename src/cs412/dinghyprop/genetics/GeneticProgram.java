@@ -1,5 +1,7 @@
 package cs412.dinghyprop.genetics;
 
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -268,6 +270,28 @@ public final class GeneticProgram {
         }
 
         population = nextGeneration;
+    }
+
+    /**
+     * Convenience method for {@code savePopulation(PrintWriter out)}.
+     *
+     * Write each individual in the population to a {@code OutputStream}, one
+     * program to a line and formatted by {@code Program.toString()}.
+     * @param out    The {@code OutputStream} to save the population to
+     */
+    public void savePopulation(OutputStream out) {
+        savePopulation(new PrintWriter(out));
+    }
+
+    /**
+     * Write each individual in the population to a {@code PrintWriter}, one
+     * program to a line and formatted by {@code Program.toString()}.
+     * @param out    The {@code PrintWriter} to save the population to
+     */
+    public void savePopulation(PrintWriter out) {
+        for (Program program : population) {
+            out.println(program);
+        }
     }
 
     /**
