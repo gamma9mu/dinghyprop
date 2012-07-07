@@ -249,6 +249,28 @@ public final class GeneticProgram {
     }
 
     /**
+     * Apply the genetic operators to create the next population.
+     */
+    public void createNextGeneration() {
+        Program[] nextGeneration = new Program[populationSize];
+        double crossover = crossoverRate;
+        double mutation = crossover + mutationRate;
+
+        for (int i = 0; i < populationSize; i++) {
+            double propogationType = rand.nextDouble();
+            if (propogationType <= crossover) {
+                nextGeneration[i] = crossover();
+            } else if (propogationType <= mutation) {
+                nextGeneration[i] = pointMutation();
+            } else {
+                nextGeneration[i] = reproduce();
+            }
+        }
+
+        population = nextGeneration;
+    }
+
+    /**
      * Crossover 2 selected individuals producing one offspring.
      * @return  A program produced by replacing one part of its first parent by
      * a part of its second parent.
