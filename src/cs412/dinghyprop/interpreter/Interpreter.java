@@ -206,12 +206,13 @@ public class Interpreter {
      * @return  {@code true} if all the values are different, {@code false} otherwise.
      */
     private Object evalNotEqual(Object[] operands) {
-        if (operands[0] == null) return true;
-        // todo This is wrong
         for (int i = 0; i < operands.length - 1; i++) {
-            if (operands[i+1] == null) return true;
-            if (operands[i].equals(operands[i + 1])) {
-                return false;
+            if (operands[i] == null) return true;
+            for (int j = i + 1; j < operands.length; j++) {
+                if (operands[j] == null) return true;
+                if (operands[i].equals(operands[j])) {
+                    return false;
+                }
             }
         }
         return true;
