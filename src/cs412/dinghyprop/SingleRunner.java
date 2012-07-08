@@ -14,6 +14,7 @@ public class SingleRunner {
     private static int popSize = 100;
     private static final int SIM_DIM = 20;
     private GeneticProgram gp;
+    private Simulator simulator;
 
     /**
      * Create a new single-machine GP runner.
@@ -21,6 +22,7 @@ public class SingleRunner {
      */
     public SingleRunner(GeneticProgram gp) {
         this.gp = gp;
+        simulator = new SimulatorRandom(SIM_DIM, SIM_DIM, 10).getSimulator();
     }
 
     /**
@@ -46,13 +48,20 @@ public class SingleRunner {
      * @return  The evaluated program's fitness
      */
     private int evaluateProgram(Program program) {
-        Simulator sim = new SimulatorRandom(SIM_DIM, SIM_DIM, 10).getSimulator();
+        Simulator sim;
+        try {
+            sim = simulator.clone();
+        } catch (CloneNotSupportedException ignored) {
+            return 0;
+        }
+
         Interpreter interpreter = new Interpreter(sim, program.program);
         for (int round = 0; round < 100; round++) {
             if (runIteration(sim, interpreter)) break;
         }
-        program.fitness = sim.getFitness();
-        return sim.getFitness();
+        int fitness = sim.getFitness();
+        program.fitness = fitness;
+        return fitness;
     }
 
     /**
