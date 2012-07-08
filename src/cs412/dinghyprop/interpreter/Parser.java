@@ -110,7 +110,6 @@ public final class Parser {
             "(hey der\r\n(broder)\r\n6)"
         };
 
-        int i = 0;
         for (String str : exprs) {
             System.out.println(" Original: " + str);
             Expression expr = new Parser(new ByteArrayInputStream(str.getBytes())).parse();
