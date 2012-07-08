@@ -152,6 +152,7 @@ public class Simulator implements Cloneable {
     @Override
     public Simulator clone() throws CloneNotSupportedException {
         Simulator clone = (Simulator) super.clone();
+        clone.dinghy = new Dinghy(dinghy);
         System.arraycopy(obstacles, 0, clone.obstacles, 0, obstacles.length);
         return clone;
     }
