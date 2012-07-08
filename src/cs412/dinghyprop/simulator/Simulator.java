@@ -9,6 +9,7 @@ public class Simulator {
 	private Dinghy dinghy;
 	private int sizeX;
     private int sizeY;
+    private boolean canContinue = true;
 
     public Simulator(int maxX, int maxY, int numObstacles, int dinghyX, int dinghyY) {
 		sizeX = maxX;
@@ -49,8 +50,10 @@ public class Simulator {
                 int temp = dinghy.getDistanceFront(obstacle);
                 if (temp < min && temp != -1 && temp != 0)
                     min = temp;
-                else if (temp == 0)
-                    System.err.println("There has been a collision");
+                else if (temp == 0) {
+//                    System.err.println("There has been a collision");
+                    canContinue = false;
+                }
             }
             return min;
         } else if (variable.compareTo("short-left") == 0) {
@@ -62,8 +65,10 @@ public class Simulator {
                 int temp = dinghy.getDistanceLeft(obstacle);
                 if (temp < min && temp != -1 && temp != 0)
                     min = temp;
-                else if (temp == 0)
-                    System.err.println("There has been a collision");
+                else if (temp == 0) {
+//                    System.err.println("There has been a collision");
+                    canContinue = false;
+                }
             }
             return min;
         } else if (variable.compareTo("right") == 0) {
@@ -71,8 +76,10 @@ public class Simulator {
                 int temp = dinghy.getDistanceRight(obstacle);
                 if (temp < min && temp != -1 && temp != 0)
                     min = temp;
-                else if (temp == 0)
-                    System.err.println("There has been a collision");
+                else if (temp == 0) {
+//                    System.err.println("There has been a collision");
+                    canContinue = false;
+                }
             }
             return min;
         } else if (variable.compareTo("rear") == 0) {
@@ -80,8 +87,10 @@ public class Simulator {
                 int temp = dinghy.getDistanceRear(obstacle);
                 if (temp < min && temp != -1 && temp != 0)
                     min = temp;
-                else if (temp == 0)
-                    System.err.println("There has been a collision");
+                else if (temp == 0) {
+//                    System.err.println("There has been a collision");
+                    canContinue = false;
+                }
             }
             return min;
         } else if (variable.compareTo("position-x") == 0) {
@@ -130,5 +139,13 @@ public class Simulator {
 
     public int getFitness() {
         return getGoalDistanceMetric() + getSuccessMetric() + getTravelMetric();
+    }
+
+    /**
+     * Determine whether execution can continue.
+     * @return  Whether execution can continue
+     */
+    public boolean canContinue() {
+        return canContinue;
     }
 }

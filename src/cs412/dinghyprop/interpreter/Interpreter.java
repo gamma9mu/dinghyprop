@@ -158,4 +158,12 @@ public class Interpreter {
     public int getFitness() {
         return simulator.getFitness();
     }
+
+    /**
+     * Determine whether execution can continue.
+     * @return  Whether execution can continue
+     */
+    public boolean canContinue() {
+        return simulator.canContinue();
+    }
 }
