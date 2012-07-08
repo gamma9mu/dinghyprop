@@ -2,12 +2,16 @@ package cs412.dinghyprop.interpreter;
 
 import cs412.dinghyprop.simulator.Simulator;
 
+import java.util.logging.Logger;
+
 /**
  * Dinghy navigation program interpreter
  */
 public class Interpreter {
+    private static Logger log = Logger.getLogger("Interpreter");
     private Simulator simulator;
     private Expression program = null;
+    private boolean programRaised = false;
 
     /**
      * Create an interpreter for a {@code Simulator} and program combination.
@@ -29,7 +33,14 @@ public class Interpreter {
         if (program == null) {
             return;
         }
-        evaluateExpression(program);
+
+        try {
+            evaluateExpression(program);
+        } catch (Exception e) {
+            log.throwing("Interpreter", "execute", e);
+            programRaised = true;
+        }
+
     }
 
     /**
@@ -309,9 +320,12 @@ public class Interpreter {
 
     /**
      * Get the fitness of the program as computed by the simulator.
-     * @return  The fitness of the program
+     * @return  The fitness of the program, unless the program caused an
+     * exception to be raised.  In that case, return 0.
      */
     public int getFitness() {
+        if (programRaised)
+            return 0;
         return simulator.getFitness();
     }
 
