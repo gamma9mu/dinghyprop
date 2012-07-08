@@ -58,16 +58,41 @@ public class Simulator {
 					else if(temp == 0)
 						System.err.println("There has been a collision");
 				}
+				value = min;
 				break;
 			case("short-left"):
 				break;
 			case("short-right"):
 				break;
 			case("left"):
+				for(int i = 0; i < numObstacles; i++) {
+					temp = dinghy.getDistanceLeft(obstacles[i]);
+					if(temp < min && temp != -1 && temp != 0)
+						min = temp;
+					else if(temp == 0)
+						System.err.println("There has been a collision");
+				}
+				value = min;
 				break;
 			case("right"):
+				for(int i = 0; i < numObstacles; i++) {
+					temp = dinghy.getDistanceRight(obstacles[i]);
+					if(temp < min && temp != -1 && temp != 0)
+						min = temp;
+					else if(temp == 0)
+						System.err.println("There has been a collision");
+				}
+				value = min;
 				break;
 			case("rear"):
+				for(int i = 0; i < numObstacles; i++) {
+					temp = dinghy.getDistanceRear(obstacles[i]);
+					if(temp < min && temp != -1 && temp != 0)
+						min = temp;
+					else if(temp == 0)
+						System.err.println("There has been a collision");
+				}
+				value = min;
 				break;
 			case("positionX"):
 				value = pos[0];
@@ -82,6 +107,7 @@ public class Simulator {
 				value = goalPos[1];
 				break;
 			case("heading"):
+				value = dinghy.getDirection();
 				break;
 		}
 		
