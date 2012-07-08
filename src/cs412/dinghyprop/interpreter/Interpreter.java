@@ -23,6 +23,24 @@ public class Interpreter {
         evaluateExpression(program);
     }
 
+    /**
+     * Evaluate the program in the simulation for a given count of iterations.
+     *
+     * Evaluation will end if the simulation indicates that it cannot continue.
+     * 
+     * @param iterations    The iteration count.
+     */
+    public void run(int iterations) {
+        if (program == null) {
+            return;
+        }
+
+        while (canContinue() && iterations > 0) {
+            evaluateExpression(program);
+            iterations--;
+        }
+    }
+
     private Object evaluateExpression(Expression expr) {
         Object[] operands = expr.getOperands();
         if (operands.length == 0) {
