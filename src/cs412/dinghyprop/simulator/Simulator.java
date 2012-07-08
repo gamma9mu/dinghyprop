@@ -28,7 +28,6 @@ public class Simulator implements Cloneable {
 	}
 	
     public void invoke(String function) {
-		// I guess I should work on this part next... ugh 
 		if (function.compareTo("move") == 0)
             dinghy.move(3);
         else if (function.compareTo("turn-left") == 0)
@@ -40,59 +39,22 @@ public class Simulator implements Cloneable {
 	}
 
     public int reference(String variable) {
-		// Time to work on this now... hurray
         int[] goalPos = goal.getPosition();
 		int[] pos = dinghy.getPosition();
 		int min = sizeX + sizeY;
 
         if (variable.compareTo("front") == 0) {
-            for (Obstacle obstacle : obstacles) {
-                int temp = dinghy.getDistanceFront(obstacle);
-                if (temp < min && temp != -1 && temp != 0)
-                    min = temp;
-                else if (temp == 0) {
-//                    System.err.println("There has been a collision");
-                    canContinue = false;
-                }
-            }
-            return min;
+            return referenceFront(min);
         } else if (variable.compareTo("short-left") == 0) {
             ;
         } else if (variable.compareTo("short-right") == 0) {
             ;
         } else if (variable.compareTo("left") == 0) {
-            for (Obstacle obstacle : obstacles) {
-                int temp = dinghy.getDistanceLeft(obstacle);
-                if (temp < min && temp != -1 && temp != 0)
-                    min = temp;
-                else if (temp == 0) {
-//                    System.err.println("There has been a collision");
-                    canContinue = false;
-                }
-            }
-            return min;
+            return referenceLeft(min);
         } else if (variable.compareTo("right") == 0) {
-            for (Obstacle obstacle : obstacles) {
-                int temp = dinghy.getDistanceRight(obstacle);
-                if (temp < min && temp != -1 && temp != 0)
-                    min = temp;
-                else if (temp == 0) {
-//                    System.err.println("There has been a collision");
-                    canContinue = false;
-                }
-            }
-            return min;
+            return referenceRight(min);
         } else if (variable.compareTo("rear") == 0) {
-            for (Obstacle obstacle : obstacles) {
-                int temp = dinghy.getDistanceRear(obstacle);
-                if (temp < min && temp != -1 && temp != 0)
-                    min = temp;
-                else if (temp == 0) {
-//                    System.err.println("There has been a collision");
-                    canContinue = false;
-                }
-            }
-            return min;
+            return referenceRear(min);
         } else if (variable.compareTo("position-x") == 0) {
             return pos[0];
         } else if (variable.compareTo("position-y") == 0) {
@@ -103,13 +65,80 @@ public class Simulator implements Cloneable {
             return goalPos[1];
         } else if (variable.compareTo("heading") == 0) {
             return dinghy.getDirection();
-        } else {
-            System.err.println("Simulator: Unknown variable referenced: " + variable);
         }
 
+        System.err.println("Simulator: Unknown variable referenced: \"" + variable + '"');
 		return 0;
 	}
-	
+
+    /**
+     * Handle a reference to the variable "front".
+     * @param upperBound    A suggested upper bound
+     * @return  the distance to the closest item in front of the dinghy.
+     */
+    private int referenceFront(int upperBound) {
+        for (Obstacle obstacle : obstacles) {
+            int temp = dinghy.getDistanceFront(obstacle);
+            if (temp < upperBound && temp != -1 && temp != 0)
+                upperBound = temp;
+            else if (temp == 0) {
+                canContinue = false;
+            }
+        }
+        return upperBound;
+    }
+
+    /**
+     * Handle a reference to the variable "left".
+     * @param upperBound    A suggested upper bound
+     * @return  the distance to the closest item to the left of the dinghy.
+     */
+    private int referenceLeft(int upperBound) {
+        for (Obstacle obstacle : obstacles) {
+            int temp = dinghy.getDistanceLeft(obstacle);
+            if (temp < upperBound && temp != -1 && temp != 0)
+                upperBound = temp;
+            else if (temp == 0) {
+                canContinue = false;
+            }
+        }
+        return upperBound;
+    }
+
+    /**
+     * Handle a reference to the variable "right".
+     * @param upperBound    A suggested upper bound
+     * @return  the distance to the closest item to the right of the dinghy.
+     */
+    private int referenceRight(int upperBound) {
+        for (Obstacle obstacle : obstacles) {
+            int temp = dinghy.getDistanceRight(obstacle);
+            if (temp < upperBound && temp != -1 && temp != 0)
+                upperBound = temp;
+            else if (temp == 0) {
+                canContinue = false;
+            }
+        }
+        return upperBound;
+    }
+
+    /**
+     * Handle a reference to the variable "rear".
+     * @param upperBound    A suggested upper bound
+     * @return  the distance to the closest item to the rear of the dinghy.
+     */
+    private int referenceRear(int upperBound) {
+        for (Obstacle obstacle : obstacles) {
+            int temp = dinghy.getDistanceRear(obstacle);
+            if (temp < upperBound && temp != -1 && temp != 0)
+                upperBound = temp;
+            else if (temp == 0) {
+                canContinue = false;
+            }
+        }
+        return upperBound;
+    }
+
     public int getTravelMetric() {
         int travelMetric = dinghy.getDistTravelled();
         travelMetric = (travelMetric > 100) ? 100 : travelMetric;
