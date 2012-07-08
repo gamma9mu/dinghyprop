@@ -4,7 +4,6 @@ package cs412.dinghyprop.simulator;
 *  This class stores current information about the
 *  dinghy that is in the simulation
 */
-
 public class Dinghy extends Point{
 	private int distTravelled;
 	private enum Direction { NORTH, EAST, SOUTH, WEST }
