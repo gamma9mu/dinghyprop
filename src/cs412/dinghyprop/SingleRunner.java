@@ -76,12 +76,23 @@ public class SingleRunner {
 
     /**
      * Runs a GP population through 1000 generations.
-     * @param args    ignored
+     * @param args    One argument: the tournament size.
      */
     public static void main(String[] args) {
         GeneticProgram gp = new GeneticProgram(popSize,
                 GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 10);
-        gp.setSelector(new TournamentSelector(3));
+        if (args.length == 1) {
+            try {
+                int tournamentSize = Integer.parseInt(args[0]);
+                gp.setSelector(new TournamentSelector(tournamentSize));
+            } catch (NumberFormatException nfe) {
+                System.err.println(nfe.getLocalizedMessage());
+                System.err.println("Usage: SingleRunner [tournament_size]");
+                System.exit(0);
+            }
+        } else {
+            gp.setSelector(new TournamentSelector(4));
+        }
         SingleRunner sr = new SingleRunner(gp);
 
         for (int iter = 0; iter < 1000; iter++) {
