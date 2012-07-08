@@ -10,35 +10,83 @@ import cs412.dinghyprop.simulator.SimulatorRandom;
  * Non-distributed GP runner.
  */
 public class SingleRunner {
+    private static int popSize = 100;
+    private static final int SIM_DIM = 20;
+    private GeneticProgram gp;
+
+    /**
+     * Create a new single-machine GP runner.
+     * @param gp    The GP object to run
+     */
+    public SingleRunner(GeneticProgram gp) {
+        this.gp = gp;
+    }
+
+    /**
+     * Evaluate all the individuals in a population.
+     */
+    private void runGeneration() {
+        int fitnesses = 0;
+        int maxFitness = 0;
+        for (int i = 0; i < popSize; i++) {
+            Program program = gp.getProgram(i);
+            int fitness = evaluateProgram(program);
+            fitnesses += fitness;
+            maxFitness = (fitness > maxFitness) ? fitness : maxFitness;
+        }
+        System.out.println("Max: " + maxFitness
+                + "\t Avg: " + (fitnesses / popSize));
+        gp.createNextGeneration();
+    }
+
+    /**
+     * Evaluate a single program in a randomly generated environment.
+     * @param program    The program to evaluate
+     * @return  The evaluated program's fitness
+     */
+    private int evaluateProgram(Program program) {
+        Simulator sim = new SimulatorRandom(SIM_DIM, SIM_DIM, 10).getSimulator();
+        Interpreter interpreter = new Interpreter(sim, program.program);
+        for (int round = 0; round < 100; round++) {
+            if (runIteration(sim, interpreter)) break;
+        }
+        program.fitness = sim.getFitness();
+        return sim.getFitness();
+    }
+
+    /**
+     * Run a single iteration of a program.
+     * @param sim            The relevant simulator
+     * @param interpreter    The relevant interpreter
+     * @return  Whether another iteration is allowable
+     */
+    private boolean runIteration(Simulator sim, Interpreter interpreter) {
+        if (! interpreter.canContinue()) {
+            return true;
+        }
+        interpreter.execute();
+        return sim.getGoalDistanceMetric() == 100;
+    }
+
+    @Override
+    public String toString() {
+        return "SingleRunner{" +
+                "gp=" + gp +
+                '}';
+    }
+
+    /**
+     * Runs a GP population through 1000 generations.
+     * @param args    ignored
+     */
     public static void main(String[] args) {
-        GeneticProgram gp = new GeneticProgram(100,
+        GeneticProgram gp = new GeneticProgram(popSize,
                 GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 10);
+        SingleRunner sr = new SingleRunner(gp);
 
         for (int iter = 0; iter < 1000; iter++) {
             System.out.println("Iteration: " + iter);
-            int fitnesses = 0;
-            int maxFitenss = 0;
-            for (int i = 0; i < gp.getPopulationSize(); i++) {
-                Program program = gp.getProgram(i);
-                Simulator sim = new SimulatorRandom(20, 20, 10).getSimulator();
-                Interpreter interpreter = new Interpreter(sim, program.program);
-                for (int round = 0; round < 100; round++) {
-                    if (! interpreter.canContinue()) {
-                        break;
-                    }
-                    interpreter.execute();
-                    if (sim.getGoalDistanceMetric() == 100) {
-                        break;
-                    }
-                }
-                int fitness = sim.getFitness();
-                program.fitness = fitness;
-                fitnesses += fitness;
-                maxFitenss = (fitness > maxFitenss) ? fitness : maxFitenss;
-            }
-            System.out.println("Max: " + maxFitenss
-                    + "\t Avg: " + (fitnesses/gp.getPopulationSize()));
-            gp.createNextGeneration();
+            sr.runGeneration();
         }
     }
 }
