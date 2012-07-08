@@ -110,9 +110,10 @@ public class Simulator implements Cloneable {
 		return 0;
 	}
 	
-	
-    public int getTravelMetric() { 
-		return dinghy.getDistTravelled();
+    public int getTravelMetric() {
+        int travelMetric = dinghy.getDistTravelled();
+        travelMetric = (travelMetric > 100) ? 100 : travelMetric;
+		return travelMetric;
 	}
 	
 	public void moveDinghy(int x, int y) {
