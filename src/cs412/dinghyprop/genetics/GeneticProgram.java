@@ -236,6 +236,14 @@ public final class GeneticProgram {
     }
 
     /**
+     * Obtain the current selector.
+     * @return  The current selector
+     */
+    public Selector getSelector() {
+        return selector;
+    }
+
+    /**
      * Set the crossover rate.
      * @param crossoverRate    A percent expressed as a decimal [0,1].
      */
@@ -260,6 +268,14 @@ public final class GeneticProgram {
     public void setMutationRate(double mutationRate) {
         this.mutationRate = mutationRate;
         ensureValidRates();
+    }
+
+    /**
+     * Set the population selector.
+     * @param selector    The new selector.
+     */
+    public void setSelector(Selector selector) {
+        this.selector = selector;
     }
 
     /**
