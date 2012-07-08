@@ -55,31 +55,47 @@ public class Interpreter {
                 return (operands.length > 2) ? operands[2] : null;
         } else if (operator.compareTo("+") == 0) {
             int accum = 0;
-            for (Object obj : operands)
-                accum += (Integer) obj;
+            for (Object obj : operands) {
+                if (obj != null)
+                    accum += (Integer) obj;
+            }
             return accum;
         } else if (operator.compareTo("-") == 0) {
-            int accum = (Integer) operands[0];
+            int accum = (operands[0] != null) ? (Integer) operands[0] : 0;
             for (int i = 1; i < operands.length; i++)
-                accum -= (Integer) operands[i];
+                if (operands[i] != null)
+                    accum -= (Integer) operands[i];
             return accum;
         } else if (operator.compareTo("*") == 0) {
             int accum = 1;
-            for (Object obj : operands)
-                accum *= (Integer) obj;
+            for (Object obj : operands) {
+                if (obj != null)
+                    accum *= (Integer) obj;
+            }
             return accum;
         } else if (operator.compareTo("/") == 0) {
-            int accum = (Integer) operands[0];
-            for (int i = 1; i < operands.length; i++)
-                accum /= (Integer) operands[i];
+            int accum = (operands[0] != null) ? (Integer) operands[0] : 0;
+            for (int i = 1; i < operands.length; i++) {
+                int divisor = (operands[i] != null) ? (Integer) operands[i] : 1;
+                if (divisor != 0)
+                    accum /= divisor;
+                else
+                    accum = 0;
+            }
             return accum;
         } else if (operator.compareTo("^") == 0) {
-            int accum = (Integer) operands[0];
-            for (int i = 1; i < operands.length; i++)
-                accum = (int) Math.pow(accum, (Integer) operands[i]);
+            int accum = (operands[0] != null) ? (Integer) operands[0] : 0;
+            for (int i = 1; i < operands.length; i++) {
+                if (operands[i] == null)
+                    accum = 0;
+                else
+                    accum = (int) Math.pow(accum, (Integer) operands[i]);
+            }
             return accum;
         } else if (operator.compareTo("<") == 0) {
             for (int i = 0; i < operands.length - 1; i++) {
+                if (operands[i] == null) return true;
+                if (operands[i+1] == null) return false;
                 if ((Integer) operands[i] >= (Integer) operands[i + 1]) {
                     return false;
                 }
@@ -87,13 +103,18 @@ public class Interpreter {
             return true;
         } else if (operator.compareTo("<=") == 0) {
             for (int i = 0; i < operands.length - 1; i++) {
+                if (operands[i] == null) return true;
+                if (operands[i+1] == null) return false;
                 if ((Integer) operands[i] > (Integer) operands[i + 1]) {
                     return false;
                 }
             }
             return true;
+//            int accum = (operands[0] != null) ? (Integer) operands[0] : 0;
         } else if (operator.compareTo(">") == 0) {
             for (int i = 0; i < operands.length - 1; i++) {
+                if (operands[i] == null) return false;
+                if (operands[i+1] == null) return true;
                 if ((Integer) operands[i] <= (Integer) operands[i + 1]) {
                     return false;
                 }
@@ -101,20 +122,26 @@ public class Interpreter {
             return true;
         } else if (operator.compareTo(">=") == 0) {
             for (int i = 0; i < operands.length - 1; i++) {
+                if (operands[i] == null) return false;
+                if (operands[i+1] == null) return true;
                 if ((Integer) operands[i] < (Integer) operands[i + 1]) {
                     return false;
                 }
             }
             return true;
         } else if (operator.compareTo("==") == 0) {
+            if (operands[0] == null) return false;
             for (int i = 0; i < operands.length - 1; i++) {
+                if (operands[i+1] == null) return false;
                 if (!operands[i].equals(operands[i + 1])) {
                     return false;
                 }
             }
             return true;
         } else if (operator.compareTo("!=") == 0) {
+            if (operands[0] == null) return true;
             for (int i = 0; i < operands.length - 1; i++) {
+                if (operands[i+1] == null) return true;
                 if (operands[i].equals(operands[i + 1])) {
                     return false;
                 }

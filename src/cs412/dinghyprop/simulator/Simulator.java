@@ -28,63 +28,55 @@ public class Simulator {
 	
     public void invoke(String function) {
 		// I guess I should work on this part next... ugh 
-		switch(function) {
-			case("move"):
-				dinghy.move(3);
-				break;
-			case("turn-left"):
-				dinghy.turnLeft();
-				break;
-			case("turn-right"):
-				dinghy.turnRight();
-				break;
-		}
+		if (function.compareTo("move") == 0)
+            dinghy.move(3);
+        else if (function.compareTo("turn-left") == 0)
+            dinghy.turnLeft();
+        else if (function.compareTo("turn-right") == 0)
+            dinghy.turnRight();
+        else
+            System.err.println("Simulator: Unknown function called: " + function);
 	}
-    public int  reference(String variable) { 
-		// Time to work on this now... hurray
-		int value = 0;
-		int goalPos[] = goal.getPosition();
-		int pos[] = dinghy.getPosition();
-		int min = sizeX + sizeY;
-		int temp;
 
-		switch(variable) {
-			case("front"):
-				for(int i = 0; i < obstacles.length; i++) {
-					temp = dinghy.getDistanceFront(obstacles[i]);
-					if(temp < min && temp != -1 && temp != 0)
-						min = temp;
-					else if(temp == 0)
-						System.err.println("There has been a collision");
-				}
-				break;
-			case("short-left"):
-				break;
-			case("short-right"):
-				break;
-			case("left"):
-				break;
-			case("right"):
-				break;
-			case("rear"):
-				break;
-			case("positionX"):
-				value = pos[0];
-				break;
-			case("positionY"):
-				value = pos[1];
-				break;
-			case("goal-position-x"):
-				value = goalPos[0];
-				break;
-			case("goal-position-y"):
-				value = goalPos[1];
-				break;
-			case("heading"):
-				break;
-		}
-		
-		return value;
+    public int reference(String variable) {
+		// Time to work on this now... hurray
+        int[] goalPos = goal.getPosition();
+		int[] pos = dinghy.getPosition();
+		int min = sizeX + sizeY;
+
+        if (variable.compareTo("front") == 0) {
+            for (Obstacle obstacle : obstacles) {
+                int temp = dinghy.getDistanceFront(obstacle);
+                if (temp < min && temp != -1 && temp != 0)
+                    min = temp;
+                else if (temp == 0)
+                    System.err.println("There has been a collision");
+            }
+        } else if (variable.compareTo("short-left") == 0) {
+            ;
+        } else if (variable.compareTo("short-right") == 0) {
+            ;
+        } else if (variable.compareTo("left") == 0) {
+            ;
+        } else if (variable.compareTo("right") == 0) {
+            ;
+        } else if (variable.compareTo("rear") == 0) {
+            ;
+        } else if (variable.compareTo("position-x") == 0) {
+            return pos[0];
+        } else if (variable.compareTo("position-y") == 0) {
+            return pos[1];
+        } else if (variable.compareTo("goal-position-x") == 0) {
+            return goalPos[0];
+        } else if (variable.compareTo("goal-position-y") == 0) {
+            return goalPos[1];
+        } else if (variable.compareTo("heading") == 0) {
+            ;
+        } else {
+            System.err.println("Simulator: Unknown variable referenced: " + variable);
+        }
+
+		return 0;
 	}
 	
 	
