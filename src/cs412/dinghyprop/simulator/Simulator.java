@@ -43,11 +43,20 @@ public class Simulator {
     public int  reference(String variable) { 
 		// Time to work on this now... hurray
 		int value = 0;
-		int[] goalPos;
-		int[] pos = dinghy.getPosition();
-		
+		int goalPos[] = goal.getPosition();
+		int pos[] = dinghy.getPosition();
+		int min = sizeX + sizeY;
+		int temp;
+
 		switch(variable) {
 			case("front"):
+				for(int i = 0; i < obstacles.length; i++) {
+					temp = dinghy.getDistanceFront(obstacles[i]);
+					if(temp < min && temp != -1 && temp != 0)
+						min = temp;
+					else if(temp == 0)
+						System.err.println("There has been a collision");
+				}
 				break;
 			case("short-left"):
 				break;
@@ -66,11 +75,9 @@ public class Simulator {
 				value = pos[1];
 				break;
 			case("goal-position-x"):
-				goalPos = goal.getPosition();
 				value = goalPos[0];
 				break;
 			case("goal-position-y"):
-				goalPos = goal.getPosition();
 				value = goalPos[1];
 				break;
 			case("heading"):
