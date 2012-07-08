@@ -338,13 +338,13 @@ public final class GeneticProgram {
         for (int i = 0; i < str.length(); i++)
             if (str.charAt(i) == '(') parens++;
 
-        int off = rand.nextInt(parens + 1);
-        int idx = str.indexOf('(', 0) + 1;
+        int off = rand.nextInt(parens);
+        int idx = str.indexOf('(');
         while (off > 0) {
-            idx = str.indexOf('(', idx) + 1;
+            idx = str.indexOf('(', idx + 1);
             off--;
         }
-        return idx - 1;
+        return idx;
     }
 
     /**
@@ -356,8 +356,15 @@ public final class GeneticProgram {
      * could be found
      */
     private int findMatchingParen(String str, int start) {
+        try{
         if (str.charAt(start) != '(') {
             return -1;
+        }
+        }catch (StringIndexOutOfBoundsException e) {
+            System.err.println(e.getMessage());
+            System.err.println('"' + str + '"');
+            System.err.println("idx: " + start);
+            throw e;
         }
         int match = 0;
         for (int i = start + 1; i < str.length(); i++) {
@@ -403,10 +410,15 @@ public final class GeneticProgram {
             int oparen = program.program.indexOf('(', offset);
             int cparen = program.program.indexOf(')', offset);
             int space  = program.program.indexOf(' ', offset);
+
+            oparen = (oparen < 0) ? Integer.MAX_VALUE : oparen;
+            cparen = (cparen < 0) ? Integer.MAX_VALUE : cparen;
+            space = (space < 0) ? Integer.MAX_VALUE : space;
+
             next = Math.min(oparen, Math.min(cparen, space));
         } else {
             // Handle simulator functions
-            next = program.program.indexOf(')', offset);
+            next = program.program.indexOf(')', offset) + 1;
         }
 
         String newProgram = program.program.substring(0, offset)
