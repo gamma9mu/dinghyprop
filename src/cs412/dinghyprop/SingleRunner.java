@@ -56,26 +56,10 @@ public class SingleRunner {
         }
 
         Interpreter interpreter = new Interpreter(sim, program.program);
-        for (int round = 0; round < 100; round++) {
-            if (runIteration(sim, interpreter)) break;
-        }
+        interpreter.run(100);
         int fitness = interpreter.getFitness();
         program.fitness = fitness;
         return fitness;
-    }
-
-    /**
-     * Run a single iteration of a program.
-     * @param sim            The relevant simulator
-     * @param interpreter    The relevant interpreter
-     * @return  Whether another iteration is allowable
-     */
-    private boolean runIteration(Simulator sim, Interpreter interpreter) {
-        if (! interpreter.canContinue()) {
-            return true;
-        }
-        interpreter.execute();
-        return sim.getGoalDistanceMetric() == 100;
     }
 
     @Override
