@@ -23,17 +23,15 @@ public class Interpreter {
         this.simulator = simulator;
         try {
             this.program = new Parser(program).parse();
-        } catch (ParsingException ignored) { }
+        } catch (ParsingException ignored) {
+            throw new IllegalArgumentException("Program does not compile.");
+        }
     }
 
     /**
      * Evaluate the program in the simulation
      */
     public void execute() {
-        if (program == null) {
-            return;
-        }
-
         try {
             evaluateExpression(program);
         } catch (Exception e) {
@@ -51,12 +49,8 @@ public class Interpreter {
      * @param iterations    The iteration count.
      */
     public void run(int iterations) {
-        if (program == null) {
-            return;
-        }
-
         while (canContinue() && iterations > 0) {
-            evaluateExpression(program);
+            execute();
             iterations--;
         }
     }
