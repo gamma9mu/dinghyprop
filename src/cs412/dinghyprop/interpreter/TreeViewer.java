@@ -80,6 +80,7 @@ public final class TreeViewer extends JPanel {
     private void computeSize() {
         if (! sizeComputed) {
             root.computeSize(getGraphics());
+            sizeComputed = true;
         }
     }
 
