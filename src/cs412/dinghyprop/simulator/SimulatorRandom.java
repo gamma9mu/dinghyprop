@@ -1,5 +1,6 @@
 package cs412.dinghyprop.simulator;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 public class SimulatorRandom {
@@ -10,7 +11,7 @@ public class SimulatorRandom {
 	public SimulatorRandom(int maxX, int maxY, int maxObstacles) {
 		sizeX = maxX;
 		sizeY = maxY;
-		ran = new Random();
+		ran = new SecureRandom();
 		numObstacles = ran.nextInt(maxObstacles) + 1;
 		
 		int dinghyX = ran.nextInt(sizeX);
@@ -18,7 +19,7 @@ public class SimulatorRandom {
 		
 		sim = new Simulator(sizeX, sizeY, numObstacles, dinghyX, dinghyY);
 		
-		System.out.println("Dinghy Position: " + dinghyX + " " + dinghyY);
+		System.out.println("Dinghy Position: " + dinghyX + ' ' + dinghyY);
 		
 		setGoal();
 		
@@ -31,7 +32,7 @@ public class SimulatorRandom {
 		int goalY = ran.nextInt(sizeY);
 		sim.setGoal(goalX, goalY);
 		
-		System.out.println("Goal: " + goalX + " " + goalY);
+		System.out.println("Goal: " + goalX + ' ' + goalY);
 	}
 	
 	public void setObstacles() {
@@ -41,7 +42,7 @@ public class SimulatorRandom {
 			
 			sim.addObstacle(i, posX, posY);
 			
-			System.out.println("Obstacle " + i + ": " + posX + " " + posY);
+			System.out.println("Obstacle " + i + ": " + posX + ' ' + posY);
 			
 		}
 	}
