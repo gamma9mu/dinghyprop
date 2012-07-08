@@ -120,18 +120,31 @@ public class Dinghy extends Point{
 		switch(direc) {
 			case NORTH:
 				temp = obstPos[1] - dinghyPos[1];
-				if(temp > 0)
+				if(temp >= 0 && (obstPos[0] - dinghyPos[0]) == 0)
 					result = temp;
 				else
 					result = -1;
 				break;
 			case EAST:
 				temp = obstPos[0] - dinghyPos[0];
-				if(temp > 0)
+				if(temp >= 0 && (obstPos[1] - dinghyPos[1]) == 0)
+					result = temp;
+				else
+					result = -1;
 				break;
 			case SOUTH:
+				temp = dinghyPos[1] - obstPos[1];
+				if(temp >= 0 && (dinghyPos[0] - obstPos[0]) == 0)
+					result = temp;
+				else
+					result = -1;
 				break;
 			case WEST:
+				temp = dinghyPos[0] - obstPos[0];
+				if(temp >= 0 && (dinghyPos[1] - obstPos[1]) == 0)
+					result = temp;
+				else
+					result = -1;
 				break;
 		}
 		return result;
