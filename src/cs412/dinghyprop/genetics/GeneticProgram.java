@@ -66,7 +66,7 @@ public final class GeneticProgram {
      * Create a new GP object and initialize its population.
      * @param populationSize    the size of population to use
      * @param method            the initialization method
-     * @param maxDepth          the maximum initial depth of any individual's
+     * @param maxDepth          the maximum initial depth of any individual
      *                          program tree
      */
     public GeneticProgram(int populationSize, INIT_POP_METHOD method, int maxDepth) {

@@ -35,6 +35,7 @@ public class SingleRunner {
             }
             System.out.println("Max: " + maxFitenss
                     + "\t Avg: " + (fitnesses/gp.getPopulationSize()));
+            gp.createNextGeneration();
         }
     }
 }
