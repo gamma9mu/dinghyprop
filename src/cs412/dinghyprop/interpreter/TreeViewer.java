@@ -117,15 +117,9 @@ public final class TreeViewer extends JPanel {
         }
 
         if (expr != null) {
-            final Expression finalExpr = expr;
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    JFrame jf = TreeViewer.createFramedExpression(finalExpr);
-                    jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                    jf.setVisible(true);
-                }
-            });
+            JFrame jf = TreeViewer.createFramedExpression(expr);
+            jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            jf.setVisible(true);
         }
     }
 }
