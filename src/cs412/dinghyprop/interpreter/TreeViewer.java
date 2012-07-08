@@ -93,7 +93,6 @@ public final class TreeViewer extends JPanel {
     @Override
     public Dimension getPreferredSize() {
         computeSize();
-        Dimension scr = Toolkit.getDefaultToolkit().getScreenSize();
         return new Dimension(root.w, root.h + root.strHeight);
     }
 
