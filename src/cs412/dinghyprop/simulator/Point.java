@@ -1,6 +1,5 @@
 package cs412.dinghyprop.simulator;
 
-import java.lang.Math;
 public class Point {
 	private int posX;
 	private int posY;
@@ -11,8 +10,7 @@ public class Point {
 	}
 	
 	public int[] getPosition() {
-		int position[] = {posX, posY};
-		return position;
+        return new int[]{posX, posY};
 	}
 	
 	protected void setX(int x) {
@@ -32,34 +30,21 @@ public class Point {
 	}
 	
 	protected int getDistance(Point p) {
-		int result = 0;
-		
-		int pos[] = p.getPosition();
+        int[] pos = p.getPosition();
 		
 		int distX = pos[0] - this.posX;
 		int distY = pos[1] - this.posY;
-		
-		result = (int)Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-		return result;
+
+        return (int) Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
 	}
 	
 	protected int getDistanceX(Point p) {
-		int result = 0;
-	
-		int pos[] = p.getPosition();
-		
-		result = pos[0] - this.posX;
-		
-		return result;
+        int[] pos = p.getPosition();
+        return pos[0] - this.posX;
 	}
 	
 	protected int getDistanceY(Point p) {
-		int result = 0;
-		
-		int pos[] = p.getPosition();
-		
-		result = pos[1] - this.posY;
-		
-		return result;
+        int[] pos = p.getPosition();
+        return pos[1] - this.posY;
 	}
 }
