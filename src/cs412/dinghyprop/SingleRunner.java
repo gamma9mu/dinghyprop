@@ -59,7 +59,7 @@ public class SingleRunner {
         for (int round = 0; round < 100; round++) {
             if (runIteration(sim, interpreter)) break;
         }
-        int fitness = sim.getFitness();
+        int fitness = interpreter.getFitness();
         program.fitness = fitness;
         return fitness;
     }
