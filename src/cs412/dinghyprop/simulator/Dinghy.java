@@ -183,4 +183,93 @@ public class Dinghy extends Point{
 	protected int getDistanceRear(Obstacle obst) {
         return getDistanceInDirection(rearDirection(), obst);
 	}
+	
+	protected int getDistanceShortLeft(Obstacle obst) {
+		int[] obstaclePosition = obst.getPosition();
+		int[] dinghyPosition = this.getPosition();
+		int result = -1;
+		
+		switch (direc) {
+			case NORTH:
+				if(checkConditions(obstaclePosition, dinghyPosition, -1, '>')) {
+					result = this.getDistance(obst);
+				}
+				break;
+			case EAST:
+				if(checkConditions(obstaclePosition, dinghyPosition, 1, '>')) {
+					result = this.getDistance(obst);
+				}
+				break;
+			case SOUTH:
+				if(checkConditions(obstaclePosition, dinghyPosition, -1, '<')) {
+					result = this.getDistance(obst);
+				}				
+				break;
+			case WEST:
+				if(checkConditions(obstaclePosition, dinghyPosition, 1, '<')) {
+					result = this.getDistance(obst);
+				}
+				break;
+		}
+		
+		return result;
+	}
+	
+	protected int getDistanceShortRight(Obstacle obst) {
+		int[] obstaclePosition = obst.getPosition();
+		int[] dinghyPosition = this.getPosition();
+		int result = -1;
+		
+		switch(direc) {
+			case NORTH:
+				if(checkConditions(obstaclePosition, dinghyPosition, 1, '>')) {
+					result = this.getDistance(obst);
+				}
+				break;
+			case EAST:
+				if(checkConditions(obstaclePosition, dinghyPosition, -1, '<')) {
+					result = this.getDistance(obst);
+				}
+				break;
+			case SOUTH:
+				if(checkConditions(obstaclePosition, dinghyPosition, 1, '<')) {
+					result = this.getDistance(obst);
+				}
+				break;
+			case WEST:
+				if(checkConditions(obstaclePosition, dinghyPosition, -1, '>')) {
+					result = this.getDistance(obst);
+				}
+				break;
+		}
+		return result;
+	}
+	
+	private boolean checkConditions(int[] obstaclePos, int[] dinghyPos, int expectedVal, char oper) {
+		boolean result = false;
+		if(oper == '<'){
+			if(checkSlope(obstaclePos, dinghyPos, expectedVal) && obstaclePos[1] < dinghyPos[1]){
+				result = true;
+			}
+		}
+		else if(oper == '>') {
+			if(checkSlope(obstaclePos, dinghyPos, expectedVal) && obstaclePos[1] > dinghyPos[1]){
+				result = true;
+			}
+		}
+		return result;
+	}
+	
+	private int getSlope(int[] obstaclePosition, int[] dinghyPosition) {
+		return (obstaclePosition[1] - dinghyPosition[1]) / (obstaclePosition[0] - dinghyPosition[0]);
+	}
+	
+	private boolean checkSlope(int[] obstaclePosition, int[] dinghyPosition, int expectedValue) {
+		boolean result = false;
+		if(getSlope(obstaclePosition, dinghyPosition) == expectedValue) {
+			result = true;
+		}
+		
+		return result;
+	}
 }
