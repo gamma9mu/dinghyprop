@@ -4,7 +4,7 @@ import javax.swing.JFileChooser;
 import java.io.*;
 
 public class SimulatorFileTest{
-	public static void main(String args[]){
+	public static void main(String[] args){
 	
 		JFileChooser fc = new JFileChooser();
 		

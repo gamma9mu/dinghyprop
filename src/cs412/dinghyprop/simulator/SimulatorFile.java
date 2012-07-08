@@ -3,6 +3,7 @@ package cs412.dinghyprop.simulator;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 /** 
 * This class allows for simulations to be read
@@ -16,8 +17,9 @@ import java.util.Scanner;
 * (Other obstacles)
 */
 public class SimulatorFile {
+    private static Logger log = Logger.getLogger("SimulatorFile");
 	File file;
-	Scanner in;
+	Scanner in = null;
 	Simulator sim;
 	int[] size, dinghy, goal;
 	int numObstacles;
@@ -27,8 +29,7 @@ public class SimulatorFile {
 		try{
 			in = new Scanner(file);}
 		catch(IOException e){
-			System.err.println("Error!");
-			e.printStackTrace();
+			log.throwing("SimulatorFile", "SimulatorFile", e);
 		}
 		setSize();
 		setDinghy();
@@ -38,12 +39,12 @@ public class SimulatorFile {
 		
 		setGoal();
 		sim.setGoal(goal[0], goal[1]);
-		System.out.println("Goal: " + goal[0] + " " + goal[1]);
+		System.out.println("Goal: " + goal[0] + ' ' + goal[1]);
 		for(int i = 0; i < numObstacles; i++){
 			int obstX = in.nextInt();
 			int obstY = in.nextInt();
 			sim.addObstacle(i, obstX, obstY);
-			System.out.println("Obstacle " + i + ": " + obstX + " " + obstY);
+			System.out.println("Obstacle " + i + ": " + obstX + ' ' + obstY);
 		}
 		
 	}
