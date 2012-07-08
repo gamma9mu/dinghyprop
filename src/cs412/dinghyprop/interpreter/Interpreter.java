@@ -2,10 +2,19 @@ package cs412.dinghyprop.interpreter;
 
 import cs412.dinghyprop.simulator.Simulator;
 
+/**
+ * Dinghy navigation program interpreter
+ */
 public class Interpreter {
     private Simulator simulator;
     private Expression program = null;
 
+    /**
+     * Create an interpreter for a {@code Simulator} and program combination.
+     * @param simulator    The {@code Simulator} that provides context to the
+     *                     interpreter
+     * @param program      The program to execute
+     */
     public Interpreter(Simulator simulator, String program) {
         this.simulator = simulator;
         try {
