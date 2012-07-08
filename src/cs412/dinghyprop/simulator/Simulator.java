@@ -1,9 +1,9 @@
 package cs412.dinghyprop.simulator;
 
 /**
- * Simulator skeleton.
+ * Dinghy environment simulator.
  */
-public class Simulator {
+public class Simulator implements Cloneable {
 	private Goal goal = null;
 	private Obstacle[] obstacles;
 	private Dinghy dinghy;
@@ -147,5 +147,12 @@ public class Simulator {
      */
     public boolean canContinue() {
         return canContinue;
+    }
+
+    @Override
+    public Simulator clone() throws CloneNotSupportedException {
+        Simulator clone = (Simulator) super.clone();
+        System.arraycopy(obstacles, 0, clone.obstacles, 0, obstacles.length);
+        return clone;
     }
 }
