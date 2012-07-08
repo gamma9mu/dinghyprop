@@ -2,6 +2,7 @@ package cs412.dinghyprop;
 
 import cs412.dinghyprop.genetics.GeneticProgram;
 import cs412.dinghyprop.genetics.Program;
+import cs412.dinghyprop.genetics.TournamentSelector;
 import cs412.dinghyprop.interpreter.Interpreter;
 import cs412.dinghyprop.simulator.Simulator;
 import cs412.dinghyprop.simulator.SimulatorRandom;
@@ -70,9 +71,7 @@ public class SingleRunner {
 
     @Override
     public String toString() {
-        return "SingleRunner{" +
-                "gp=" + gp +
-                '}';
+        return "SingleRunner{gp=" + gp + '}';
     }
 
     /**
@@ -82,6 +81,7 @@ public class SingleRunner {
     public static void main(String[] args) {
         GeneticProgram gp = new GeneticProgram(popSize,
                 GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 10);
+        gp.setSelector(new TournamentSelector(3));
         SingleRunner sr = new SingleRunner(gp);
 
         for (int iter = 0; iter < 1000; iter++) {
