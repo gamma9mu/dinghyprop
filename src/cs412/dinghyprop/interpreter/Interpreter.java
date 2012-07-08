@@ -41,14 +41,23 @@ public class Interpreter {
         }
     }
 
+    /**
+     * Evaluate an {@code Expression} tree
+     * @param expr    The {@code Expression} tree's root
+     * @return  The resulting value from evaluating {@code expr}
+     */
     private Object evaluateExpression(Expression expr) {
+        String operator = expr.getOperator();
         Object[] operands = expr.getOperands();
-        if (operands.length == 0) {
-            simulator.invoke(expr.getOperator());
+        int operandCount = operands.length;
+
+        if (operandCount == 0) {
+            simulator.invoke(operator);
             return null;
         }
-        Object[] results = new Object[operands.length];
-        for (int i = 0; i < operands.length; i++) {
+
+        Object[] results = new Object[operandCount];
+        for (int i = 0; i < operandCount; i++) {
             Object result = null;
             if (operands[i] instanceof Expression) {
                 result = evaluateExpression((Expression) operands[i]);
@@ -59,7 +68,7 @@ public class Interpreter {
             }
             results[i] = result;
         }
-        return evaluateOperator(expr.getOperator(), results);
+        return evaluateOperator(operator, results);
     }
 
     @SuppressWarnings({"SuppressionAnnotation", "OverlyLongMethod", "OverlyComplexMethod", "HardcodedFileSeparator"})
@@ -128,7 +137,6 @@ public class Interpreter {
                 }
             }
             return true;
-//            int accum = (operands[0] != null) ? (Integer) operands[0] : 0;
         } else if (operator.compareTo(">") == 0) {
             for (int i = 0; i < operands.length - 1; i++) {
                 if (operands[i] == null) return false;
