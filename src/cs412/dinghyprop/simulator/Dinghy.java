@@ -15,9 +15,15 @@ public class Dinghy extends Point{
 		distTravelled = 0;
 		direc = Direction.NORTH;
 	}
+
+    public Dinghy(Dinghy dinghy) {
+        super(dinghy.getPosition()[0], dinghy.getPosition()[1]);
+        distTravelled = dinghy.distTravelled;
+        direc = dinghy.direc;
+    }
 	
 	protected void movePos(int distX, int distY){
-		int[] currPos = this.getPosition();
+        int[] currPos = this.getPosition();
 		distTravelled += calculateDistTravel(distX, distY, currPos);
 		this.setX(currPos[0] + distX);
 		this.setY(currPos[1] + distY);
