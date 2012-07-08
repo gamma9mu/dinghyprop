@@ -23,6 +23,9 @@ public class SingleRunner {
                 Simulator sim = new SimulatorRandom(20, 20, 10).getSimulator();
                 Interpreter interpreter = new Interpreter(sim, program.program);
                 for (int round = 0; round < 100; round++) {
+                    if (! interpreter.canContinue()) {
+                        break;
+                    }
                     interpreter.execute();
                     if (sim.getGoalDistanceMetric() == 100) {
                         break;
