@@ -1,6 +1,5 @@
 package cs412.dinghyprop.simulator;
 
-import java.lang.Math;
 /**
 *  This class stores current information about the
 *  dinghy that is in the simulation
@@ -8,8 +7,9 @@ import java.lang.Math;
 
 public class Dinghy extends Point{
 	private int distTravelled;
-	private enum Direction { NORTH, EAST, SOUTH, WEST };
-	private Direction direc;
+	private enum Direction { NORTH, EAST, SOUTH, WEST }
+
+    private Direction direc;
 	
 	public Dinghy(int startX, int startY) {
 		super(startX, startY);
@@ -18,14 +18,14 @@ public class Dinghy extends Point{
 	}
 	
 	protected void movePos(int distX, int distY){
-		int currPos[] = this.getPosition();
+		int[] currPos = this.getPosition();
 		distTravelled += calculateDistTravel(distX, distY, currPos);
 		this.setX(currPos[0] + distX);
 		this.setY(currPos[1] + distY);
 	}
 	
 	protected void move(int dist) {
-		int currPos[] = this.getPosition();
+		int[] currPos = this.getPosition();
 		switch(direc) {
 			case NORTH:
 				distTravelled += calculateDistTravel(0, dist, currPos);
@@ -113,8 +113,8 @@ public class Dinghy extends Point{
 	}
 	
 	protected int getDistanceFront(Obstacle obst) {
-		int obstPos[] = obst.getPosition();
-		int dinghyPos[] = this.getPosition();
+		int[] obstPos = obst.getPosition();
+		int[] dinghyPos = this.getPosition();
 		int result = 0;
 		int temp;
 		switch(direc) {
