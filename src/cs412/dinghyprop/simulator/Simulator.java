@@ -52,16 +52,38 @@ public class Simulator {
                 else if (temp == 0)
                     System.err.println("There has been a collision");
             }
+            return min;
         } else if (variable.compareTo("short-left") == 0) {
             ;
         } else if (variable.compareTo("short-right") == 0) {
             ;
         } else if (variable.compareTo("left") == 0) {
-            ;
+            for (Obstacle obstacle : obstacles) {
+                int temp = dinghy.getDistanceLeft(obstacle);
+                if (temp < min && temp != -1 && temp != 0)
+                    min = temp;
+                else if (temp == 0)
+                    System.err.println("There has been a collision");
+            }
+            return min;
         } else if (variable.compareTo("right") == 0) {
-            ;
+            for (Obstacle obstacle : obstacles) {
+                int temp = dinghy.getDistanceRight(obstacle);
+                if (temp < min && temp != -1 && temp != 0)
+                    min = temp;
+                else if (temp == 0)
+                    System.err.println("There has been a collision");
+            }
+            return min;
         } else if (variable.compareTo("rear") == 0) {
-            ;
+            for (Obstacle obstacle : obstacles) {
+                int temp = dinghy.getDistanceRear(obstacle);
+                if (temp < min && temp != -1 && temp != 0)
+                    min = temp;
+                else if (temp == 0)
+                    System.err.println("There has been a collision");
+            }
+            return min;
         } else if (variable.compareTo("position-x") == 0) {
             return pos[0];
         } else if (variable.compareTo("position-y") == 0) {
@@ -71,7 +93,7 @@ public class Simulator {
         } else if (variable.compareTo("goal-position-y") == 0) {
             return goalPos[1];
         } else if (variable.compareTo("heading") == 0) {
-            ;
+            return dinghy.getDirection();
         } else {
             System.err.println("Simulator: Unknown variable referenced: " + variable);
         }
