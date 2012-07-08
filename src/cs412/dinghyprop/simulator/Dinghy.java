@@ -111,4 +111,41 @@ public class Dinghy extends Point{
 	private int calculateDistTravel(int changeX, int changeY, int[] currPos) {
 		return (int)Math.sqrt(Math.pow(changeY - currPos[1], 2) + Math.pow(changeX - currPos[0], 2));
 	}
+	
+	protected int getDistanceFront(Obstacle obst) {
+		int obstPos[] = obst.getPosition();
+		int dinghyPos[] = this.getPosition();
+		int result = 0;
+		int temp;
+		switch(direc) {
+			case NORTH:
+				temp = obstPos[1] - dinghyPos[1];
+				if(temp > 0)
+					result = temp;
+				else
+					result = -1;
+				break;
+			case EAST:
+				temp = obstPos[0] - dinghyPos[0];
+				if(temp > 0)
+				break;
+			case SOUTH:
+				break;
+			case WEST:
+				break;
+		}
+		return result;
+	}
+	
+	protected int getDistanceLeft(Obstacle obst) {
+		return 0;
+	}
+	
+	protected int getDistanceRight(Obstacle obst) {
+		return 0;
+	}
+	
+	protected int getDistanceRear(Obstacle obst) {
+		return 0;
+	}
 }
