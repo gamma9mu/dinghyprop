@@ -51,38 +51,12 @@ public class Dinghy extends Point{
 	}
 	
 	protected void turnRight() {
-		switch(direc) {
-			case NORTH:
-				direc = Direction.EAST;
-				break;
-			case EAST:
-				direc = Direction.SOUTH;
-				break;
-			case SOUTH:
-				direc = Direction.WEST;
-				break;
-			case WEST:
-				direc = Direction.NORTH;
-				break;
-		}
-	}
+        direc = rightDirection();
+    }
 	
 	protected void turnLeft() {
-		switch(direc) {
-			case NORTH:
-				direc = Direction.WEST;
-				break;
-			case WEST:
-				direc = Direction.SOUTH;
-				break;
-			case SOUTH:
-				direc = Direction.EAST;
-				break;
-			case EAST:
-				direc = Direction.NORTH;
-				break;
-		}
-	}
+        direc = leftDirection();
+    }
 	
 	protected int getDirection() {
 		int result = 0;
@@ -110,13 +84,55 @@ public class Dinghy extends Point{
 	private int calculateDistTravel(int changeX, int changeY, int[] currPos) {
 		return (int)Math.sqrt(Math.pow(changeY - currPos[1], 2) + Math.pow(changeX - currPos[0], 2));
 	}
-	
-	protected int getDistanceFront(Obstacle obst) {
+
+    private Direction leftDirection() {
+        switch (direc) {
+            case NORTH:
+                return Direction.WEST;
+            case EAST:
+                return Direction.NORTH;
+            case SOUTH:
+                return Direction.EAST;
+            case WEST:
+            default:
+                return Direction.SOUTH;
+        }
+    }
+
+    private Direction rightDirection() {
+        switch (direc) {
+            case NORTH:
+                return Direction.EAST;
+            case EAST:
+                return Direction.SOUTH;
+            case SOUTH:
+                return Direction.WEST;
+            case WEST:
+            default:
+                return Direction.NORTH;
+        }
+    }
+
+    private Direction rearDirection() {
+        switch (direc) {
+            case NORTH:
+                return Direction.SOUTH;
+            case EAST:
+                return Direction.WEST;
+            case SOUTH:
+                return Direction.WEST;
+            case WEST:
+            default:
+                return Direction.NORTH;
+        }
+    }
+
+	protected int getDistanceInDirection(Direction direction, Obstacle obst) {
 		int[] obstPos = obst.getPosition();
 		int[] dinghyPos = this.getPosition();
 		int result = 0;
 		int temp;
-		switch(direc) {
+		switch(direction) {
 			case NORTH:
 				temp = obstPos[1] - dinghyPos[1];
 				if(temp >= 0 && (obstPos[0] - dinghyPos[0]) == 0)
@@ -148,16 +164,20 @@ public class Dinghy extends Point{
 		}
 		return result;
 	}
-	
+
+    protected int getDistanceFront(Obstacle obst) {
+        return getDistanceInDirection(direc, obst);
+    }
+
 	protected int getDistanceLeft(Obstacle obst) {
-		return 0;
+        return getDistanceInDirection(leftDirection(), obst);
 	}
 	
 	protected int getDistanceRight(Obstacle obst) {
-		return 0;
+        return getDistanceInDirection(rightDirection(), obst);
 	}
 	
 	protected int getDistanceRear(Obstacle obst) {
-		return 0;
+        return getDistanceInDirection(rearDirection(), obst);
 	}
 }
