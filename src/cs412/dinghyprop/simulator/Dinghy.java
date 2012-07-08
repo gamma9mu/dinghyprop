@@ -24,28 +24,25 @@ public class Dinghy extends Point{
 	}
 	
 	protected void move(int dist) {
-		int[] currPos = this.getPosition();
+        distTravelled += dist;
+
 		switch(direc) {
 			case NORTH:
-				distTravelled += calculateDistTravel(0, dist, currPos);
-				this.incY(dist);
+				incY(dist);
 				break;
 				
 			case EAST:
-				distTravelled += calculateDistTravel(dist, 0, currPos);
-				this.incX(dist);
+				incX(dist);
 				break;
 				
 			case SOUTH:
 				dist = 0 - dist;
-				distTravelled += calculateDistTravel(0, dist, currPos);
-				this.incY(dist);
+				incY(dist);
 				break;
 				
 			case WEST:
 				dist = 0 - dist;
-				distTravelled += calculateDistTravel(dist, 0, currPos);
-				this.incX(dist);
+				incX(dist);
 				break;
 		}
 	}
