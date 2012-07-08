@@ -4,12 +4,14 @@ package cs412.dinghyprop.simulator;
  * Dinghy environment simulator.
  */
 public class Simulator implements Cloneable {
-	private Goal goal = null;
+    private static final int DEFAULT_TERMINATION_FITNESS = 300;
+    private Goal goal = null;
 	private Obstacle[] obstacles;
 	private Dinghy dinghy;
 	private int sizeX;
     private int sizeY;
     private boolean canContinue = true;
+    private int terminationFitness = DEFAULT_TERMINATION_FITNESS;
 
     public Simulator(int maxX, int maxY, int numObstacles, int dinghyX, int dinghyY) {
 		sizeX = maxX;
@@ -158,6 +160,7 @@ public class Simulator implements Cloneable {
         double result = 100 - (goalDist / getTotalDistance()) * 100;
         return (int)result;
 	}
+
     public int getSuccessMetric() { 
 		boolean success = goal.success(dinghy);
 		int points = 0;
@@ -176,7 +179,7 @@ public class Simulator implements Cloneable {
      * @return  Whether execution can continue
      */
     public boolean canContinue() {
-        return canContinue;
+        return getFitness() < terminationFitness && canContinue;
     }
 
     @Override
@@ -185,5 +188,21 @@ public class Simulator implements Cloneable {
         clone.dinghy = new Dinghy(dinghy);
         System.arraycopy(obstacles, 0, clone.obstacles, 0, obstacles.length);
         return clone;
+    }
+
+    /**
+     * Retrieve the termination fitness currently in use.
+     * @return  The goal fitness
+     */
+    public int getTerminationFitness() {
+        return terminationFitness;
+    }
+
+    /**
+     * Set the termination fitness currently in use.
+     * @param terminationFitness    The new goal fitness
+     */
+    public void setTerminationFitness(int terminationFitness) {
+        this.terminationFitness = terminationFitness;
     }
 }
