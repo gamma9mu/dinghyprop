@@ -291,7 +291,11 @@ public final class GeneticProgram {
             if (propogationType <= crossover) {
                 nextGeneration[i] = crossover();
             } else if (propogationType <= mutation) {
-                nextGeneration[i] = pointMutation();
+                // randomly choose between point and subtree mutation
+                if (rand.nextBoolean())
+                    nextGeneration[i] = pointMutation();
+                else
+                    nextGeneration[i] = subtreeMutation();
             } else {
                 nextGeneration[i] = reproduce();
             }
@@ -452,6 +456,41 @@ public final class GeneticProgram {
             return randomTerminal();
         }
         return str; // fallback: no mutation
+    }
+
+    /**
+     * Mutate a subtree of a selected individual.
+     * @return  A new individual with a subtree replaced by a newly grown
+     * subtree.
+     */
+    private Program subtreeMutation() {
+        String program = selector.select(population).program;
+        int start = randomStartParen(program);
+        int end = findMatchingParen(program, start);
+        int depth = getTreeDepth(program, start, end);
+        depth = (depth > 1) ? depth : 2; // new tree's minimum depth = 2
+
+        String newProgram = program.substring(0, start)
+                + grow(depth)
+                + program.substring(end + 1);
+        return new Program(newProgram);
+    }
+
+    private int getTreeDepth(String program, int start, int end) {
+        int maxDepth = 1;
+        int current = 1;
+        for (int i = start + 1; i < end; i++) {
+            switch (program.charAt(i)) {
+                case '(':
+                    current++;
+                    break;
+                case ')':
+                    current--;
+                    break;
+            }
+            maxDepth = (current > maxDepth) ? current : maxDepth;
+        }
+        return maxDepth;
     }
 
     /**
