@@ -31,7 +31,7 @@ public class Simulator implements Cloneable {
 	
     public void invoke(String function) {
 		if (function.compareTo("move") == 0)
-            dinghy.move(3);
+            invokeMove();
         else if (function.compareTo("turn-left") == 0)
             dinghy.turnLeft();
         else if (function.compareTo("turn-right") == 0)
@@ -39,6 +39,11 @@ public class Simulator implements Cloneable {
         else
             System.err.println("Simulator: Unknown function called: " + function);
 	}
+
+    private void invokeMove() {
+        dinghy.move(1);
+        dinghy.wrap(sizeX, sizeY);
+    }
 
     public int reference(String variable) {
         int[] goalPos = goal.getPosition();
