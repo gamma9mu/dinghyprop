@@ -23,8 +23,9 @@ public class Interpreter {
         this.simulator = simulator;
         try {
             this.program = new Parser(program).parse();
-        } catch (ParsingException ignored) {
-            throw new IllegalArgumentException("Program does not compile.");
+        } catch (ParsingException e) {
+            throw new IllegalArgumentException("Program does not compile:\n"
+                    + e.getLocalizedMessage() + '\n' + program + '\n');
         }
     }
 
