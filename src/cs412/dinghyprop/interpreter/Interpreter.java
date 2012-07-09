@@ -36,7 +36,7 @@ public class Interpreter {
     public void execute() {
         try {
             evaluateExpression(program);
-        } catch (Exception e) {
+        } catch (ExecutionException e) {
             log.throwing("Interpreter", "execute", e);
             programRaised = true;
         }
