@@ -6,10 +6,12 @@ package cs412.dinghyprop.simulator;
 */
 public class Dinghy extends Point{
 	private int distTravelled;
-	private enum Direction { NORTH, EAST, SOUTH, WEST }
 
+
+
+    private enum Direction { NORTH, EAST, SOUTH, WEST;}
     private Direction direc;
-	
+
 	public Dinghy(int startX, int startY) {
 		super(startX, startY);
 		distTravelled = 0;
@@ -21,14 +23,29 @@ public class Dinghy extends Point{
         distTravelled = dinghy.distTravelled;
         direc = dinghy.direc;
     }
-	
+
 	protected void movePos(int distX, int distY){
         int[] currPos = this.getPosition();
 		distTravelled += calculateDistTravel(distX, distY, currPos);
 		this.setX(currPos[0] + distX);
 		this.setY(currPos[1] + distY);
 	}
-	
+
+    /**
+     * Wrap the dinghy around the map.
+     * @param x    The x dimension of the map
+     * @param y    The y dimension of the map
+     */
+    public void wrap(int x, int y) {
+        int[] currPos = getPosition();
+
+        if (currPos[0] > x)
+            setX(currPos[0] - x);
+
+        if (currPos[1] > y)
+            setY(currPos[1] - y);
+    }
+
 	protected void move(int dist) {
         distTravelled += dist;
 
