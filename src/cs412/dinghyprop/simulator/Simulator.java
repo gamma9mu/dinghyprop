@@ -141,6 +141,11 @@ public class Simulator implements Cloneable {
         return upperBound;
     }
 	
+	/**
+	 * Handle a reference to the variable "short-left"
+	 * @param upperBound	A suggested upper bound
+	 * @return the distance to the closest item at a 45 degree angle to the left of the dinghy.
+	 */
 	private int referenceShortLeft(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
 			int temp = dinghy.getDistanceShortLeft(obstacle);
@@ -154,6 +159,11 @@ public class Simulator implements Cloneable {
 		return upperBound;
 	}
 	
+	/**
+	 * Handle a reference to the variable "short-right"
+	 * @param upperBound	A suggested upper bound
+	 * @return the distance to the closest item at a 45 degree angle to the right of the dinghy.
+	 */
 	private int referenceShortRight(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
 			int temp = dinghy.getDistanceShortRight(obstacle);
