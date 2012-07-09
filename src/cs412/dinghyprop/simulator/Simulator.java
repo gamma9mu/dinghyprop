@@ -29,7 +29,7 @@ public class Simulator implements Cloneable {
 		goal = new Goal(x, y);
 	}
 	
-    public void invoke(String function) {
+    public void invoke(String function) throws UnknownFunctionException {
 		if (function.compareTo("move") == 0)
             invokeMove();
         else if (function.compareTo("turn-left") == 0)
@@ -37,7 +37,7 @@ public class Simulator implements Cloneable {
         else if (function.compareTo("turn-right") == 0)
             dinghy.turnRight();
         else
-            System.err.println("Simulator: Unknown function called: " + function);
+            throw new UnknownFunctionException(function);
 	}
 
     private void invokeMove() {
