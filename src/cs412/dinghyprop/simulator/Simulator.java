@@ -48,9 +48,9 @@ public class Simulator implements Cloneable {
         if (variable.compareTo("front") == 0) {
             return referenceFront(min);
         } else if (variable.compareTo("short-left") == 0) {
-            ;
+            return referenceShortLeft(min);
         } else if (variable.compareTo("short-right") == 0) {
-            ;
+            return referenceShortRight(min);
         } else if (variable.compareTo("left") == 0) {
             return referenceLeft(min);
         } else if (variable.compareTo("right") == 0) {
@@ -140,6 +140,30 @@ public class Simulator implements Cloneable {
         }
         return upperBound;
     }
+	
+	private int referenceShortLeft(int upperBound) {
+		for (Obstacle obstacle : obstacles) {
+			int temp = dinghy.getDistanceShortLeft(obstacle);
+			if(temp < upperBound && temp !=-1 && temp != 0)
+				upperBound = temp;
+			else if (temp == 0) 
+				canContinue = false;
+							
+			
+		}
+		return upperBound;
+	}
+	
+	private int referenceShortRight(int upperBound) {
+		for (Obstacle obstacle : obstacles) {
+			int temp = dinghy.getDistanceShortRight(obstacle);
+			if(temp < upperBound && temp != -1 && temp !=0)
+				upperBound = temp;
+			else if (temp == 0)
+				canContinue = false;
+		}
+		return upperBound;
+	}
 
     public int getTravelMetric() {
         int travelMetric = dinghy.getDistTravelled();
