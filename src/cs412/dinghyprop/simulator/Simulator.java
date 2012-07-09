@@ -45,7 +45,7 @@ public class Simulator implements Cloneable {
         dinghy.wrap(sizeX, sizeY);
     }
 
-    public int reference(String variable) {
+    public int reference(String variable) throws VariableReferenceException {
         int[] goalPos = goal.getPosition();
 		int[] pos = dinghy.getPosition();
 		int min = sizeX + sizeY;
@@ -74,8 +74,7 @@ public class Simulator implements Cloneable {
             return dinghy.getDirection();
         }
 
-        System.err.println("Simulator: Unknown variable referenced: \"" + variable + '"');
-		return 0;
+        throw new VariableReferenceException(variable);
 	}
 
     /**

@@ -1,6 +1,7 @@
 package cs412.dinghyprop.interpreter;
 
 import cs412.dinghyprop.simulator.Simulator;
+import cs412.dinghyprop.simulator.VariableReferenceException;
 
 import java.util.logging.Logger;
 
@@ -61,7 +62,7 @@ public class Interpreter {
      * @param expr    The {@code Expression} tree's root
      * @return  The resulting value from evaluating {@code expr}
      */
-    private Object evaluateExpression(Expression expr) {
+    private Object evaluateExpression(Expression expr) throws VariableReferenceException {
         String operator = expr.getOperator();
         Object[] operands = expr.getOperands();
         int operandCount = operands.length;
