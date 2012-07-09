@@ -339,7 +339,7 @@ public final class GeneticProgram {
 
         String newProgram = p0.program.substring(0, start0)
                 + p1.program.substring(start1, end1 + 1)
-                + p0.program.substring(end0);
+                + p0.program.substring(end0 + 1);
 
         return new Program(newProgram);
     }
@@ -372,11 +372,11 @@ public final class GeneticProgram {
      * could be found
      */
     private int findMatchingParen(String str, int start) {
-        try{
-        if (str.charAt(start) != '(') {
-            return -1;
+        try {
+            if (str.charAt(start) != '(') {
+                return -1;
         }
-        }catch (StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
             System.err.println(e.getMessage());
             System.err.println('"' + str + '"');
             System.err.println("idx: " + start);
@@ -393,8 +393,6 @@ public final class GeneticProgram {
                         return i;
                     }
                     match--;
-                    break;
-                default:
                     break;
             }
         }
@@ -415,33 +413,26 @@ public final class GeneticProgram {
      * or terminal (as appropriate).
      */
     private Program pointMutation() {
-        Program program = selector.select(population);
-        int offset = randomStartParen(program.program);
-        int next;
+        String program = selector.select(population).program;
+        int start = randomStartParen(program);
+        int end;
 
-        if (program.program.indexOf(' ', offset) < program.program.indexOf(')', offset)) {
+        if (program.indexOf(' ', start) < program.indexOf(')', start)) {
             // Handle non-simulator functions
-
-            while (program.program.charAt(offset) == '(') {offset++;}
-            int oparen = program.program.indexOf('(', offset);
-            int cparen = program.program.indexOf(')', offset);
-            int space  = program.program.indexOf(' ', offset);
-
-            oparen = (oparen < 0) ? Integer.MAX_VALUE : oparen;
-            cparen = (cparen < 0) ? Integer.MAX_VALUE : cparen;
-            space = (space < 0) ? Integer.MAX_VALUE : space;
-
-            next = Math.min(oparen, Math.min(cparen, space));
+            while (program.charAt(start) == '(') // find start of symbol
+                start++;
+            end = start + 1;
+            while ("( )".indexOf(program.charAt(end)) != -1) // find the end
+                end++;
         } else {
             // Handle simulator functions
-            next = program.program.indexOf(')', offset) + 1;
+            end = program.indexOf(')', start) + 1;
         }
 
-        String newProgram = program.program.substring(0, offset)
-                + getMutationReplacement(program.program.substring(offset, next))
-                + program.program.substring(next);
+        String newProgram = program.substring(0, start)
+                + getMutationReplacement(program.substring(start, end + 1))
+                + program.substring(end + 1);
         return new Program(newProgram);
-
     }
 
     /**
