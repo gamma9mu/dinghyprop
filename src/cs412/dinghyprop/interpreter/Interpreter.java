@@ -13,6 +13,7 @@ public class Interpreter {
     private Simulator simulator;
     private Expression program = null;
     private boolean programRaised = false;
+    private String programText;
 
     /**
      * Create an interpreter for a {@code Simulator} and program combination.
@@ -22,6 +23,7 @@ public class Interpreter {
      */
     public Interpreter(Simulator simulator, String program) {
         this.simulator = simulator;
+        programText = program;
         try {
             this.program = new Parser(program).parse();
         } catch (ParsingException e) {
@@ -38,6 +40,7 @@ public class Interpreter {
             evaluateExpression(program);
         } catch (ExecutionException e) {
             log.throwing("Interpreter", "execute", e);
+            log.info("Exception cause by :" + programText);
             programRaised = true;
         }
 
