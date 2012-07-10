@@ -12,10 +12,10 @@ public final class Value {
     /**
      * The null constant
      */
-    public static Value NULL = new Value(TYPE.NULL, 0);
+    public static final Value NULL_VALUE = new Value(TYPE.NULL, 0);
 
-    private int value;
-    TYPE type;
+    private final int value;
+    private final TYPE type;
 
     /**
      * Create a typed value.
@@ -50,7 +50,7 @@ public final class Value {
      * @return  The static {@code Value} representing {@code null}
      */
     public static Value newNull() {
-        return NULL;
+        return NULL_VALUE;
     }
 
     /**
