@@ -65,7 +65,7 @@ public class Interpreter {
      * @param expr    The {@code Expression} tree's root
      * @return  The resulting value from evaluating {@code expr}
      */
-    private Object evaluateExpression(Expression expr) throws ExecutionException {
+    private Value evaluateExpression(Expression expr) throws ExecutionException {
         String operator = expr.getOperator();
         Object[] operands = expr.getOperands();
         int operandCount = operands.length;
@@ -75,13 +75,13 @@ public class Interpreter {
             return null;
         }
 
-        Object[] results = new Object[operandCount];
+        Value[] results = new Value[operandCount];
         for (int i = 0; i < operandCount; i++) {
-            Object result = null;
+            Value result = null;
             if (operands[i] instanceof Expression) {
                 result = evaluateExpression((Expression) operands[i]);
             } else if (operands[i] instanceof Integer) {
-                result = operands[i];
+                result = Value.newInt((Integer) operands[i]);
             } else if (operands[i] instanceof String) {
                 result = simulator.reference((String) operands[i]);
             }
@@ -97,7 +97,7 @@ public class Interpreter {
      * @return  The value returned by applying {@code operator} on
      * {@code operands}
      */
-    private Object evaluateOperator(String operator, Object[] operands) {
+    private Value evaluateOperator(String operator, Value[] operands) {
         if (operator.compareTo("if") == 0) {
             return evalIf(operands);
         } else if (operator.compareTo("+") == 0) {
@@ -247,13 +247,12 @@ public class Interpreter {
      * @param operands    The values to sum
      * @return  the sum of {@code operands}
      */
-    private int evalAdd(Object[] operands) {
+    private Value evalAdd(Value[] operands) {
         int accum = 0;
-        for (Object obj : operands) {
-            if (obj != null)
-                accum += (Integer) obj;
+        for (Value value : operands) {
+            accum += value.addend();
         }
-        return accum;
+        return Value.newInt(accum);
     }
 
     /**
@@ -261,12 +260,11 @@ public class Interpreter {
      * @param operands    The value array
      * @return  the first value less the second less the third, etc.
      */
-    private int evalSub(Object[] operands) {
-        int accum = (operands[0] != null) ? (Integer) operands[0] : 0;
+    private Value evalSub(Value[] operands) {
+        int accum = operands[0].addend(); // + has 0 as identity
         for (int i = 1; i < operands.length; i++)
-            if (operands[i] != null)
-                accum -= (Integer) operands[i];
-        return accum;
+                accum -= operands[i].multiplicand();
+        return Value.newInt(accum);
     }
 
     /**
@@ -274,13 +272,12 @@ public class Interpreter {
      * @param operands    The values to multiply together
      * @return  The product of {@code operands}
      */
-    private int evalMult(Object[] operands) {
+    private Value evalMult(Value[] operands) {
         int accum = 1;
-        for (Object obj : operands) {
-            if (obj != null)
-                accum *= (Integer) obj;
+        for (Value value : operands) {
+            accum *= value.multiplicand();
         }
-        return accum;
+        return Value.newInt(accum);
     }
 
     /**
@@ -288,16 +285,16 @@ public class Interpreter {
      * @param operands    The values to divide
      * @return  The first value divided by the second divided by the third, etc.
      */
-    private int evalDivSafe(Object[] operands) {
-        int accum = (operands[0] != null) ? (Integer) operands[0] : 0;
+    private Value evalDivSafe(Value[] operands) {
+        int accum = operands[0].multiplicand();
         for (int i = 1; i < operands.length; i++) {
-            int divisor = (operands[i] != null) ? (Integer) operands[i] : 1;
+            int divisor = operands[i].multiplicand();
             if (divisor != 0)
                 accum /= divisor;
             else
                 accum = 0;
         }
-        return accum;
+        return Value.newInt(accum);
     }
 
     /**
@@ -306,15 +303,16 @@ public class Interpreter {
      * @return  The first to the power of the second to the power of the third,
      * etc.
      */
-    private int evalExp(Object[] operands) {
-        int accum = (operands[0] != null) ? (Integer) operands[0] : 0;
+    private Value evalExp(Value[] operands) {
+        int accum = operands[0].addend(); // + has 0 as identity
         for (int i = 1; i < operands.length; i++) {
-            if (operands[i] == null)
-                accum = 0;
+            int divisor = operands[i].multiplicand();
+            if (divisor != 0)
+                Math.pow(accum, divisor);
             else
-                accum = (int) Math.pow(accum, (Integer) operands[i]);
+                accum = 1;
         }
-        return accum;
+        return Value.newInt(accum);
     }
 
     /**
