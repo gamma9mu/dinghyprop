@@ -445,17 +445,21 @@ public final class GeneticProgram {
      * @return  A function or terminal drawn from the same pool as {@code str}.
      */
     private String getMutationReplacement(String str) {
-        str = str.trim();
+        String replacement = str;
         if (functions.contains(str)) {
-            return randomFunction();
+            do {
+                replacement = randomFunction();
+            } while (str.compareTo(replacement) == 0);
+        } else if (comparitors.contains(str)) {
+            do {
+                replacement = randomComparison();
+            } while (str.compareTo(replacement) == 0);
+        } else if (terminals.contains(str)) {
+            do {
+                replacement = randomTerminal();
+            } while (str.compareTo(replacement) == 0);
         }
-        if (comparitors.contains(str)) {
-            return randomComparison();
-        }
-        if (terminals.contains(str)) {
-            return randomTerminal();
-        }
-        return str; // fallback: no mutation
+        return replacement; // fallback: no mutation
     }
 
     /**
