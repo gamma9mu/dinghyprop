@@ -426,15 +426,16 @@ public final class GeneticProgram {
             while (program.charAt(start) == '(') // find start of symbol
                 start++;
             end = start + 1;
-            while ("( )".indexOf(program.charAt(end)) != -1) // find the end
+            while ("( )".indexOf(program.charAt(end)) == -1) // find the end
                 end++;
         } else {
             // Handle simulator functions
             end = program.indexOf(')', start) + 1;
         }
 
+        String replacement = getMutationReplacement(program.substring(start, end));
         String newProgram = program.substring(0, start)
-                + getMutationReplacement(program.substring(start, end + 1))
+                + replacement
                 + program.substring(end + 1);
         return new Program(newProgram);
     }
