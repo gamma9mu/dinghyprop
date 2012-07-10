@@ -109,6 +109,19 @@ public final class Value {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Value))
+            return false;
+        Value other = (Value) obj;
+        return (type == other.type) && (value == other.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode() * value * type.hashCode();
+    }
+
+    @Override
     public String toString() {
         return "(" + type + ") " + value;
     }
