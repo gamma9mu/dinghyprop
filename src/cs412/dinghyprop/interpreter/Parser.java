@@ -73,7 +73,7 @@ public final class Parser {
             } else if (t.type == Token.TYPE.SYMBOL) {
                 obj = t.text;
             } else if (t.type == Token.TYPE.NUMBER) {
-                obj = Integer.parseInt(t.text);
+                obj = Value.newInt(Integer.parseInt(t.text));
             } else {
                 throw new ParsingException("Unknown token type: " + t.type);
             }

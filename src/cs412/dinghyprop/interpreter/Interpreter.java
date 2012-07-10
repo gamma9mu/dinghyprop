@@ -80,10 +80,10 @@ public class Interpreter {
             Value result = null;
             if (operands[i] instanceof Expression) {
                 result = evaluateExpression((Expression) operands[i]);
-            } else if (operands[i] instanceof Integer) {
-                result = Value.newInt((Integer) operands[i]);
+            } else if (operands[i] instanceof Value) {
+                result = (Value) operands[i];
             } else if (operands[i] instanceof String) {
-                result = simulator.reference((String) operands[i]);
+                result = Value.newInt(simulator.reference((String) operands[i]));
             }
             results[i] = result;
         }
