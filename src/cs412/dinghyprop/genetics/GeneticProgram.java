@@ -481,6 +481,13 @@ public final class GeneticProgram {
         return new Program(newProgram);
     }
 
+    /**
+     * Calculate the depth of a program subtree.
+     * @param program    The program text
+     * @param start      The starting index (first paren.)
+     * @param end        The ending index ({@code start}'s matching paren.)
+     * @return  The depth of the lowest terminal under the substring's subtree.
+     */
     private int getTreeDepth(String program, int start, int end) {
         int maxDepth = 1;
         int current = 1;
