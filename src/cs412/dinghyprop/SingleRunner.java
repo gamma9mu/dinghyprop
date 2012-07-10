@@ -11,10 +11,13 @@ import cs412.dinghyprop.simulator.SimulatorRandom;
  * Non-distributed GP runner.
  */
 public class SingleRunner {
-    private static int popSize = 100;
+    private static final int popSize = 100;
     private static final int SIM_DIM = 20;
+    private static final int GOAL = 300;
     private GeneticProgram gp;
     private Simulator simulator;
+    private boolean success = false;
+    private int best;
 
     /**
      * Create a new single-machine GP runner.
@@ -39,6 +42,10 @@ public class SingleRunner {
         }
         System.out.println("Max: " + maxFitness
                 + "\t Avg: " + (fitnesses / popSize));
+        if (maxFitness >= GOAL) {
+            success = true;
+            best = maxFitness;
+        }
         gp.createNextGeneration();
     }
 
@@ -68,6 +75,19 @@ public class SingleRunner {
     }
 
     /**
+     * Print the text of the programs with the best fitness.
+     */
+    private void printBest() {
+        System.out.println("Programs with best fitness [" + best + "]:");
+        for (int i = 0; i < gp.getPopulationSize(); i++) {
+            Program program = gp.getProgram(i);
+            if (program.fitness == best) {
+                System.out.println(program.program + '\n');
+            }
+        }
+    }
+
+    /**
      * Runs a GP population through 1000 generations.
      * @param args    One argument: the tournament size.
      */
@@ -91,6 +111,9 @@ public class SingleRunner {
         for (int iter = 0; iter < 1000; iter++) {
             System.out.println("Iteration: " + iter);
             sr.runGeneration();
+            if (sr.success)
+                break;
         }
+        sr.printBest();
     }
 }
