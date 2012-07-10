@@ -132,15 +132,13 @@ public class Interpreter {
      * @return  {@code true} if the values are strictly decreasing,
      * {@code false} otherwise.
      */
-    private Object evalLess(Object[] operands) {
+    private Value evalLess(Value[] operands) {
         for (int i = 0; i < operands.length - 1; i++) {
-            if (operands[i] == null) return true;
-            if (operands[i+1] == null) return false;
-            if ((Integer) operands[i] >= (Integer) operands[i + 1]) {
-                return false;
+            if (operands[i].addend() >= operands[i + 1].addend()) {
+                return Value.FALSE_VALUE;
             }
         }
-        return true;
+        return Value.TRUE_VALUE;
     }
 
     /**
@@ -149,15 +147,13 @@ public class Interpreter {
      * @return  {@code true} if the values are non-increasing,
      * {@code false} otherwise.
      */
-    private Object evalLessOrEqual(Object[] operands) {
+    private Value evalLessOrEqual(Value[] operands) {
         for (int i = 0; i < operands.length - 1; i++) {
-            if (operands[i] == null) return true;
-            if (operands[i+1] == null) return false;
-            if ((Integer) operands[i] > (Integer) operands[i + 1]) {
-                return false;
+            if (operands[i].addend() > operands[i + 1].addend()) {
+                return Value.FALSE_VALUE;
             }
         }
-        return true;
+        return Value.TRUE_VALUE;
     }
 
     /**
@@ -166,15 +162,13 @@ public class Interpreter {
      * @return  {@code true} if the values are strictly increasing,
      * {@code false} otherwise.
      */
-    private Object evalGreater(Object[] operands) {
+    private Value evalGreater(Value[] operands) {
         for (int i = 0; i < operands.length - 1; i++) {
-            if (operands[i] == null) return false;
-            if (operands[i+1] == null) return true;
-            if ((Integer) operands[i] <= (Integer) operands[i + 1]) {
-                return false;
+            if (operands[i].addend() <= operands[i + 1].addend()) {
+                return Value.FALSE_VALUE;
             }
         }
-        return true;
+        return Value.TRUE_VALUE;
     }
 
     /**
@@ -183,15 +177,13 @@ public class Interpreter {
      * @return  {@code true} if the values are non-decreasing,
      * {@code false} otherwise.
      */
-    private Object evalGreaterOrEqual(Object[] operands) {
+    private Value evalGreaterOrEqual(Value[] operands) {
         for (int i = 0; i < operands.length - 1; i++) {
-            if (operands[i] == null) return false;
-            if (operands[i+1] == null) return true;
-            if ((Integer) operands[i] < (Integer) operands[i + 1]) {
-                return false;
+            if (operands[i].addend() < operands[i + 1].addend()) {
+                return Value.FALSE_VALUE;
             }
         }
-        return true;
+        return Value.TRUE_VALUE;
     }
 
     /**
@@ -199,15 +191,12 @@ public class Interpreter {
      * @param operands    The value array
      * @return  True if all the values are equal, false otherwise.
      */
-    private Object evalEqual(Object[] operands) {
-        if (operands[0] == null) return false;
+    private Value evalEqual(Value[] operands) {
         for (int i = 0; i < operands.length - 1; i++) {
-            if (operands[i+1] == null) return false;
-            if (!operands[i].equals(operands[i + 1])) {
-                return false;
-            }
+            if (!operands[i].equals(operands[i+1]))
+                return Value.FALSE_VALUE;
         }
-        return true;
+        return Value.TRUE_VALUE;
     }
 
     /**
@@ -215,17 +204,15 @@ public class Interpreter {
      * @param operands    The value array
      * @return  {@code true} if all the values are different, {@code false} otherwise.
      */
-    private Object evalNotEqual(Object[] operands) {
+    private Value evalNotEqual(Value[] operands) {
         for (int i = 0; i < operands.length - 1; i++) {
-            if (operands[i] == null) return true;
             for (int j = i + 1; j < operands.length; j++) {
-                if (operands[j] == null) return true;
                 if (operands[i].equals(operands[j])) {
-                    return false;
+                    return Value.FALSE_VALUE;
                 }
             }
         }
-        return true;
+        return Value.TRUE_VALUE;
     }
 
     /**
