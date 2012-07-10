@@ -222,8 +222,8 @@ public class Interpreter {
      * the second argument is returned.  Otherwise, the value of the third
      * argument is returned (or {@code null} if no third argument was provided).
      */
-    private Object evalIf(Object[] operands) {
-        if ((Boolean) operands[0])
+    private Value evalIf(Value[] operands) {
+        if (operands[0].bool())
             return operands[1];
         else
             return (operands.length > 2) ? operands[2] : null;
