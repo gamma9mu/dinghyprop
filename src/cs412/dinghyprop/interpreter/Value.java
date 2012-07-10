@@ -54,6 +54,35 @@ public final class Value {
     }
 
     /**
+     * Get the {@code Value}'s type.
+     * @return  A value from {@code TYPE}
+     */
+    public TYPE getType() {
+        return type;
+    }
+
+    /**
+     * @return  Whether {@code this} is a boolean.
+     */
+    public boolean isBool() {
+        return type == TYPE.BOOLEAN;
+    }
+
+    /**
+     * @return  Whether {@code this} is an integer.
+     */
+    public boolean isInt() {
+        return type == TYPE.INTEGER;
+    }
+
+    /**
+     * @return  Whether {@code this} is null.
+     */
+    public boolean isNull() {
+        return type == TYPE.NULL;
+    }
+
+    /**
      * Return a representation of {@code this} suitable for use as a
      * multiplicand.
      * @return  The value if integer-type or a 1.
