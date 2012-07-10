@@ -10,9 +10,19 @@ public final class Value {
     public static enum TYPE {NULL, INTEGER, BOOLEAN}
 
     /**
-     * The null constant
+     * null constant
      */
     public static final Value NULL_VALUE = new Value(TYPE.NULL, 0);
+
+    /**
+     * true constant
+     */
+    public static final Value TRUE_VALUE = new Value(TYPE.BOOLEAN, 1);
+
+    /**
+     * false constant
+     */
+    public static final Value FALSE_VALUE = new Value(TYPE.BOOLEAN, 0);
 
     private final int value;
     private final TYPE type;
@@ -34,23 +44,6 @@ public final class Value {
      */
     public static Value newInt(int value) {
         return new Value(TYPE.INTEGER, value);
-    }
-
-    /**
-     * Create a new boolean-typed {@code Value}.
-     * @param value    The boolean value
-     * @return  A value storing {@code value}
-     */
-    public static Value newBool(boolean value) {
-        return new Value(TYPE.BOOLEAN, value ? 1 : 0);
-    }
-
-    /**
-     * Return the null {@code Value}.
-     * @return  The static {@code Value} representing {@code null}
-     */
-    public static Value newNull() {
-        return NULL_VALUE;
     }
 
     /**
