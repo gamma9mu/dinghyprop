@@ -72,12 +72,12 @@ public class Interpreter {
 
         if (operandCount == 0) {
             simulator.invoke(operator);
-            return null;
+            return Value.NULL_VALUE;
         }
 
         Value[] results = new Value[operandCount];
         for (int i = 0; i < operandCount; i++) {
-            Value result = null;
+            Value result = Value.NULL_VALUE;
             if (operands[i] instanceof Expression) {
                 result = evaluateExpression((Expression) operands[i]);
             } else if (operands[i] instanceof Value) {
@@ -123,7 +123,7 @@ public class Interpreter {
         } else if (operator.compareTo("!=") == 0) {
             return evalNotEqual(operands);
         }
-        return null;
+        return Value.NULL_VALUE;
     }
 
     /**
@@ -220,13 +220,14 @@ public class Interpreter {
      * @param operands    The boolean, true, and option false statements.
      * @return  If the value of the first argument is {@code true}, he value of
      * the second argument is returned.  Otherwise, the value of the third
-     * argument is returned (or {@code null} if no third argument was provided).
+     * argument is returned (or {@code Value.NULL_VALUE} if no third argument
+     * was provided).
      */
     private Value evalIf(Value[] operands) {
         if (operands[0].bool())
             return operands[1];
         else
-            return (operands.length > 2) ? operands[2] : null;
+            return (operands.length > 2) ? operands[2] : Value.NULL_VALUE;
     }
 
     /**
