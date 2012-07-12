@@ -50,6 +50,7 @@ public class SingleRunner {
         if (maxFitness >= GOAL) {
             success = true;
             best = maxFitness;
+            return;
         }
         gp.createNextGeneration();
     }
