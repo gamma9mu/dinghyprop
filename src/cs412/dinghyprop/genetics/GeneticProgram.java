@@ -419,24 +419,17 @@ public final class GeneticProgram {
     private Program pointMutation() {
         String program = selector.select(population).program;
         int start = randomStartParen(program);
-        int end;
 
-        if (program.indexOf(' ', start) < program.indexOf(')', start)) {
-            // Handle non-simulator functions
-            while (program.charAt(start) == '(') // find start of symbol
-                start++;
-            end = start + 1;
-            while ("( )".indexOf(program.charAt(end)) == -1) // find the end
+        while (program.charAt(start) == '(') // find start of symbol
+            start++;
+        int end = start + 1;
+        while ("( )".indexOf(program.charAt(end)) == -1) // find the end
                 end++;
-        } else {
-            // Handle simulator functions
-            end = program.indexOf(')', start) + 1;
-        }
 
         String replacement = getMutationReplacement(program.substring(start, end));
         String newProgram = program.substring(0, start)
                 + replacement
-                + program.substring(end + 1);
+                + program.substring(end);
         return new Program(newProgram);
     }
 
