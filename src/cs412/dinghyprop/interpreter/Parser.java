@@ -1,14 +1,13 @@
 package cs412.dinghyprop.interpreter;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * A (very) recursive descent parser for the generated programs.
  */
 public final class Parser {
     private boolean originator;
-    private Lexer lex = null;
+    private StreamTokenizer lexer;
 
     /**
      * Create a program parser.
@@ -17,7 +16,7 @@ public final class Parser {
      */
     public Parser(InputStream inputStream) throws ParsingException {
         originator = true;
-        lex = new Lexer(inputStream);
+        lexer = createLexer(new BufferedReader(new InputStreamReader(inputStream)));
         checkStart();
     }
 
@@ -28,8 +27,26 @@ public final class Parser {
      */
     public Parser(String inputString) throws ParsingException {
         originator = true;
-        lex = new Lexer(new ByteArrayInputStream(inputString.getBytes()));
+        Reader r = new BufferedReader(new InputStreamReader(
+                new ByteArrayInputStream(inputString.getBytes())));
+        lexer = createLexer(r);
         checkStart();
+    }
+
+    /**
+     * Setup the lexical analyzer.
+     * @param reader    The input stream reader
+     * @return  A suitable lexer
+     */
+    private StreamTokenizer createLexer(Reader reader) {
+        StreamTokenizer tokenizer = new StreamTokenizer(reader);
+
+        tokenizer.resetSyntax();
+        tokenizer.eolIsSignificant(false);
+        tokenizer.whitespaceChars(0, 32);
+        tokenizer.wordChars(42, 122);
+
+        return tokenizer;
     }
 
     /**
@@ -37,8 +54,12 @@ public final class Parser {
      * @throws ParsingException if this assumption fails
      */
     private void checkStart() throws ParsingException {
-        Token t = lex.nextToken();
-        if (t.type != Token.TYPE.PAREN_OPEN) {
+        try {
+            lexer.nextToken();
+        } catch (IOException e) {
+            throw new ParsingException("Error reading program text.", e);
+        }
+        if (lexer.ttype != '(') {
             throw new ParsingException("Program does not begin with '('.");
         }
     }
@@ -47,9 +68,9 @@ public final class Parser {
      * Internal constructor to maintain lexer state.
      * @param lexer    The current lexer.
      */
-    private Parser(Lexer lexer) {
+    private Parser(StreamTokenizer lexer) {
         originator = false;
-        lex = lexer;
+        this.lexer = lexer;
     }
 
     /**
@@ -59,40 +80,54 @@ public final class Parser {
      * @throws ParsingException if a parsing error occurs.
      */
     public Expression parse() throws ParsingException {
-        Token first = lex.nextToken();
-        if (first.type != Token.TYPE.SYMBOL) {
-            throw new ParsingException("Operator must be a symbol.");
-        }
-
-        Expression expr = new Expression(first.text);
-        Token t = lex.nextToken();
-        while (t.type != Token.TYPE.PAREN_CLOSE && t.type != Token.TYPE.EOF) {
-            Object obj;
-            if (t.type == Token.TYPE.PAREN_OPEN) {
-                obj = new Parser(lex).parse();
-            } else if (t.type == Token.TYPE.SYMBOL) {
-                obj = t.text;
-            } else if (t.type == Token.TYPE.NUMBER) {
-                obj = Value.newInt(Integer.parseInt(t.text));
-            } else {
-                throw new ParsingException("Unknown token type: " + t.type);
+        // Trap reader exceptions
+        try {
+            // Test for a proper start.
+            if (lexer.nextToken() != StreamTokenizer.TT_WORD) {
+                System.err.println("type: " + lexer.ttype);
+                throw new ParsingException("Operator must be a symbol.");
             }
-            expr.addOperand(obj);
-            t = lex.nextToken();
-        }
 
-        if (t.type == Token.TYPE.EOF) {
-            throw new ParsingException("Unexpected end of input.");
-        }
+            Expression expr = new Expression(lexer.sval);
 
-        if (originator) {
-            Token last = lex.nextToken();
-            if (last.type != Token.TYPE.EOF) {
-                throw new ParsingException("Expected end of input.  Got: " + last.type);
+            int t = lexer.nextToken();
+            while (t != ')' && t != StreamTokenizer.TT_EOF) {
+                Object obj;
+                if (t == '(') { // descend into a sub-expression
+                    obj = new Parser(lexer).parse();
+                } else if (t == StreamTokenizer.TT_WORD) {
+                    try {
+                        // test for a number
+                        obj = Value.newInt(Integer.parseInt(lexer.sval));
+                    } catch (NumberFormatException ignored) {
+                        // fall back on a symbol
+                        obj = lexer.sval;
+                    }
+                } else {
+                    throw new ParsingException("Unknown token type: " + lexer.ttype);
+                }
+                expr.addOperand(obj);
+                t = lexer.nextToken();
             }
-        }
 
-        return expr;
+            // Ensure the S-exp is terminated
+            if (t != ')') {
+                throw new ParsingException("Unexpected end of input.");
+            }
+
+            // If this is the original parser, ensure the input has ended
+            if (originator) {
+                int last = lexer.nextToken();
+                if (last != StreamTokenizer.TT_EOF) {
+                    throw new ParsingException("Expected end of input.  Got: " + last);
+                }
+            }
+
+            return expr;
+        } catch (IOException e) {
+            // Wrap reader exceptions in ParsingException
+            throw new ParsingException("Error reading program text.", e);
+        }
     }
 
     /**
@@ -107,7 +142,11 @@ public final class Parser {
             "(hey der \n(broder) 6)",
             "(hey der\n(broder)6)",
             "(hey der \r\n(broder)\n6)",
-            "(hey der\r\n(broder)\r\n6)"
+            "(hey der\r\n(broder)\r\n6)",
+                "(+ (-" +
+                        "(* 1 2)" +
+                        "(/ 1 2))" +
+                    "(^ 2 3))"
         };
 
         for (String str : exprs) {
