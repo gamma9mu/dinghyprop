@@ -3,6 +3,7 @@ package cs412.dinghyprop.interpreter;
 import cs412.dinghyprop.simulator.ExecutionException;
 import cs412.dinghyprop.simulator.Simulator;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -34,11 +35,10 @@ public class Interpreter {
         try {
             evaluateExpression(program);
         } catch (ExecutionException e) {
-            log.throwing("Interpreter", "execute", e);
-            log.info("Exception cause by :" + programText);
+            log.log(Level.INFO, "execute throwing:", e);
+            log.info("Exception caused by :" + programText);
             programRaised = true;
         }
-
     }
 
     /**
