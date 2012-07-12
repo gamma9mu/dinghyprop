@@ -314,6 +314,6 @@ public class Interpreter {
      * @return  Whether execution can continue
      */
     public boolean canContinue() {
-        return simulator.canContinue();
+        return simulator.canContinue() && ! programRaised;
     }
 }
