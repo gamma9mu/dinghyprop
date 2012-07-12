@@ -46,7 +46,7 @@ public class SingleRunner {
             maxFitness = (fitness > maxFitness) ? fitness : maxFitness;
         }
         System.out.println("Max: " + maxFitness
-                + "\t Avg: " + (fitnesses / popSize));
+                + "\tAvg: " + (fitnesses / popSize));
         if (maxFitness >= GOAL) {
             success = true;
             best = maxFitness;
@@ -94,8 +94,8 @@ public class SingleRunner {
         System.out.println("Programs with best fitness [" + best + "]:");
         for (int i = 0; i < gp.getPopulationSize(); i++) {
             Program program = gp.getProgram(i);
-            if (program.fitness == best) {
-                System.out.println(program.program + '\n');
+            if (program.fitness >= best) {
+                System.out.println(program.toString() + '\n');
             }
         }
     }
@@ -122,7 +122,7 @@ public class SingleRunner {
         SingleRunner sr = new SingleRunner(gp);
 
         for (int iter = 0; iter < 1000; iter++) {
-            System.out.println("Iteration: " + iter);
+            System.out.print("Iteration: " + iter + '\t');
             sr.runGeneration();
             if (sr.success)
                 break;
