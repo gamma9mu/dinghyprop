@@ -221,9 +221,6 @@ public final class GeneticProgram {
      * @return  The individual at the requested position
      */
     public Program getProgram(int index) {
-        if (index < 0 || index > populationSize) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
         return population[index];
     }
 
@@ -268,6 +265,15 @@ public final class GeneticProgram {
     public void setMutationRate(double mutationRate) {
         this.mutationRate = mutationRate;
         ensureValidRates();
+    }
+
+    /**
+     * Set the fitness value of a given program.
+     * @param programIndex    The index into the population of the given program
+     * @param fitness         The fitness value to assign to the program
+     */
+    public void setProgramFitness(int programIndex, int fitness) {
+        population[programIndex].fitness = fitness;
     }
 
     /**

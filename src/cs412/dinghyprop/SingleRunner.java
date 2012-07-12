@@ -42,6 +42,8 @@ public class SingleRunner {
         for (int i = 0; i < popSize; i++) {
             Program program = gp.getProgram(i);
             int fitness = evaluateProgram(program);
+            gp.setProgramFitness(i, fitness);
+
             fitnesses += fitness;
             maxFitness = (fitness > maxFitness) ? fitness : maxFitness;
         }
@@ -78,7 +80,6 @@ public class SingleRunner {
             log.log(Level.WARNING, program.toString());
         }
 
-        program.fitness = fitness;
         return fitness;
     }
 
@@ -94,7 +95,7 @@ public class SingleRunner {
         System.out.println("Programs with best fitness [" + best + "]:");
         for (int i = 0; i < gp.getPopulationSize(); i++) {
             Program program = gp.getProgram(i);
-            if (program.fitness >= best) {
+            if (program.getFitness() >= best) {
                 System.out.println(program.toString() + '\n');
             }
         }
