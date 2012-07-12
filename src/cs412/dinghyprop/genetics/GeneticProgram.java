@@ -464,13 +464,19 @@ public final class GeneticProgram {
     private Program subtreeMutation() {
         String program = selector.select(population).program;
         int start = randomStartParen(program);
-        int end = findMatchingParen(program, start);
+        int end = findMatchingParen(program, start) + 1;
         int depth = getTreeDepth(program, start, end);
         depth = (depth > 1) ? depth : 2; // new tree's minimum depth = 2
 
-        String newProgram = program.substring(0, start)
-                + grow(depth)
-                + program.substring(end + 1);
+        String replacement = grow(depth);
+        String newProgram;
+        if (start > 0)
+            newProgram = program.substring(0, start)
+                + replacement
+                + program.substring(end);
+        else
+            newProgram = replacement;
+
         return new Program(newProgram);
     }
 
