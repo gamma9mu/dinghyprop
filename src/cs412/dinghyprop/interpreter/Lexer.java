@@ -11,6 +11,7 @@ public final class Lexer {
     private static Logger log = Logger.getLogger("Lexer");
     private static final Pattern NUMBER = Pattern.compile("\\d+");
     private BufferedReader in;
+    StreamTokenizer tokenizer;
     private String lastLine = null;
     private String line = null;
     private int length = 0;
@@ -23,6 +24,21 @@ public final class Lexer {
      */
     public Lexer(InputStream inputStream) {
         in = new BufferedReader(new InputStreamReader(inputStream));
+        tokenizer = new StreamTokenizer(in);
+        tokenizer.eolIsSignificant(false);
+        tokenizer.parseNumbers();
+        tokenizer.ordinaryChar('(');
+        tokenizer.ordinaryChar(')');
+
+        try {
+            tokenizer.nextToken();
+            while (tokenizer.ttype != StreamTokenizer.TT_EOF) {
+                System.out.println(tokenizer.ttype + " " + tokenizer.sval
+                    + ' ' + tokenizer.nval);
+                tokenizer.nextToken();
+            }
+        } catch (IOException ignored) { }
+        System.out.println();
         getNextLine();
     }
 
