@@ -4,6 +4,7 @@ import cs412.dinghyprop.genetics.GeneticProgram;
 import cs412.dinghyprop.genetics.Program;
 import cs412.dinghyprop.genetics.TournamentSelector;
 import cs412.dinghyprop.interpreter.Interpreter;
+import cs412.dinghyprop.interpreter.ParsingException;
 import cs412.dinghyprop.simulator.Simulator;
 import cs412.dinghyprop.simulator.SimulatorRandom;
 
@@ -62,10 +63,14 @@ public class SingleRunner {
             return 0;
         }
 
-        Interpreter interpreter = new Interpreter(sim, program.program);
-        interpreter.run(100);
-        int fitness = interpreter.getFitness();
-        program.fitness = fitness;
+        int fitness = 0;
+        try {
+            Interpreter interpreter = new Interpreter(sim, program.program);
+            interpreter.run(100);
+            fitness = interpreter.getFitness();
+            program.fitness = fitness;
+        } catch (ParsingException ignored) { }
+
         return fitness;
     }
 

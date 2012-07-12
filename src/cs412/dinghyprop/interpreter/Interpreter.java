@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class Interpreter {
     private static Logger log = Logger.getLogger("Interpreter");
     private Simulator simulator;
-    private Expression program = null;
+    private Expression program;
     private boolean programRaised = false;
     private String programText;
 
@@ -21,15 +21,10 @@ public class Interpreter {
      *                     interpreter
      * @param program      The program to execute
      */
-    public Interpreter(Simulator simulator, String program) {
+    public Interpreter(Simulator simulator, String program) throws ParsingException {
         this.simulator = simulator;
         programText = program;
-        try {
-            this.program = new Parser(program).parse();
-        } catch (ParsingException e) {
-            throw new IllegalArgumentException("Program does not compile:\n"
-                    + e.getLocalizedMessage() + '\n' + program + '\n');
-        }
+        this.program = new Parser(program).parse();
     }
 
     /**
