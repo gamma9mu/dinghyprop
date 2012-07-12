@@ -8,10 +8,14 @@ import cs412.dinghyprop.interpreter.ParsingException;
 import cs412.dinghyprop.simulator.Simulator;
 import cs412.dinghyprop.simulator.SimulatorRandom;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Non-distributed GP runner.
  */
 public class SingleRunner {
+    private static Logger log = Logger.getLogger("SingleRunner");
     private static final int popSize = 100;
     private static final int SIM_DIM = 20;
     private static final int GOAL = 300;
@@ -68,9 +72,12 @@ public class SingleRunner {
             Interpreter interpreter = new Interpreter(sim, program.program);
             interpreter.run(100);
             fitness = interpreter.getFitness();
-            program.fitness = fitness;
-        } catch (ParsingException ignored) { }
+        } catch (ParsingException e) {
+            log.log(Level.WARNING, "Program failed to compile or run.", e);
+            log.log(Level.WARNING, program.toString());
+        }
 
+        program.fitness = fitness;
         return fitness;
     }
 
