@@ -44,6 +44,7 @@ public final class Parser {
         tokenizer.resetSyntax();
         tokenizer.eolIsSignificant(false);
         tokenizer.whitespaceChars(0, 32);
+        tokenizer.wordChars(33, 33);
         tokenizer.wordChars(42, 122);
 
         return tokenizer;
