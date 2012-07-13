@@ -4,6 +4,7 @@
         <classes>
             <class name="cs412.dinghyprop.interpreter.ValueTest"/>
             <class name="cs412.dinghyprop.interpreter.ParserTest"/>
+            <class name="cs412.dinghyprop.interpreter.ExpressionTest"/>
         </classes>
     </test>
 </suite>
