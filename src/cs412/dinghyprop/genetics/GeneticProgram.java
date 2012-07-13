@@ -553,19 +553,4 @@ public final class GeneticProgram {
             // sanity achieved
         }
     }
-
-    /**
-     * Test main
-     * @param args    ignored
-     */
-    public static void main(String[] args) {
-        GeneticProgram gp = new GeneticProgram(2, INIT_POP_METHOD.FILL, 5);
-        for (Program ind : gp.population) {
-            System.out.println(ind);
-        }
-
-        System.out.println("RX: " + gp.reproduce().program);
-        System.out.println("MX: " + gp.pointMutation().program);
-        System.out.println("CX: " + gp.crossover().program);
-    }
 }

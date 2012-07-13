@@ -1,0 +1,18 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="DinghyProp">
+    <test name="InterpreterPackageTest">
+        <classes>
+            <class name="cs412.dinghyprop.interpreter.ExpressionTest"/>
+            <class name="cs412.dinghyprop.interpreter.ParserTest"/>
+            <class name="cs412.dinghyprop.interpreter.ValueTest"/>
+        </classes>
+    </test>
+
+    <test name="GeneticsPackageTest">
+        <classes>
+            <class name="cs412.dinghyprop.genetics.ProgramTest"/>
+            <class name="cs412.dinghyprop.genetics.TournamentSelectorTest"/>
+        </classes>
+    </test>
+
+</suite>
