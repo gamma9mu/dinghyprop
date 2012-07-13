@@ -118,7 +118,9 @@ public final class Value {
 
     @Override
     public int hashCode() {
-        return super.hashCode() * value * type.hashCode();
+        if (type == TYPE.INTEGER)
+            return value * type.hashCode();
+        return super.hashCode() * ((value == 0) ? 1 : value) * type.hashCode();
     }
 
     @Override
