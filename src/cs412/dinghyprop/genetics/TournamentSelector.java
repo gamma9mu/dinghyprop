@@ -5,7 +5,7 @@ import java.security.SecureRandom;
 /**
  * Performs n-size tournament selection.
  */
-public class TournamentSelector implements Selector {
+public final class TournamentSelector implements Selector {
     private int tournamentSize;
     private SecureRandom rand = new SecureRandom();
 
