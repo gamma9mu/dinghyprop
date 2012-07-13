@@ -22,7 +22,7 @@ public class SingleRunner {
     private GeneticProgram gp;
     private Simulator simulator;
     private boolean success = false;
-    private int best;
+    private int best = Integer.MIN_VALUE;
 
     /**
      * Create a new single-machine GP runner.
@@ -31,6 +31,19 @@ public class SingleRunner {
     public SingleRunner(GeneticProgram gp) {
         this.gp = gp;
         simulator = new SimulatorRandom(SIM_DIM, SIM_DIM, 10).getSimulator();
+    }
+
+    /**
+     * Run the genetic program through 1000 generations or until success.
+     */
+    private void run() {
+        for (int iter = 0; iter < 1000; iter++) {
+            System.out.print("Generation: " + iter + '\t');
+            runGeneration();
+            if (success)
+                break;
+            gp.createNextGeneration();
+        }
     }
 
     /**
@@ -52,9 +65,7 @@ public class SingleRunner {
         if (maxFitness >= GOAL) {
             success = true;
             best = maxFitness;
-            return;
         }
-        gp.createNextGeneration();
     }
 
     /**
@@ -83,11 +94,6 @@ public class SingleRunner {
         return fitness;
     }
 
-    @Override
-    public String toString() {
-        return "SingleRunner{gp=" + gp + '}';
-    }
-
     /**
      * Print the text of the programs with the best fitness.
      */
@@ -101,6 +107,11 @@ public class SingleRunner {
         }
     }
 
+    @Override
+    public String toString() {
+        return "SingleRunner{gp=" + gp + '}';
+    }
+
     /**
      * Runs a GP population through 1000 generations.
      * @param args    One argument: the tournament size.
@@ -108,26 +119,22 @@ public class SingleRunner {
     public static void main(String[] args) {
         GeneticProgram gp = new GeneticProgram(popSize,
                 GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 10);
+
+        int tournamentSize = 4;
         if (args.length == 1) {
             try {
-                int tournamentSize = Integer.parseInt(args[0]);
-                gp.setSelector(new TournamentSelector(tournamentSize));
+                tournamentSize = Integer.parseInt(args[0]);
             } catch (NumberFormatException nfe) {
                 System.err.println(nfe.getLocalizedMessage());
                 System.err.println("Usage: SingleRunner [tournament_size]");
                 System.exit(0);
             }
-        } else {
-            gp.setSelector(new TournamentSelector(4));
         }
-        SingleRunner sr = new SingleRunner(gp);
 
-        for (int iter = 0; iter < 1000; iter++) {
-            System.out.print("Iteration: " + iter + '\t');
-            sr.runGeneration();
-            if (sr.success)
-                break;
-        }
+        gp.setSelector(new TournamentSelector(tournamentSize));
+
+        SingleRunner sr = new SingleRunner(gp);
+        sr.run();
         sr.printBest();
     }
 }
