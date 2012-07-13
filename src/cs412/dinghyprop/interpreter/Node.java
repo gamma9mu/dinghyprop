@@ -34,6 +34,10 @@ final class Node extends JComponent {
         }
     }
 
+    /**
+     * Compute the size necessary to properly display this (sub)tree.
+     * @param g    The {@code Graphics} object that would draw this.
+     */
     public void computeSize(Graphics g) {
         log.entering("Node", "computeSize");
 
