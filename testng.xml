@@ -1,8 +1,9 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite>
-    <test name="ValueTest">
+<suite name="DinghyProp">
+    <test name="InterpreterPackageTest">
         <classes>
             <class name="cs412.dinghyprop.interpreter.ValueTest"/>
+            <class name="cs412.dinghyprop.interpreter.ParserTest"/>
         </classes>
     </test>
 </suite>
