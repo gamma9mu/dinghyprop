@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite>
+    <test name="ValueTest">
+        <classes>
+            <class name="cs412.dinghyprop.interpreter.ValueTest"/>
+        </classes>
+    </test>
+</suite>
