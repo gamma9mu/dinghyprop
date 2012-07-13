@@ -67,4 +67,21 @@ public final class Expression {
         sb.append(')');
         return sb.toString();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Expression))
+            return false;
+
+        Expression other = (Expression) obj;
+        return operator.equals(other.operator)
+                && operands.size() == other.operands.size()
+                && operands.equals(other.operands);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode() * operator.hashCode() * operands.hashCode();
+    }
 }
