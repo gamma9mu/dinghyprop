@@ -278,7 +278,14 @@ public class Dinghy extends Point{
 	}
 	
 	private int getSlope(int[] obstaclePosition, int[] dinghyPosition) {
-		return (obstaclePosition[1] - dinghyPosition[1]) / (obstaclePosition[0] - dinghyPosition[0]);
+		int result = 0;
+		int numerator = obstaclePosition[1] - dinghyPosition[1];
+		int denominator = obstaclePosition[0] - dinghyPosition[0];
+		if(denominator != 0) {
+			result = numerator / denominator;
+		}
+		
+		return result;
 	}
 	
 	private boolean checkSlope(int[] obstaclePosition, int[] dinghyPosition, int expectedValue) {
