@@ -44,6 +44,6 @@ public final class TournamentSelector implements Selector {
 
     @Override
     public String toString() {
-        return "TournamentSelector{tournamentSize=" + tournamentSize + '}';
+        return "TournamentSelector(" + tournamentSize + ')';
     }
 }
