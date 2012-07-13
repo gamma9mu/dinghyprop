@@ -327,9 +327,7 @@ public final class GeneticProgram {
      * @param out    The {@code PrintWriter} to save the population to
      */
     public void savePopulation(PrintWriter out) {
-        for (Program program : population) {
-            out.println(program);
-        }
+        out.println(toString());
     }
 
     /**
@@ -552,5 +550,24 @@ public final class GeneticProgram {
         } else {
             // sanity achieved
         }
+    }
+
+    @Override
+    public String toString() {
+        // # <pop_size> <selector> <x-over_rate> <mutation_rate> <reproduction_rate>
+        StringBuilder sb = new StringBuilder("# ");
+        sb.append(String.format("%d ", populationSize));
+        sb.append(selector.toString());
+        sb.append(' ');
+        sb.append(String.format("%01.4f ", crossoverRate));
+        sb.append(String.format("%01.4f ", mutationRate));
+        sb.append(String.format("%01.4f\n", reproductionRate));
+
+        for (Program program : population) {
+            sb.append(program.toString());
+            sb.append(' ');
+        }
+
+        return sb.toString();
     }
 }
