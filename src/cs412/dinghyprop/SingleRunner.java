@@ -8,6 +8,10 @@ import cs412.dinghyprop.interpreter.ParsingException;
 import cs412.dinghyprop.simulator.Simulator;
 import cs412.dinghyprop.simulator.SimulatorRandom;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +27,7 @@ public class SingleRunner {
     private Simulator simulator;
     private boolean success = false;
     private int best = Integer.MIN_VALUE;
+    private File checkpointDir;
 
     /**
      * Create a new single-machine GP runner.
@@ -31,6 +36,12 @@ public class SingleRunner {
     public SingleRunner(GeneticProgram gp) {
         this.gp = gp;
         simulator = new SimulatorRandom(SIM_DIM, SIM_DIM, 10).getSimulator();
+        String checkpointDirName = new Date().toString().replace(' ', '_');
+        checkpointDir = new File(checkpointDirName);
+        if (!checkpointDir.mkdir()) {
+            log.warning("Could not create checkpoint directory: "
+                    + checkpointDirName + "\nCheckpointing disabled.");
+        }
     }
 
     /**
@@ -42,7 +53,30 @@ public class SingleRunner {
             runGeneration();
             if (success)
                 break;
+            if (iter % 5 == 0)
+                dump(iter);
             gp.createNextGeneration();
+        }
+        dump(-1);
+    }
+
+    /**
+     * Write the current generation to a file.
+     * @param generationIndex    The generation number or -1 for final
+     *                           generation.
+     */
+    private void dump(int generationIndex) {
+        File file;
+        if (generationIndex == -1)
+            file = new File(checkpointDir, "final_generation");
+        else
+            file = new File(checkpointDir, "gen_"
+                + String.format("%04d", generationIndex));
+
+        try {
+            gp.savePopulation(new FileOutputStream(file));
+        } catch (FileNotFoundException e) {
+            log.log(Level.WARNING, "Exception in dump", e);
         }
     }
 
