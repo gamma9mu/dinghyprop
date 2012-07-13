@@ -246,7 +246,7 @@ public class Interpreter {
     private Value evalSub(Value[] operands) {
         int accum = operands[0].addend(); // + has 0 as identity
         for (int i = 1; i < operands.length; i++)
-                accum -= operands[i].multiplicand();
+            accum -= operands[i].addend();
         return Value.newInt(accum);
     }
 
