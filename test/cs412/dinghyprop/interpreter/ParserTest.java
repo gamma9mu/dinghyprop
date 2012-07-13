@@ -1,6 +1,6 @@
 package cs412.dinghyprop.interpreter;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -63,6 +63,6 @@ public class ParserTest {
         } catch (ParsingException e) {
             return;
         }
-        Assert.assertTrue("Parser should fail on 'exprThrows'.", false);
+        Assert.fail("Parser should fail on 'exprThrows'.");
     }
 }
