@@ -130,31 +130,4 @@ public final class Parser {
             throw new ParsingException("Error reading program text.", e);
         }
     }
-
-    /**
-     * Testing main
-     * @param args    ignored
-     */
-    @SuppressWarnings({"HardcodedLineSeparator", "SuppressionAnnotation"})
-    public static void main(String[] args) throws ParsingException {
-        String[] exprs = {
-            "(hey der (broder) 6)",
-            "(hey der(broder) 6)",
-            "(hey der \n(broder) 6)",
-            "(hey der\n(broder)6)",
-            "(hey der \r\n(broder)\n6)",
-            "(hey der\r\n(broder)\r\n6)",
-                "(+ (-" +
-                        "(* 1 2)" +
-                        "(/ 1 2))" +
-                    "(^ 2 3))"
-        };
-
-        for (String str : exprs) {
-            System.out.println(" Original: " + str);
-            Expression expr = new Parser(new ByteArrayInputStream(str.getBytes())).parse();
-            System.out.println("From expr: " + expr);
-            System.out.println();
-        }
-    }
 }
