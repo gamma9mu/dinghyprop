@@ -9,6 +9,13 @@ public final class TournamentSelector implements Selector {
     private int tournamentSize;
     private SecureRandom rand = new SecureRandom();
 
+    static {
+        try {
+            CheckpointLoader.registerSelector("TournamentSelector",
+                    TournamentSelector.class.getConstructor(new Class[]{Integer.TYPE}));
+        } catch (NoSuchMethodException e) { e.printStackTrace(); } // should not happen
+    }
+
     /**
      * Create a new tournament selector for a given tournament size.
      * @param tournamentSize    The size of the tournaments (minimum: 2)
