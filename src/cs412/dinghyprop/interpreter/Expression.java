@@ -82,6 +82,6 @@ public final class Expression {
 
     @Override
     public int hashCode() {
-        return super.hashCode() * operator.hashCode() * operands.hashCode();
+        return operator.hashCode() * operands.hashCode();
     }
 }
