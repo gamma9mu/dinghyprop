@@ -23,8 +23,8 @@ public class ValueTest {
 
     @Test
     public void testNewInt() throws Exception {
-        int[] values = {0, 1, 2, 3, 10, 100, -1, -2, -3, -10, -100};
-        for (int value : values) {
+        int[] vals = {0, 1, 2, 3, 10, 100, -1, -2, -3, -10, -100};
+        for (int value : vals) {
             Value v = Value.newInt(value);
             Assert.assertEquals(v.addend(), value);
             Assert.assertEquals(v.multiplicand(), value);
