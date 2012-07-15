@@ -1,9 +1,6 @@
 package cs412.dinghyprop.genetics;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -94,6 +91,25 @@ public final class CheckpointLoader {
         directory = new File(checkpointDirectory);
     }
 
+    /**
+     * Instantiate the last check-pointed generation.
+     * @return  A {@code GeneticProgram} from this loaders directory
+     */
+    public GeneticProgram instantiate() {
+        if (checkFinished()) return null;
+
+        Program[] programs;
+        try {
+            in = new BufferedReader(new FileReader(getLastGenerationFile()));
+            readDataLine();
+            programs = getPrograms();
+        } catch (FileNotFoundException e) {
+            return null;
+        } catch (IOException e) {
+            return null;
+        }
+
+        return new GeneticProgram(programs, crossOver, mutation);
     }
 
     /**
