@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -109,7 +110,36 @@ public final class CheckpointLoader {
             return null;
         }
 
-        return new GeneticProgram(programs, crossOver, mutation);
+        GeneticProgram gp = new GeneticProgram(programs, crossOver, mutation);
+        Selector sel = createSelector();
+        if (sel != null)
+            gp.setSelector(sel);
+        return gp;
+    }
+
+    /**
+     * Instantiate the selector described by the selector field in the GP's
+     * data line's selector field.
+     * @return A {@code Selector} or null
+     */
+    private Selector createSelector() {
+        Pattern splitter = Pattern.compile("(\\w+)\\((\\d*)\\)");
+        Matcher matcher = splitter.matcher(selector);
+        if (matcher.matches()) {
+            String name = matcher.group(1);
+            String argument = matcher.group(2);
+            try {
+                if (argument == null || argument.trim().compareTo("") == 0) {
+                    return instantiateSelector(name.trim());
+                } else {
+                    return instantiateSelector(name.trim());
+                }
+            } catch (ReflectiveOperationException e) {
+                return null;
+            }
+
+        }
+        return null;
     }
 
     /**
