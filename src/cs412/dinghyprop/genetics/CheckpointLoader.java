@@ -21,6 +21,7 @@ public final class CheckpointLoader {
     private static Map<String, Constructor> selectors =
             new HashMap<String, Constructor>(1);
 
+    private File directory;
     private BufferedReader in;
 
     private int popSize;
@@ -60,6 +61,22 @@ public final class CheckpointLoader {
             return (Selector) ctor.newInstance();
         }
         return (Selector) ctor.newInstance(argument);
+    }
+
+    /**
+     * Create a new checkpoint loader from a checkpoint directory.
+     * @param checkpointDirectory    The checkpoint directory
+     */
+    public CheckpointLoader(File checkpointDirectory) {
+        directory = checkpointDirectory;
+    }
+
+    /**
+     * Create a new checkpoint loader from a checkpoint directory.
+     * @param checkpointDirectory    The path to the checkpoint directory
+     */
+    public CheckpointLoader(String checkpointDirectory) {
+        directory = new File(checkpointDirectory);
     }
 
     /**
