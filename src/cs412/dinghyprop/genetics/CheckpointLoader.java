@@ -132,7 +132,8 @@ public final class CheckpointLoader {
                 if (argument == null || argument.trim().compareTo("") == 0) {
                     return instantiateSelector(name.trim());
                 } else {
-                    return instantiateSelector(name.trim());
+                    return instantiateSelector(name.trim(),
+                            Integer.parseInt(argument));
                 }
             } catch (ReflectiveOperationException e) {
                 return null;
@@ -159,6 +160,7 @@ public final class CheckpointLoader {
 
         String[] fields = WHITESPACE.split(input.trim());
         assert (fields[0].compareTo("#") != 0);
+
         popSize = Integer.parseInt(fields[1]);
         selector = fields[2];
         crossOver = Double.parseDouble(fields[3]);
