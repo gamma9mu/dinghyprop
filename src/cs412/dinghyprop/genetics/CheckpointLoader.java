@@ -20,13 +20,12 @@ public final class CheckpointLoader {
             new HashMap<String, Constructor>(1);
 
     private File directory;
-    private BufferedReader in;
+    private BufferedReader in = null;
 
-    private int popSize;
-    private String selector;
-    private double crossOver;
-    private double mutation;
-    private double reproduction;
+    private int popSize = 0;
+    private String selector = null;
+    private double crossOver = 0.0;
+    private double mutation = 0.0;
 
     /**
      * Register a constructor for a class that implements the {@code Selector}
@@ -165,7 +164,6 @@ public final class CheckpointLoader {
         selector = fields[2];
         crossOver = Double.parseDouble(fields[3]);
         mutation = Double.parseDouble(fields[4]);
-        reproduction = Double.parseDouble(fields[5]);
     }
 
     /**
