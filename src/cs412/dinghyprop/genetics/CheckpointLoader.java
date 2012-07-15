@@ -141,22 +141,20 @@ public final class CheckpointLoader {
     /**
      * Check the checkpoint directory for a file listing the final evolved
      * generation
-     * @param cpDir    The checkpoint directory
      * @return  Whether the GP run completed
      */
-    private boolean checkFinished(File cpDir) {
-        File finalGP = new File(cpDir, "final_generation");
+    private boolean checkFinished() {
+        File finalGP = new File(directory, "final_generation");
         return finalGP.exists();
     }
 
     /**
      * Find the last file whose name begins with "gen_" when the files are
      * sorted alphabetically.
-     * @param cpDir    The directory to search in
      * @return  The matched file or null
      */
-    private File getLastGenerationFile(File cpDir) {
-        File[] genFiles = cpDir.listFiles(new FilenameFilter() {
+    private File getLastGenerationFile() {
+        File[] genFiles = directory.listFiles(new FilenameFilter() {
             @Override public boolean accept(File dir, String name) {
                 return name.startsWith("gen_");
             }
