@@ -1,6 +1,7 @@
 package cs412.dinghyprop.genetics;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -95,5 +96,16 @@ public final class CheckpointLoader {
         crossOver = Double.parseDouble(fields[3]);
         mutation = Double.parseDouble(fields[4]);
         reproduction = Double.parseDouble(fields[5]);
+    }
+
+    /**
+     * Check the checkpoint directory for a file listing the final evolved
+     * generation
+     * @param cpDir    The checkpoint directory
+     * @return  Whether the GP run completed
+     */
+    private boolean checkFinished(File cpDir) {
+        File finalGP = new File(cpDir, "final_generation");
+        return finalGP.exists();
     }
 }

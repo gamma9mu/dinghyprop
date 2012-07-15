@@ -51,13 +51,14 @@ public class SingleRunner {
         for (int iter = 0; iter < 1000; iter++) {
             System.out.print("Generation: " + iter + '\t');
             runGeneration();
-            if (success)
-                break;
             if (iter % 5 == 0)
                 dump(iter);
+            if (success)
+                break;
             gp.createNextGeneration();
         }
-        dump(-1);
+        if (success)
+            dump(-1);
     }
 
     /**
