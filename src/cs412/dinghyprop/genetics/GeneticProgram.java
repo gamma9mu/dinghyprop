@@ -576,9 +576,9 @@ public final class GeneticProgram {
         sb.append(String.format("%01.4f ", mutationRate));
         sb.append(String.format("%01.4f\n", reproductionRate));
 
-        for (Program program : population) {
-            sb.append(program.toString());
-            sb.append(' ');
+        for (int i = 0; i < populationSize; i++) {
+            sb.append(population[i].toString());
+            sb.append('\n');
         }
 
         return sb.toString();
