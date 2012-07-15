@@ -168,6 +168,14 @@ public class SingleRunner {
 
         gp.setSelector(new TournamentSelector(tournamentSize));
 
+        run(gp);
+    }
+
+    /**
+     * Run a GP instance.
+     * @param gp    The GP to run
+     */
+    public static void run(GeneticProgram gp) {
         SingleRunner sr = new SingleRunner(gp);
         sr.run();
         sr.printBest();
