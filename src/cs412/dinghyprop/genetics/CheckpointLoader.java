@@ -102,6 +102,24 @@ public final class CheckpointLoader {
     }
 
     /**
+     * Read the programs from the input.
+     * @return  An array of the recreated {@code Program}s
+     * @throws IOException if an error occurs while reading
+     */
+    private Program[] getPrograms() throws IOException {
+        Program[] programs = new Program[popSize];
+        int read = 0;
+        while (read < popSize) {
+            String line = in.readLine().trim();
+            while (WHITESPACE.matcher(line).matches())
+                line = in.readLine().trim();
+            programs[read] = Program.fromString(line);
+            read++;
+        }
+        return programs;
+    }
+
+    /**
      * Check the checkpoint directory for a file listing the final evolved
      * generation
      * @param cpDir    The checkpoint directory
