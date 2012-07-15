@@ -2,9 +2,12 @@ package cs412.dinghyprop.genetics;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -107,5 +110,31 @@ public final class CheckpointLoader {
     private boolean checkFinished(File cpDir) {
         File finalGP = new File(cpDir, "final_generation");
         return finalGP.exists();
+    }
+
+    /**
+     * Find the last file whose name begins with "gen_" when the files are
+     * sorted alphabetically.
+     * @param cpDir    The directory to search in
+     * @return  The matched file or null
+     */
+    private File getLastGenerationFile(File cpDir) {
+        File[] genFiles = cpDir.listFiles(new FilenameFilter() {
+            @Override public boolean accept(File dir, String name) {
+                return name.startsWith("gen_");
+            }
+        });
+
+        if (genFiles == null || genFiles.length == 0) {
+            return null;
+        }
+
+        Arrays.sort(genFiles, new Comparator<File>() {
+            @Override public int compare(File o1, File o2) {
+                return - o1.getName().compareTo(o2.getName());
+            }
+        });
+
+        return genFiles[0];
     }
 }
