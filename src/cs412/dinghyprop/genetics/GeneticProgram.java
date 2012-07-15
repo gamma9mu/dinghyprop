@@ -90,6 +90,19 @@ public final class GeneticProgram {
     }
 
     /**
+     * Convenience constructor for in-package utilities.
+     * @param population       The population to use
+     * @param crossoverRate    The crossover rate
+     * @param mutationRate     The mutation rate
+     */
+    GeneticProgram(Program[] population, double crossoverRate, double mutationRate) {
+        this.population = population;
+        this.populationSize = population.length;
+        setCrossoverRate(crossoverRate);
+        setMutationRate(mutationRate);
+    }
+
+    /**
      * Choose a random terminal.
      * @return  A randomly chosen terminal
      */
