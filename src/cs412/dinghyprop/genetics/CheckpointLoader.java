@@ -64,6 +64,21 @@ public final class CheckpointLoader {
     }
 
     /**
+     * Instantiate a registered {@code Selector}-implementing class.
+     * @param name        The name of the class to instantiate
+     * @return  A {@code Selector}
+     * @throws InvocationTargetException if newInstance fails
+     * @throws IllegalAccessException if newInstance fails
+     * @throws InstantiationException if newInstance fails
+     */
+    private static Selector instantiateSelector(String name)
+            throws InvocationTargetException, IllegalAccessException,
+            InstantiationException {
+        Constructor ctor = selectors.get(name);
+        return (Selector) ctor.newInstance();
+    }
+
+    /**
      * Create a new checkpoint loader from a checkpoint directory.
      * @param checkpointDirectory    The checkpoint directory
      */
@@ -79,19 +94,6 @@ public final class CheckpointLoader {
         directory = new File(checkpointDirectory);
     }
 
-    /**
-     * Instantiate a registered {@code Selector}-implementing class.
-     * @param name        The name of the class to instantiate
-     * @return  A {@code Selector}
-     * @throws InvocationTargetException if newInstance fails
-     * @throws IllegalAccessException if newInstance fails
-     * @throws InstantiationException if newInstance fails
-     */
-    private static Selector instantiateSelector(String name)
-            throws InvocationTargetException, IllegalAccessException,
-            InstantiationException {
-        Constructor ctor = selectors.get(name);
-        return (Selector) ctor.newInstance();
     }
 
     /**
