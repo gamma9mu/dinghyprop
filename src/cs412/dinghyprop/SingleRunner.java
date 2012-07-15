@@ -36,7 +36,7 @@ public class SingleRunner {
     public SingleRunner(GeneticProgram gp) {
         this.gp = gp;
         simulator = new SimulatorRandom(SIM_DIM, SIM_DIM, 10).getSimulator();
-        String checkpointDirName = new Date().toString().replace(' ', '_');
+        String checkpointDirName = "gp_" + new Date().toString().replace(' ', '_');
         checkpointDir = new File(checkpointDirName);
         if (!checkpointDir.mkdir()) {
             log.warning("Could not create checkpoint directory: "
