@@ -20,6 +20,10 @@ public class CheckpointSingleRunner {
 
         CheckpointLoader cl = new CheckpointLoader(args[0]);
         GeneticProgram gp = cl.instantiate();
-        SingleRunner.run(gp);
+        if (gp != null) {
+            SingleRunner.run(gp);
+        } else {
+            System.err.println("Could not load checkpoint.");
+        }
     }
 }
