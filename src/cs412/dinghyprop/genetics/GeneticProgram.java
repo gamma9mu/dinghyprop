@@ -3,10 +3,7 @@ package cs412.dinghyprop.genetics;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * GP overseer.
@@ -61,6 +58,9 @@ public final class GeneticProgram {
     private double crossoverRate = DEFAULT_CROSSOVER_RATE;
     private double mutationRate = DEFAULT_MUTATION_RATE;
     private double reproductionRate = DEFAULT_REPRODUCTION_RATE;
+
+    private List<IPopulationObserver> observers =
+            new ArrayList<IPopulationObserver>(2);
 
     /**
      * Create a new GP object and initialize its population.
@@ -197,6 +197,23 @@ public final class GeneticProgram {
     }
 
     /**
+     * Add an object as a population observer.
+     * @param observer    The observing object
+     */
+    public void addPopulationObserver(IPopulationObserver observer) {
+        observers.add(observer);
+    }
+
+    /**
+     * Remove a registered population observer.
+     * @param observer    The observer to remove
+     */
+    public void removePopulationObserver(IPopulationObserver observer) {
+        if (observers.contains(observer))
+            observers.remove(observer);
+    }
+
+    /**
      * Retrieve the rate of crossover.
      * @return  The (average) percent of individuals created through crossover.
      */
@@ -318,9 +335,19 @@ public final class GeneticProgram {
             } else {
                 nextGeneration[i] = reproduce();
             }
+            notifyObservers(i);
         }
 
         population = nextGeneration;
+    }
+
+    /**
+     * Notify all the population observers of the creation of a new individual.
+     * @param index    The index of the individual
+     */
+    private void notifyObservers(int index) {
+        for (IPopulationObserver observer : observers)
+            observer.individualCreated(index, population[index]);
     }
 
     /**
