@@ -127,9 +127,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
                     slaves.add(client);
                     updateFitness(index, fitness);
                 } catch (RemoteException ignored) {
-                    // put the program back in the pending list on a failure
-                    pendingPrograms.put(index, program);
-                    pendingPrograms.notifyAll();
+                    enqueueProgram(index, program);
                 }
             }
         });
@@ -161,7 +159,17 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
 
     @Override
     public void individualCreated(int index, Program individual) {
+        enqueueProgram(index, individual);
+    }
+
+    /**
+     * Enqueue a program, handling notification.
+     * @param index         The index of the program
+     * @param individual    The program itself
+     */
+    private synchronized void enqueueProgram(int index, Program individual) {
         pendingPrograms.put(index, individual);
+        notifyAll();
     }
 
     /**
