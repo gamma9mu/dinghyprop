@@ -4,6 +4,7 @@ import cs412.dinghyprop.genetics.GeneticProgram;
 import cs412.dinghyprop.genetics.IPopulationObserver;
 import cs412.dinghyprop.genetics.Program;
 import cs412.dinghyprop.simulator.Simulator;
+import cs412.dinghyprop.simulator.SimulatorRandom;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -167,6 +168,12 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        new Master(null, null, 1000).run();
+        GeneticProgram gp = new GeneticProgram(100,
+                GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 3);
+        Simulator[] simulators = {new SimulatorRandom(10, 10, 6).getSimulator(),
+                new SimulatorRandom(10, 10, 6).getSimulator(),
+                new SimulatorRandom(10, 10, 6).getSimulator()
+        };
+        new Master(gp, simulators, 1000).run();
     }
 }
