@@ -100,16 +100,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * @param program    The program itself
      */
     private void sendForEvaluation(final int index, final Program program) {
-        final ISlave client;
-        synchronized (slaves) {
-            client = slaves.poll();
-            while (client == null) {
-                try {
-                    slaves.wait();
-                } catch (InterruptedException ignored) { }
-                slaves.poll();
-            }
-        }
+        final ISlave client = getNextSlave();
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -154,6 +145,19 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     private synchronized void enqueueSlave(ISlave slave) {
         slaves.add(slave);
         notifyAll();
+    }
+
+    /**
+     * Obtain the next available {@code ISlave}.
+     * @return  The {@code ISlave} that has been waiting the longest
+     */
+    private synchronized ISlave getNextSlave() {
+        while (slaves.isEmpty()) {
+            try {
+                wait();
+            } catch (InterruptedException ignored) { }
+        }
+        return slaves.poll();
     }
 
     @Override
