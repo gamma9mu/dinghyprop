@@ -89,17 +89,8 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     private void runGeneration() {
         programsRemaining = geneticProgram.getPopulationSize();
         while (programsRemaining > 0) {
-            synchronized (pendingPrograms) {
-                while (pendingPrograms.isEmpty()) {
-                    try {
-                        pendingPrograms.wait();
-                    } catch (InterruptedException ignored) { }
-                }
-                Map.Entry<Integer, Program> entry =
-                        pendingPrograms.entrySet().iterator().next();
-                Program program = geneticProgram.getProgram(entry.getKey());
-                sendForEvaluation(entry.getKey(), program);
-            }
+            Map.Entry<Integer, Program> entry = getNextProgram();
+            sendForEvaluation(entry.getKey(), entry.getValue());
         }
     }
 
@@ -178,6 +169,20 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     private synchronized void enqueueProgram(int index, Program individual) {
         pendingPrograms.put(index, individual);
         notifyAll();
+    }
+
+    /**
+     * Obtain the next program due for processing.
+     * @return  A {@code Map.Entry&lt;Integer,Program&gt;} where the key is the
+     * index and the value is the {@code Program} to be processed
+     */
+    private synchronized Map.Entry<Integer, Program> getNextProgram() {
+        while (pendingPrograms.isEmpty()) {
+            try {
+                wait();
+            } catch (InterruptedException ignored) { }
+        }
+        return pendingPrograms.entrySet().iterator().next();
     }
 
     /**
