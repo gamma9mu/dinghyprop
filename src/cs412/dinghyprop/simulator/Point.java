@@ -1,4 +1,4 @@
-package cs412.dinghyprop.simulator;
+﻿package cs412.dinghyprop.simulator;
 
 /**
 *  This is the superclass for Goal, Obstacle,

@@ -1,29 +1,48 @@
-package cs412.dinghyprop.simulator;
+﻿package cs412.dinghyprop.simulator;
 
 /**
 *  This class stores current information about the
 *  dinghy that is in the simulation
 */
 public class Dinghy extends Point{
+	// Variable to store the total distance travelled
 	private int distTravelled;
-
-
-
+	// Enumeration to represent the direction of the dinghy
     private enum Direction { NORTH, EAST, SOUTH, WEST;}
+	// Variable to store current direction of dinghy
     private Direction direc;
 
+	/**
+	*  Constructor that sets up initial position and
+	*  direction of the dinghy.
+	*  @param startX The initial X position of the dinghy.
+	*  @param startY The initial Y position of the dinghy.
+	*/
 	public Dinghy(int startX, int startY) {
 		super(startX, startY);
 		distTravelled = 0;
 		direc = Direction.NORTH;
 	}
-
+	
+	
+	/**
+	*  This constructor allows for the dinghy to be cloned
+	*  to allow for the same simulation to be used by all
+	*  slave programs.
+	*  @param dinghy This is the dinghy that needs to be cloned
+	*/
     public Dinghy(Dinghy dinghy) {
         super(dinghy.getPosition()[0], dinghy.getPosition()[1]);
         distTravelled = dinghy.distTravelled;
         direc = dinghy.direc;
     }
 
+	/**
+	*  Allows for the dinghy to be moved to a new position.
+	*  (Probably not needed)
+	*  @param distX The X distance to move the dinghy.
+	*  @param distY The Y distance to move the dinghy.
+	*/
 	protected void movePos(int distX, int distY){
         int[] currPos = this.getPosition();
 		distTravelled += calculateDistTravel(distX, distY, currPos);
@@ -46,6 +65,11 @@ public class Dinghy extends Point{
             setY(currPos[1] - y);
     }
 
+	/**
+	*  Moves the dinghy a given distance in the
+	*  current direction.
+	*  @param dist The distance to move the dinghy.
+	*/
 	protected void move(int dist) {
         distTravelled += dist;
 
@@ -70,14 +94,25 @@ public class Dinghy extends Point{
 		}
 	}
 	
+	/**
+	*  Turns the dinghy to the right.
+	*/
 	protected void turnRight() {
         direc = rightDirection();
     }
 	
+	/**
+	*  Turns the dinghy to the left.
+	*/
 	protected void turnLeft() {
         direc = leftDirection();
     }
 	
+	/**
+	*  Returns the current direction of the
+	*  dinghy.
+	*  @return Returns the direction of the dinghy as an int.
+	*/
 	protected int getDirection() {
 		int result = 0;
 		switch(direc) {
@@ -97,14 +132,28 @@ public class Dinghy extends Point{
 		return result;
 	}
 	
+	/**
+	*  Gets the current distance that the dinghy
+	*  has travelled.
+	*  @return Returns the current distance travelled
+	*/
 	protected int getDistTravelled() {
 		return distTravelled;
 	}
 	
+	/**
+	*  Method that calculates the distance between current position
+	*  and the position dinghy will move to.(Probably not needed)
+	*  @return distance between two points as an int.
+	*/
 	private int calculateDistTravel(int changeX, int changeY, int[] currPos) {
 		return (int)Math.sqrt(Math.pow(changeY - currPos[1], 2) + Math.pow(changeX - currPos[0], 2));
 	}
 
+	/**
+	*  Gets the direction to the left of the dinghy
+	*  @return The direction to the left of the dinghy.
+	*/
     private Direction leftDirection() {
         switch (direc) {
             case NORTH:
@@ -119,7 +168,11 @@ public class Dinghy extends Point{
         }
     }
 
-    private Direction rightDirection() {
+    /**
+	*  Gets the direction to the right of the dinghy.
+	*  @return The direction to the right of the dinghy.
+	*/
+	private Direction rightDirection() {
         switch (direc) {
             case NORTH:
                 return Direction.EAST;
@@ -133,6 +186,10 @@ public class Dinghy extends Point{
         }
     }
 
+	/**
+	*  Gets the direction to the rear of the dinghy.
+	*  @return The direction to the rear of the dinghy.
+	*/
     private Direction rearDirection() {
         switch (direc) {
             case NORTH:
@@ -147,6 +204,12 @@ public class Dinghy extends Point{
         }
     }
 
+	/**
+	*  Calculates the distance to the given obstacle in a specific direction.
+	*  @param direction The direction used to calculate distance.
+	*  @param obst The obstacle to which distance will be calculated.
+	*  @return
+	*/
 	protected int getDistanceInDirection(Direction direction, Obstacle obst) {
 		int[] obstPos = obst.getPosition();
 		int[] dinghyPos = this.getPosition();
@@ -184,7 +247,7 @@ public class Dinghy extends Point{
 		}
 		return result;
 	}
-
+	
     protected int getDistanceFront(Obstacle obst) {
         return getDistanceInDirection(direc, obst);
     }
