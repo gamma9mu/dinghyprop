@@ -208,7 +208,7 @@ public class Dinghy extends Point{
 	*  Calculates the distance to the given obstacle in a specific direction.
 	*  @param direction The direction used to calculate distance.
 	*  @param obst The obstacle to which distance will be calculated.
-	*  @return
+	*  @return The distance to the obstacle in the given direction(-1 if obstacle not in direction).
 	*/
 	protected int getDistanceInDirection(Direction direction, Obstacle obst) {
 		int[] obstPos = obst.getPosition();
@@ -248,22 +248,52 @@ public class Dinghy extends Point{
 		return result;
 	}
 	
+	/**
+	*  Gets the distance to the given obstacle in front
+	*  of the dinghy.
+	*  @param obst The current obstacle in distance calculation.
+	*  @return The distance to the obstacle(-1 if not in front of dinghy).
+	*/
     protected int getDistanceFront(Obstacle obst) {
         return getDistanceInDirection(direc, obst);
     }
 
+	/**
+	*  Gets the distance to the given obstacle in the direction
+	*  to the left of the dinghy.
+	*  @param obst The current obstacle in distance calculation.
+	*  @return The distance to the obstacle(-1 if obstacle not to the left of dinghy).
+	*/
 	protected int getDistanceLeft(Obstacle obst) {
         return getDistanceInDirection(leftDirection(), obst);
 	}
 	
+	/**
+	*  Gets the distance to the given obstacle in the direction
+	*  to the right of the dinghy.
+	*  @param obst The current obstacle in distance calculation.
+	*  @return The distance to the obstacle(-1 if obstacle not to the right of dinghy).
+	*/
 	protected int getDistanceRight(Obstacle obst) {
         return getDistanceInDirection(rightDirection(), obst);
 	}
 	
+	/**
+	*  Gets the distance to the given obstacle in the direction
+	*  to the rear of the dinghy.
+	*  @param obst The current obstacle in distance calculation.
+	*  @return The distance to the obstacle(-1 if obstacle not behind dinghy).
+	*/
 	protected int getDistanceRear(Obstacle obst) {
         return getDistanceInDirection(rearDirection(), obst);
 	}
 	
+	/**
+	*  Calculates the distance to the obstacle at a 45
+	*  degree angle to the left of the dinghy.
+	*  @param obst The current obstacle in distance calculation.
+	*  @return The distance to the obstacle (-1 if not at 45 degree angle to the left).
+	*/
 	protected int getDistanceShortLeft(Obstacle obst) {
 		int[] obstaclePosition = obst.getPosition();
 		int[] dinghyPosition = this.getPosition();
@@ -295,6 +325,9 @@ public class Dinghy extends Point{
 		return result;
 	}
 	
+	/**
+	*  
+	*/
 	protected int getDistanceShortRight(Obstacle obst) {
 		int[] obstaclePosition = obst.getPosition();
 		int[] dinghyPosition = this.getPosition();
