@@ -54,6 +54,11 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     private int generations;
 
     /**
+     * The RMI address on which to listen
+     */
+    private String address = "//localhost/Master";
+
+    /**
      * Create a new master object.
      * @param simulators    The simulation environments to supply to slaves
      * @throws RemoteException
@@ -74,7 +79,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      */
     public void run() throws MalformedURLException, RemoteException {
         geneticProgram.addPopulationObserver(this);
-        Naming.rebind("//localhost/Master", this);
+        Naming.rebind(address, this);
         geneticProgram.initialize();
 
         for (int i = 0; i < generations; i++) {
@@ -187,6 +192,11 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
             } catch (InterruptedException ignored) { }
         }
         return pendingPrograms.entrySet().iterator().next();
+    }
+
+    @Override
+    public String toString() {
+        return "Master @ " + address;
     }
 
     /**
