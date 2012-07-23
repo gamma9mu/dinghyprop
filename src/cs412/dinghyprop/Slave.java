@@ -4,6 +4,7 @@ import cs412.dinghyprop.interpreter.Interpreter;
 import cs412.dinghyprop.interpreter.ParsingException;
 import cs412.dinghyprop.simulator.Simulator;
 
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -44,5 +45,26 @@ public class Slave extends UnicastRemoteObject implements ISlave {
         }
 
         return fitness;
+    }
+
+    /**
+     * Testing main
+     * @param args    CLI args: [master_ip_address]
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception {
+        String ip = "127.0.0.1";
+        if (args.length == 1) {
+            ip = args[0];
+        } else if (args.length > 1) {
+            System.err.println("Usage: slave [master_address]");
+            System.exit(-1);
+        }
+
+        String address = "//" + ip + "/Master";
+        IMaster master = (IMaster) Naming.lookup(address);
+        Simulator[] sims = master.getEvaluationSimulators();
+        Slave me = new Slave(sims);
+        master.registerSlave(me);
     }
 }
