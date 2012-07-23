@@ -24,7 +24,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     /**
      * The GP for this run
      */
-    private GeneticProgram geneticProgram;
+    private transient GeneticProgram geneticProgram;
 
     /**
      * The simulation environments of the GP run
@@ -34,12 +34,12 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     /**
      * The list of registered {@code ISlave}s
      */
-    private final Queue<ISlave> slaves = new ConcurrentLinkedQueue<ISlave>();
+    private final transient Queue<ISlave> slaves = new ConcurrentLinkedQueue<ISlave>();
 
     /**
      * Programs that are pending evaluation
      */
-    private final Map<Integer, Program> pendingPrograms =
+    private final transient Map<Integer, Program> pendingPrograms =
             new HashMap<Integer, Program>(10);
 
     /**
