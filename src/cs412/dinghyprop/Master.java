@@ -140,10 +140,10 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * @param index      The index of the program to update
      * @param fitness    The fitness to assign the program
      */
-    private void updateFitness(int index, int fitness) {
+    private synchronized void updateFitness(int index, int fitness) {
         geneticProgram.setProgramFitness(index, fitness);
         programsRemaining--;
-        pendingPrograms.notifyAll();
+        notifyAll();
     }
 
     @Override
