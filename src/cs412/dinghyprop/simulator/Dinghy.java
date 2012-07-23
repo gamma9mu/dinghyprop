@@ -326,7 +326,10 @@ public class Dinghy extends Point{
 	}
 	
 	/**
-	*  
+	*  Calculates the distance to the obstacle at a 45
+	*  degree angle to the right of the dinghy.
+	*  @param obst The current obstacle in distance calculation.
+	*  @return The distance to the obstacle(-1 if not at a 45 degree angle to the right).
 	*/
 	protected int getDistanceShortRight(Obstacle obst) {
 		int[] obstaclePosition = obst.getPosition();
@@ -358,6 +361,15 @@ public class Dinghy extends Point{
 		return result;
 	}
 	
+	/**
+	*  Checks to make sure that the slope is correct and the obstacle is in
+	*  the correct plane for the slope.
+	*  @param obstaclePos An array that stores the current obstacle position.
+	*  @param dinghyPos An array that stores the current dinghy position.
+	*  @param expectedVal Stores the expected slope value.
+	*  @param oper Tells method wheter to use greater-than or less-than symbol
+	*  @return Returns true if slope is correct and obstacle is in correct plane.
+	*/
 	private boolean checkConditions(int[] obstaclePos, int[] dinghyPos, int expectedVal, char oper) {
 		boolean result = false;
 		if(oper == '<'){
@@ -373,6 +385,12 @@ public class Dinghy extends Point{
 		return result;
 	}
 	
+	/**
+	*  Calculates the slope between the dinghy and the given obstacle.
+	*  @param obstaclePosition An array that stores the current obstacle position
+	*  @param dinghyPosition An array that stores the current dinghy position
+	*  @return The slope between the dinghy and the given obstacle.
+	*/
 	private int getSlope(int[] obstaclePosition, int[] dinghyPosition) {
 		int result = 0;
 		int numerator = obstaclePosition[1] - dinghyPosition[1];
@@ -384,6 +402,13 @@ public class Dinghy extends Point{
 		return result;
 	}
 	
+	/**
+	*  Checks to see if the slope is equal to the expected value.
+	*  @param obstaclePosition An array that stores the current obstacle position.
+	*  @param dinghyPosition An array that stores the current dinghy position.
+	*  @param expectedValue The expected slope value.
+	*  @return True if the slope is equal to expectedValue.
+	*/
 	private boolean checkSlope(int[] obstaclePosition, int[] dinghyPosition, int expectedValue) {
 		boolean result = false;
 		if(getSlope(obstaclePosition, dinghyPosition) == expectedValue) {
