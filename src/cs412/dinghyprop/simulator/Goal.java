@@ -1,4 +1,4 @@
-﻿package cs412.dinghyprop.simulator;
+package cs412.dinghyprop.simulator;
 
 /**
 *  This class is a sublcass of Point and

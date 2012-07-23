@@ -1,17 +1,18 @@
-﻿package cs412.dinghyprop.simulator;
+package cs412.dinghyprop.simulator;
 
+import java.io.Serializable;
 /**
  * Dinghy environment simulator.
  */
-public class Simulator implements Cloneable {
-    private static final int DEFAULT_TERMINATION_FITNESS = 300;
-    private Goal goal = null;
+public class Simulator implements Cloneable, Serializable {
+	private static final int DEFAULT_TERMINATION_FITNESS = 300;
+	private Goal goal = null;
 	private Obstacle[] obstacles;
 	private Dinghy dinghy;
 	private int sizeX;
-    private int sizeY;
-    private boolean canContinue = true;
-    private int terminationFitness = DEFAULT_TERMINATION_FITNESS;
+	private int sizeY;
+	private boolean canContinue = true;
+	private int terminationFitness = DEFAULT_TERMINATION_FITNESS;
 
     public Simulator(int maxX, int maxY, int numObstacles, int dinghyX, int dinghyY) {
 		sizeX = maxX;

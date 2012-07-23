@@ -1,4 +1,6 @@
-﻿package cs412.dinghyprop.simulator;
+package cs412.dinghyprop.simulator;
+
+import java.io.Serializable;
 
 /**
 *  This is the superclass for Goal, Obstacle,
@@ -6,7 +8,7 @@
 *  and provides methods to retrieve and manipulate
 *  that information
 */
-public class Point {
+public class Point implements Serializable{
 
 	// Variable to store the current X position.
 	private int posX;

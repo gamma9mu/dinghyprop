@@ -1,4 +1,4 @@
-﻿package cs412.dinghyprop.simulator;
+package cs412.dinghyprop.simulator;
 
 import java.io.File;
 import java.io.IOException;

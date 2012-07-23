@@ -1,4 +1,4 @@
-﻿package cs412.dinghyprop.simulator;
+package cs412.dinghyprop.simulator;
 
 /**
 *  This class stores current information about the
@@ -8,9 +8,9 @@ public class Dinghy extends Point{
 	// Variable to store the total distance travelled
 	private int distTravelled;
 	// Enumeration to represent the direction of the dinghy
-    private enum Direction { NORTH, EAST, SOUTH, WEST;}
+    	private enum Direction { NORTH, EAST, SOUTH, WEST;}
 	// Variable to store current direction of dinghy
-    private Direction direc;
+    	private Direction direc;
 
 	/**
 	*  Constructor that sets up initial position and
@@ -31,11 +31,11 @@ public class Dinghy extends Point{
 	*  slave programs.
 	*  @param dinghy This is the dinghy that needs to be cloned
 	*/
-    public Dinghy(Dinghy dinghy) {
-        super(dinghy.getPosition()[0], dinghy.getPosition()[1]);
-        distTravelled = dinghy.distTravelled;
-        direc = dinghy.direc;
-    }
+	public Dinghy(Dinghy dinghy) {
+		super(dinghy.getPosition()[0], dinghy.getPosition()[1]);
+		distTravelled = dinghy.distTravelled;
+		direc = dinghy.direc;
+	}
 
 	/**
 	*  Allows for the dinghy to be moved to a new position.
@@ -44,7 +44,7 @@ public class Dinghy extends Point{
 	*  @param distY The Y distance to move the dinghy.
 	*/
 	protected void movePos(int distX, int distY){
-        int[] currPos = this.getPosition();
+        	int[] currPos = this.getPosition();
 		distTravelled += calculateDistTravel(distX, distY, currPos);
 		this.setX(currPos[0] + distX);
 		this.setY(currPos[1] + distY);
@@ -55,15 +55,15 @@ public class Dinghy extends Point{
      * @param x    The x dimension of the map
      * @param y    The y dimension of the map
      */
-    public void wrap(int x, int y) {
-        int[] currPos = getPosition();
+	public void wrap(int x, int y) {
+		int[] currPos = getPosition();
 
-        if (currPos[0] > x)
-            setX(currPos[0] - x);
+		if (currPos[0] > x)
+			setX(currPos[0] - x);
 
-        if (currPos[1] > y)
-            setY(currPos[1] - y);
-    }
+		if (currPos[1] > y)
+			setY(currPos[1] - y);
+	}
 
 	/**
 	*  Moves the dinghy a given distance in the
@@ -71,22 +71,22 @@ public class Dinghy extends Point{
 	*  @param dist The distance to move the dinghy.
 	*/
 	protected void move(int dist) {
-        distTravelled += dist;
+		distTravelled += dist;
 
 		switch(direc) {
 			case NORTH:
 				incY(dist);
 				break;
-				
+			
 			case EAST:
 				incX(dist);
 				break;
-				
+			
 			case SOUTH:
 				dist = 0 - dist;
 				incY(dist);
 				break;
-				
+			
 			case WEST:
 				dist = 0 - dist;
 				incX(dist);
@@ -98,15 +98,15 @@ public class Dinghy extends Point{
 	*  Turns the dinghy to the right.
 	*/
 	protected void turnRight() {
-        direc = rightDirection();
-    }
+		direc = rightDirection();
+	}
 	
 	/**
 	*  Turns the dinghy to the left.
 	*/
 	protected void turnLeft() {
-        direc = leftDirection();
-    }
+		direc = leftDirection();
+	}
 	
 	/**
 	*  Returns the current direction of the
@@ -115,20 +115,20 @@ public class Dinghy extends Point{
 	*/
 	protected int getDirection() {
 		int result = 0;
-		switch(direc) {
-			case NORTH:
-				result = 0;
-				break;
-			case EAST:
-				result = 90;
-				break;
-			case SOUTH:
-				result = 180;
-				break;
-			case WEST:
-				result = 270;
-				break;
-		}
+			switch(direc) {
+				case NORTH:
+					result = 0;
+					break;
+				case EAST:
+					result = 90;
+					break;
+				case SOUTH:
+					result = 180;
+					break;
+				case WEST:
+					result = 270;
+					break;
+			}
 		return result;
 	}
 	
@@ -154,55 +154,55 @@ public class Dinghy extends Point{
 	*  Gets the direction to the left of the dinghy
 	*  @return The direction to the left of the dinghy.
 	*/
-    private Direction leftDirection() {
-        switch (direc) {
-            case NORTH:
-                return Direction.WEST;
-            case EAST:
-                return Direction.NORTH;
-            case SOUTH:
-                return Direction.EAST;
-            case WEST:
-            default:
-                return Direction.SOUTH;
-        }
-    }
+	private Direction leftDirection() {
+		switch (direc) {
+			case NORTH:
+				return Direction.WEST;
+			case EAST:
+				return Direction.NORTH;
+			case SOUTH:
+				return Direction.EAST;
+			case WEST:
+			default:
+				return Direction.SOUTH;
+		}
+	}
 
     /**
 	*  Gets the direction to the right of the dinghy.
 	*  @return The direction to the right of the dinghy.
 	*/
 	private Direction rightDirection() {
-        switch (direc) {
-            case NORTH:
-                return Direction.EAST;
-            case EAST:
-                return Direction.SOUTH;
-            case SOUTH:
-                return Direction.WEST;
-            case WEST:
-            default:
-                return Direction.NORTH;
-        }
-    }
+		switch (direc) {
+			case NORTH:
+				return Direction.EAST;
+			case EAST:
+				return Direction.SOUTH;
+			case SOUTH:
+				return Direction.WEST;
+			case WEST:
+			default:
+				return Direction.NORTH;
+		}
+	}
 
 	/**
 	*  Gets the direction to the rear of the dinghy.
 	*  @return The direction to the rear of the dinghy.
 	*/
-    private Direction rearDirection() {
-        switch (direc) {
-            case NORTH:
-                return Direction.SOUTH;
-            case EAST:
-                return Direction.WEST;
-            case SOUTH:
-                return Direction.WEST;
-            case WEST:
-            default:
-                return Direction.NORTH;
-        }
-    }
+	private Direction rearDirection() {
+		switch (direc) {
+			case NORTH:
+				return Direction.SOUTH;
+			case EAST:
+				return Direction.WEST;
+			case SOUTH:
+				return Direction.WEST;
+			case WEST:
+			default:
+				return Direction.NORTH;
+		}
+	}
 
 	/**
 	*  Calculates the distance to the given obstacle in a specific direction.
