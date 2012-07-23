@@ -75,6 +75,8 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     public void run() throws MalformedURLException, RemoteException {
         geneticProgram.addPopulationObserver(this);
         Naming.rebind("//localhost/Master", this);
+        geneticProgram.initialize();
+
         for (int i = 0; i < generations; i++) {
             runGeneration();
             geneticProgram.createNextGeneration();

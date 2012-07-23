@@ -35,6 +35,7 @@ public class SingleRunner {
      */
     public SingleRunner(GeneticProgram gp) {
         this.gp = gp;
+        gp.initialize();
         simulator = new SimulatorRandom(SIM_DIM, SIM_DIM, 10).getSimulator();
         String checkpointDirName = "gp_" + new Date().toString().replace(' ', '_');
         checkpointDir = new File(checkpointDirName);
