@@ -166,11 +166,11 @@ public class Simulator implements Cloneable, Serializable {
 		return upperBound;
 	}
 
-    /**
-     * Handle a reference to the variable "rear".
-     * @param upperBound    A suggested upper bound
-     * @return  the distance to the closest item to the rear of the dinghy.
-     */
+	/**
+	* Handle a reference to the variable "rear".
+	* @param upperBound    A suggested upper bound
+	* @return  the distance to the closest item to the rear of the dinghy.
+	*/
 	private int referenceRear(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
 			int temp = dinghy.getDistanceRear(obstacle);
@@ -238,16 +238,30 @@ public class Simulator implements Cloneable, Serializable {
 		dinghy.movePos(x, y);
 	}
 	
+	/**
+	*  Gets the total size of the simulation environment
+	*  @return The total size of the simulation environment
+	*/
 	public double getTotalDistance() {
         	return Math.sqrt(Math.pow(sizeX, 2) + Math.pow(sizeY, 2));
 	}
 	
+	/**
+	*  Gets the distance to goal divided by the total distance for scoring
+	*  the program.
+	*  @return The goal distance metric for scoring.
+	*/
 	public int getGoalDistanceMetric() {
 		double goalDist = goal.getDistance(dinghy);
 		double result = 100 - (goalDist / getTotalDistance()) * 100;
 		return (int)result;
 	}
-
+	
+	/**
+	*  Checks to see if the dinghy reached the goal for scoring
+	*  the program.
+	*  @return 100 if the goal was reached, 0 if it was not.
+	*/
 	public int getSuccessMetric() { 
 		boolean success = goal.success(dinghy);
 		int points = 0;
@@ -255,8 +269,13 @@ public class Simulator implements Cloneable, Serializable {
 			points = 100;
 		}
 		return points;
-		}
+	}
 
+	/**
+	*  Calculates the fitness of the program. This is calculated by adding
+	*  the goal distance metric, the success metric, and the travel metric.
+	*  @return The fitness of the program
+	*/
 	public int getFitness() {
 		return getGoalDistanceMetric() + getSuccessMetric() + getTravelMetric();
 	}
