@@ -7,7 +7,10 @@ package cs412.dinghyprop.simulator;
 *  that information
 */
 public class Point {
+
+	// Variable to store the current X position.
 	private int posX;
+	// Variable to store the current Y position.
 	private int posY;
 	
 	/**
@@ -47,14 +50,30 @@ public class Point {
 		posY = y;
 	}
 	
+	/**
+	*  This method increases the X position by the
+	*  given amount.
+	*  @param x The amount to increase X by.
+	*/
 	protected void incX(int x) {
 		posX += x;
 	}
 	
+	/** 
+	*  This method increases the Y position by the
+	*  given amount.
+	*  @param y The amount to increase Y by.
+	*/
 	protected void incY(int y) {
 		posY += y;
 	}
 	
+	/**
+	*  This method calculates the distance between
+	*  this point and the provided point p.
+	*  @param p The other point used to calculated distance
+	*  @return The distance between this point and the given point p.
+	*/
 	protected int getDistance(Point p) {
         int[] pos = p.getPosition();
 		
@@ -64,11 +83,23 @@ public class Point {
         return (int) Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
 	}
 	
+	/**
+	*  This method calculates the distance between this point's
+	*  X value and the given point p's X value.
+	*  @param p The other point used to calculate distance.
+	*  @return The distance between the X values of the two points.
+	*/
 	protected int getDistanceX(Point p) {
         int[] pos = p.getPosition();
         return pos[0] - this.posX;
 	}
 	
+	/**
+	*  This method calculates the distance between this point's
+	*  X value and the given point p's X value.
+	*  @param p The other point used to calculate distance.
+	*  @return The distance between the X values of the two points.
+	*/
 	protected int getDistanceY(Point p) {
         int[] pos = p.getPosition();
         return pos[1] - this.posY;
