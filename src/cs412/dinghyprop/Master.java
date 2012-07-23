@@ -10,8 +10,6 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -39,8 +37,8 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     /**
      * Programs that are pending evaluation
      */
-    private final transient Map<Integer, Program> pendingPrograms =
-            new HashMap<Integer, Program>(10);
+    private final transient Queue<IndexedProgram> pendingPrograms =
+            new ConcurrentLinkedQueue<IndexedProgram>();
 
     /**
      * The number of programs that still require evaluation (GP's generation
@@ -94,8 +92,8 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     private void runGeneration() {
         programsRemaining = geneticProgram.getPopulationSize();
         while (programsRemaining > 0) {
-            Map.Entry<Integer, Program> entry = getNextProgram();
-            sendForEvaluation(entry.getKey(), entry.getValue());
+            IndexedProgram entry = getNextProgram();
+            sendForEvaluation(entry.index, entry.program);
         }
     }
 
@@ -176,7 +174,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * @param individual    The program itself
      */
     private synchronized void enqueueProgram(int index, Program individual) {
-        pendingPrograms.put(index, individual);
+        pendingPrograms.add(new IndexedProgram(index, individual));
         notifyAll();
     }
 
@@ -185,13 +183,13 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * @return  A {@code Map.Entry&lt;Integer,Program&gt;} where the key is the
      * index and the value is the {@code Program} to be processed
      */
-    private synchronized Map.Entry<Integer, Program> getNextProgram() {
+    private synchronized IndexedProgram getNextProgram() {
         while (pendingPrograms.isEmpty()) {
             try {
                 wait();
             } catch (InterruptedException ignored) { }
         }
-        return pendingPrograms.entrySet().iterator().next();
+        return pendingPrograms.poll();
     }
 
     @Override
@@ -212,5 +210,28 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
                 new SimulatorRandom(10, 10, 6).getSimulator()
         };
         new Master(gp, simulators, 1000).run();
+    }
+
+    /**
+     * Manages a program and its index.
+     */
+    class IndexedProgram {
+        public int index;
+
+        public Program program;
+        /**
+         * Create a new {@code IndexedProgram}.
+         * @param index      The program's index
+         * @param program    The program itself
+         */
+        public IndexedProgram(int index, Program program) {
+            this.index = index;
+            this.program = program;
+        }
+
+        @Override
+        public String toString() {
+            return "IndexedProgram{index=" + index + ", program=" + program + '}';
+        }
     }
 }
