@@ -124,7 +124,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
             public void run() {
                 try {
                     int fitness = client.evaluateProgram(program.program);
-                    slaves.add(client);
+                    enqueueSlave(client);
                     updateFitness(index, fitness);
                 } catch (RemoteException ignored) {
                     enqueueProgram(index, program);
@@ -153,8 +153,16 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
 
     @Override
     public void registerSlave(ISlave slave) throws RemoteException {
-        if (! slaves.contains(slave))
-            slaves.add(slave);
+        enqueueSlave(slave);
+    }
+
+    /**
+     * Enqueue a slave for processing, handling notification.
+     * @param slave    The {@code ISlave} to enqueue
+     */
+    private synchronized void enqueueSlave(ISlave slave) {
+        slaves.add(slave);
+        notifyAll();
     }
 
     @Override
