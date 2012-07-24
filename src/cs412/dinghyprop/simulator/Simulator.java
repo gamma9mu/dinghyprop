@@ -311,4 +311,13 @@ public class Simulator implements Cloneable, Serializable {
 	public void setTerminationFitness(int terminationFitness) {
 		this.terminationFitness = terminationFitness;
 	}
+	
+	/**
+	*  Gets the size of the simulation environment.
+	*  @return The size of the simulation environment.
+	*/
+	public int[] getSize() {
+		int[] size = {sizeX, sizeY};
+		return size;
+	}
 }
