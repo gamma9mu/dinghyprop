@@ -1,10 +1,11 @@
 package cs412.dinghyprop.simulator;
 
 import java.io.Serializable;
+import java.util.Observable;
 /**
  * Dinghy environment simulator.
  */
-public class Simulator implements Cloneable, Serializable {
+public class Simulator extends Observable implements Cloneable, Serializable {
 	private static final int DEFAULT_TERMINATION_FITNESS = 300;
 	private Goal goal = null;
 	private Obstacle[] obstacles;
@@ -56,8 +57,9 @@ public class Simulator implements Cloneable, Serializable {
 	*  @throws UnknownFunctionException if the action is not valid.
 	*/
 	public void invoke(String function) throws UnknownFunctionException {
-		if (function.compareTo("move") == 0)
+		if (function.compareTo("move") == 0) {
 			invokeMove();
+			notifyObservers(dinghy); }
 		else if (function.compareTo("turn-left") == 0)
 			dinghy.turnLeft();
 		else if (function.compareTo("turn-right") == 0)
@@ -319,5 +321,25 @@ public class Simulator implements Cloneable, Serializable {
 	public int[] getSize() {
 		int[] size = {sizeX, sizeY};
 		return size;
+	}
+	
+	/**
+	*  Gets the position of the goal.
+	*  @return The position of the goal.
+	*/
+	public int[] getGoal() {
+		return goal.getPosition();
+	}
+	
+	/**
+	*  Gets the obstacles.
+	*  @return The array of obstacles.
+	*/
+	public Obstacle[] getObstacles() {
+		return obstacles;
+	}
+	
+	public void addObserver(Object observer) {
+		this.addObserver(observer);
 	}
 }
