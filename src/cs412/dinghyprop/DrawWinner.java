@@ -45,8 +45,7 @@ public class DrawWinner extends JPanel implements Observer{
 		
 		graph.setColor(Color.RED);
 		drawObstacles();
-		
-		
+			
 	
 	} 
 	
@@ -64,8 +63,51 @@ public class DrawWinner extends JPanel implements Observer{
 	}
 	
 	public void moveDinghy(int posX, int posY) {
+		this.repaint();
 		graph.setColor(Color.BLUE);
-		graph.fillOval(posX * 2, posY * 2, 10, 10);
+		int tempX = posX * 2;
+		int tempY = posY * 2;
+		int[] xPositions = null;
+		int[] yPositions = null;
+		try{
+			switch(currentWinner.reference("heading")) {
+				case 0:
+					int[] xTemp = {0 + tempX, 0 + tempX, 
+						5 + tempX, 10 + tempX, 10 + tempX};
+					int[] yTemp = {17 + tempY, 10 + tempY, 
+						0 + tempY, 10 + tempY, 17 + tempY};
+					xPositions = xTemp;
+					yPositions = yTemp;
+					break;
+				case 90:
+					int[] xTemp90 = {0 + tempX, 10 + tempX, 
+						17 + tempX, 10 + tempX, 0 + tempX};
+					int[] yTemp90 = {0 + tempY, 0 + tempY, 
+						5 + tempY, 10 + tempY, 10 + tempY};
+					xPositions = xTemp90;
+					yPositions = yTemp90;
+					break;
+				case 180:
+					int[] xTemp180 = {0 + tempX, 0 + tempX, 
+						5 + tempX, 10 + tempX, 10 + tempX};
+					int[] yTemp180 = {0 + tempY, 10 + tempY, 
+						17 + tempY, 10 + tempY, 0 + tempY};
+					xPositions = xTemp180;
+					yPositions = yTemp180;
+					break;
+				case 270:
+					int[] xTemp270 = {17 + tempX, 7 + tempX, 
+						0 + tempX, 7 + tempX, 17 + tempX};
+					int[] yTemp270 = {0 + tempY, 0 + tempY, 
+						5 + tempY, 10 + tempY, 10 + tempY};
+					xPositions = xTemp270;
+					yPositions = yTemp270;
+					break;
+			}
+		} catch(cs412.dinghyprop.simulator.VariableReferenceException e) {
+			
+		}
+		graph.fillPolygon(xPositions, yPositions, 5);
 	}
 	
 	private void drawObstacles() {
