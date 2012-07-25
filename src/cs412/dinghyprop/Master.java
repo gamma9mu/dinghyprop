@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * GP master server
  */
-public class Master extends UnicastRemoteObject implements IMaster, IPopulationObserver {
+public class Master extends UnicastRemoteObject implements IMaster, IPopulationObserver, Runnable {
     private static final long serialVersionUID = 7213091562277551698L;
 
     /**
@@ -56,6 +56,11 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      */
     private String address = "//localhost/Master";
 
+    /*
+     * Status for program dispatcher.
+     */
+    private boolean running = true;
+
     /**
      * Create a new master object.
      * @param simulators    The simulation environments to supply to slaves
@@ -67,7 +72,6 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
         this.geneticProgram = geneticProgram;
         this.simulators = simulators;
         this.generations = generations;
-        programsRemaining = geneticProgram.getPopulationSize();
     }
 
     /**
@@ -75,13 +79,19 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * @throws MalformedURLException
      * @throws RemoteException
      */
-    public void run() throws MalformedURLException, RemoteException {
+    public synchronized void runGP() throws MalformedURLException, RemoteException {
         geneticProgram.addPopulationObserver(this);
         Naming.rebind(address, this);
         geneticProgram.initialize();
+        programsRemaining = geneticProgram.getPopulationSize();
+
+        new Thread(this).start();
 
         for (int i = 0; i < generations; i++) {
-            runGeneration();
+            while (programsRemaining > 0)
+                try { wait(); } catch (InterruptedException ignored) { }
+            System.out.println("Creating next generation.");
+            programsRemaining = geneticProgram.getPopulationSize();
             geneticProgram.createNextGeneration();
         }
     }
@@ -89,11 +99,15 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     /**
      * Evaluate all the individuals in a population.
      */
-    private void runGeneration() {
-        programsRemaining = geneticProgram.getPopulationSize();
-        while (programsRemaining > 0) {
+    @Override
+    public void run() {
+        while (running) {
+            synchronized (this) {
+                while (pendingPrograms.isEmpty())
+                    try { wait(); } catch (InterruptedException ignored) { }
+            }
             IndexedProgram entry = getNextProgram();
-            sendForEvaluation(entry.index, entry.program);
+                sendForEvaluation(entry.index, entry.program);
         }
     }
 
@@ -209,7 +223,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
                 new SimulatorRandom(10, 10, 6).getSimulator(),
                 new SimulatorRandom(10, 10, 6).getSimulator()
         };
-        new Master(gp, simulators, 1000).run();
+        new Master(gp, simulators, 1000).runGP();
     }
 
     /**
