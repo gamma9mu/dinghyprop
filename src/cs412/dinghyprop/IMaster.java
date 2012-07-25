@@ -1,5 +1,6 @@
 package cs412.dinghyprop;
 
+import cs412.dinghyprop.genetics.Program;
 import cs412.dinghyprop.simulator.Simulator;
 
 import java.rmi.Remote;
@@ -23,4 +24,11 @@ public interface IMaster extends Remote {
      * @throws RemoteException
      */
     void registerClient(IClient client) throws RemoteException;
+
+    /**
+     * Obtain a copy of the current best-fit program.
+     * @return  A copy of the current leader
+     * @throws RemoteException
+     */
+    Program getCurrentLeader() throws RemoteException;
 }
