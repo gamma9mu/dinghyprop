@@ -61,6 +61,11 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      */
     private boolean running = true;
 
+    /*
+     * Statistics
+     */
+    int best, worst;
+
     /**
      * Create a new master object.
      * @param simulators    The simulation environments to supply to slaves
@@ -72,6 +77,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
         this.simulators = simulators;
         this.generations = generations;
         programsRemaining = geneticProgram.getPopulationSize();
+        resetStatistics();
     }
 
     /**
@@ -86,11 +92,17 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
 
         new Thread(this).start();
 
-        for (int i = 0; i < generations; i++) {
+        int targetFitness = 300 * simulators.length;
+        for (int i = 1; i <= generations; i++) {
             while (programsRemaining > 0)
                 try { wait(); } catch (InterruptedException ignored) { }
-            System.out.println("Creating next generation.");
+
+            if (best >= targetFitness)
+                break;
+
+            System.out.println("Creating generation #" + Integer.toString(i));
             programsRemaining = geneticProgram.getPopulationSize();
+            resetStatistics();
             geneticProgram.createNextGeneration();
         }
     }
@@ -141,6 +153,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     private synchronized void updateFitness(int index, int fitness) {
         geneticProgram.setProgramFitness(index, fitness);
         programsRemaining--;
+        updateStatistic(fitness);
         notifyAll();
     }
 
@@ -203,6 +216,25 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
             } catch (InterruptedException ignored) { }
         }
         return pendingPrograms.poll();
+    }
+
+    /**
+     * Update the statistics fields with new fitness information.
+     * @param fitness    The latest returned fitness
+     */
+    private void updateStatistic(int fitness) {
+        if (fitness < worst)
+            worst = fitness;
+        if (fitness > best)
+            best = fitness;
+    }
+
+    /**
+     * Reset the statistics fields.
+     */
+    private void resetStatistics() {
+        worst = Integer.MAX_VALUE;
+        best = Integer.MIN_VALUE;
     }
 
     @Override
