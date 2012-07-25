@@ -64,7 +64,9 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     /*
      * Statistics
      */
-    int best, worst;
+    int best;
+    int worst;
+    Program leader = null;
 
     /**
      * Create a new master object.
@@ -89,6 +91,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
         geneticProgram.addPopulationObserver(this);
         Naming.rebind(address, this);
         geneticProgram.initialize();
+        leader = geneticProgram.getProgram(0); // A safe default
 
         new Thread(this).start();
 
@@ -153,13 +156,18 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     private synchronized void updateFitness(int index, int fitness) {
         geneticProgram.setProgramFitness(index, fitness);
         programsRemaining--;
-        updateStatistic(fitness);
+        updateStatistic(index, fitness);
         notifyAll();
     }
 
     @Override
     public Simulator[] getEvaluationSimulators() throws RemoteException {
         return simulators;
+    }
+
+    @Override
+    public Program getCurrentLeader() throws RemoteException {
+        return leader;
     }
 
     @Override
@@ -220,13 +228,16 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
 
     /**
      * Update the statistics fields with new fitness information.
+     * @param index      The index of the program the fitness refers to
      * @param fitness    The latest returned fitness
      */
-    private void updateStatistic(int fitness) {
+    private void updateStatistic(int index, int fitness) {
         if (fitness < worst)
             worst = fitness;
-        if (fitness > best)
+        if (fitness > best) {
             best = fitness;
+            leader = geneticProgram.getProgram(index);
+        }
     }
 
     /**
