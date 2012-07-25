@@ -31,10 +31,14 @@ public class History implements Observer {
 	}
 	
 	public int getNextX() {
-		return xValues.poll();
+		if(!xValues.isEmpty())
+			return xValues.poll();
+		return -1;
 	}
 	
 	public int getNextY() {
-		return yValues.poll();
+		if(!yValues.isEmpty())
+			return yValues.poll();
+		return -1;
 	}
 }
