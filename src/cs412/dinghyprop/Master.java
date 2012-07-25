@@ -54,7 +54,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     /**
      * The RMI address on which to listen
      */
-    private String address = "//localhost/Master";
+    private static final String address = "Master";
 
     /*
      * Status for program dispatcher.
