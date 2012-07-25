@@ -1,12 +1,14 @@
 package cs412.dinghyprop.genetics;
 
+import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Collects the details of a generated program.
  */
-public class Program {
+public class Program implements Serializable {
+    private static final long serialVersionUID = 1364731017270512774L;
     private static final Pattern PARSE_PROGRAM =
             Pattern.compile("^\\[(\\d+)\\]\\s+(.*)$");
     public final String program;

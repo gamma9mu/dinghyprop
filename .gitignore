@@ -11,3 +11,6 @@
 
 # Checkpoints
 gp_*/
+
+# Class documentation
+doc/
