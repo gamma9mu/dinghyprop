@@ -68,7 +68,6 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      */
     public Master(GeneticProgram geneticProgram, Simulator[] simulators, int generations)
             throws RemoteException {
-        super();
         this.geneticProgram = geneticProgram;
         this.simulators = simulators;
         this.generations = generations;
