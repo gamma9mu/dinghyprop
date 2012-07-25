@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
 /**
  * RMI Interface for the evaluation clients.
  */
-public interface ISlave extends Remote {
+public interface IClient extends Remote {
 
     /**
      * Evaluate a program's fitness.

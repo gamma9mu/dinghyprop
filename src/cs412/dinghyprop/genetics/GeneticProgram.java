@@ -3,10 +3,7 @@ package cs412.dinghyprop.genetics;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * GP overseer.
@@ -51,16 +48,22 @@ public final class GeneticProgram {
                     "right", "rear", "position-x", "position-y", "goal-position-x",
                     "goal-position-y", "heading"));
 
-    private Program[] population;
+    private Program[] population = null;
 
     private final int populationSize;
     private double ifDensity = DEFAULT_IF_DENSITY;
     private final Random rand = new SecureRandom();
     private Selector selector = new TournamentSelector(2);
 
+    private INIT_POP_METHOD init_pop_method = INIT_POP_METHOD.RHALF_AND_HALF;
+    private int initialMaxDepth = 5;
+
     private double crossoverRate = DEFAULT_CROSSOVER_RATE;
     private double mutationRate = DEFAULT_MUTATION_RATE;
     private double reproductionRate = DEFAULT_REPRODUCTION_RATE;
+
+    private List<IPopulationObserver> observers =
+            new ArrayList<IPopulationObserver>(2);
 
     /**
      * Create a new GP object and initialize its population.
@@ -71,22 +74,8 @@ public final class GeneticProgram {
      */
     public GeneticProgram(int populationSize, INIT_POP_METHOD method, int maxDepth) {
         this.populationSize = populationSize;
-        population = new Program[populationSize];
-        switch (method) {
-            case GROW:
-                for (int i = 0; i < population.length; i++) {
-                    population[i] = new Program(grow(maxDepth));
-                }
-                break;
-            case FILL:
-                for (int i = 0; i < population.length; i++) {
-                    population[i] = new Program(fill(maxDepth));
-                }
-                break;
-            case RHALF_AND_HALF:
-                rampedHalfAndHalf(maxDepth);
-                break;
-        }
+        this.init_pop_method = method;
+        this.initialMaxDepth = maxDepth;
     }
 
     /**
@@ -100,6 +89,32 @@ public final class GeneticProgram {
         this.populationSize = population.length;
         setCrossoverRate(crossoverRate);
         setMutationRate(mutationRate);
+    }
+
+    /**
+     * Initialize the first generation.  This is a separate action to allow an
+     * object to register itself as a population observer before the first
+     * population is created.
+     */
+    public void initialize() {
+        population = new Program[populationSize];
+        switch (init_pop_method) {
+            case GROW:
+                for (int i = 0; i < population.length; i++) {
+                    population[i] = new Program(grow(initialMaxDepth));
+                    notifyObservers(i);
+                }
+                break;
+            case FILL:
+                for (int i = 0; i < population.length; i++) {
+                    population[i] = new Program(fill(initialMaxDepth));
+                    notifyObservers(i);
+                }
+                break;
+            case RHALF_AND_HALF:
+                rampedHalfAndHalf(initialMaxDepth);
+                break;
+        }
     }
 
     /**
@@ -188,12 +203,31 @@ public final class GeneticProgram {
         int i = 0;
         while (i < half) {
             population[i] = new Program(grow(maxDepth));
+            notifyObservers(i);
             i++;
         }
         while (i < population.length) {
             population[i] = new Program(fill(maxDepth));
+            notifyObservers(i);
             i++;
         }
+    }
+
+    /**
+     * Add an object as a population observer.
+     * @param observer    The observing object
+     */
+    public void addPopulationObserver(IPopulationObserver observer) {
+        observers.add(observer);
+    }
+
+    /**
+     * Remove a registered population observer.
+     * @param observer    The observer to remove
+     */
+    public void removePopulationObserver(IPopulationObserver observer) {
+        if (observers.contains(observer))
+            observers.remove(observer);
     }
 
     /**
@@ -318,9 +352,19 @@ public final class GeneticProgram {
             } else {
                 nextGeneration[i] = reproduce();
             }
+            notifyObservers(i);
         }
 
         population = nextGeneration;
+    }
+
+    /**
+     * Notify all the population observers of the creation of a new individual.
+     * @param index    The index of the individual
+     */
+    private void notifyObservers(int index) {
+        for (IPopulationObserver observer : observers)
+            observer.individualCreated(index, population[index]);
     }
 
     /**
