@@ -15,7 +15,7 @@ public class Client {
         String rmiAddress = "//" + address + "/Master";
         IMaster master = (IMaster) Naming.lookup(rmiAddress);
         ClientImpl client = new ClientImpl(master.getEvaluationSimulators());
-        SlaveWindow sw = new SlaveWindow(client);
+        ClientStatusWindow sw = new ClientStatusWindow(client);
         sw.run();
         master.registerClient(client);
     }
