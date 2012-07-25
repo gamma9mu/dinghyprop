@@ -14,7 +14,6 @@ public class Simulator extends Observable implements Cloneable, Serializable {
 	private int sizeY;
 	private boolean canContinue = true;
 	private int terminationFitness = DEFAULT_TERMINATION_FITNESS;
-	private History history;
 
 	/**
 	*  Constructor that sets up the simulator environment
@@ -29,8 +28,6 @@ public class Simulator extends Observable implements Cloneable, Serializable {
 		sizeY = maxY;
 		obstacles = new Obstacle[numObstacles];
 		dinghy = new Dinghy(dinghyX, dinghyY);
-		history = new History(dinghyX, dinghyY);
-		addObserver(history);
 	}
 	
 	/**
@@ -341,12 +338,6 @@ public class Simulator extends Observable implements Cloneable, Serializable {
 		return obstacles;
 	}
 	
-	/**
-	*  Gets the history of the simulation.
-	*  @return The history of the simulation.
-	*/
-	public History getHistory() {
-		return history;
-	}
+
 	
 }
