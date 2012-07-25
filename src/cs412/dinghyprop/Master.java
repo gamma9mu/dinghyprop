@@ -128,13 +128,13 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * @param program    The program itself
      */
     private void sendForEvaluation(final int index, final Program program) {
-        final IClient client = getNextSlave();
+        final IClient client = getNextClient();
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     int fitness = client.evaluateProgram(program.program);
-                    enqueueSlave(client);
+                    enqueueClient(client);
                     updateFitness(index, fitness);
                 } catch (RemoteException ignored) {
                     enqueueProgram(index, program);
@@ -163,15 +163,15 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     @Override
-    public void registerSlave(IClient client) throws RemoteException {
-        enqueueSlave(client);
+    public void registerClient(IClient client) throws RemoteException {
+        enqueueClient(client);
     }
 
     /**
      * Enqueue a client for processing, handling notification.
      * @param client    The {@code IClient} to enqueue
      */
-    private synchronized void enqueueSlave(IClient client) {
+    private synchronized void enqueueClient(IClient client) {
         clients.add(client);
         notifyAll();
     }
@@ -180,7 +180,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * Obtain the next available {@code IClient}.
      * @return  The {@code IClient} that has been waiting the longest
      */
-    private synchronized IClient getNextSlave() {
+    private synchronized IClient getNextClient() {
         while (clients.isEmpty()) {
             try {
                 wait();

@@ -22,5 +22,5 @@ public interface IMaster extends Remote {
      * @param client    The client instance
      * @throws RemoteException
      */
-    void registerSlave(IClient client) throws RemoteException;
+    void registerClient(IClient client) throws RemoteException;
 }

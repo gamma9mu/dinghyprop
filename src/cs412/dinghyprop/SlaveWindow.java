@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * GUI for RMI slave.
+ * GUI for RMI clientImpl.
  */
 public class SlaveWindow extends JFrame {
     private static final long serialVersionUID = 4245107449408098871L;
@@ -12,14 +12,14 @@ public class SlaveWindow extends JFrame {
     private JLabel statusLabel;
     private JLabel processedLabel;
 
-    private Slave slave;
+    private ClientImpl clientImpl;
 
     /**
      * Create a new {@code SlaveWindow}.
-     * @param slave    The {@code Slave} to watch
+     * @param clientImpl    The {@code ClientImpl} to watch
      */
-    public SlaveWindow(Slave slave) {
-        this.slave = slave;
+    public SlaveWindow(ClientImpl clientImpl) {
+        this.clientImpl = clientImpl;
 
         processedLabel = new JLabel("Processed: 0");
         processedLabel.setPreferredSize(new Dimension(300, 16));
@@ -62,8 +62,8 @@ public class SlaveWindow extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                updateProcessed(slave.getCount());
-                updateStatus(slave.getStatus());
+                updateProcessed(clientImpl.getCount());
+                updateStatus(clientImpl.getStatus());
                 repaint();
             }
         });

@@ -6,20 +6,20 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 /**
- * Client class to handle registering a {@code Slave}.
+ * Client class to handle registering a {@code ClientImpl}.
  */
 public class Client {
 
     /**
-     * Create a slave and register it with the master
+     * Create a client and register it with the master
      * @param address    The IP address of the master
      */
     public Client(String address) {
         try {
             String rmiAddress = "//" + address + "Master";
             IMaster master = (IMaster) Naming.lookup(rmiAddress);
-            Slave slave = new Slave(master.getEvaluationSimulators());
-            master.registerSlave(slave);
+            ClientImpl clientImpl = new ClientImpl(master.getEvaluationSimulators());
+            master.registerClient(clientImpl);
         } catch (NotBoundException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {

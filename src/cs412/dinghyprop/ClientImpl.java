@@ -9,9 +9,9 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
- * Evaluation slave
+ * Evaluation client
  */
-public class Slave extends UnicastRemoteObject implements IClient {
+public class ClientImpl extends UnicastRemoteObject implements IClient {
     private static final long serialVersionUID = 7075703919341311722L;
 
     private Simulator[] simulators;
@@ -22,11 +22,11 @@ public class Slave extends UnicastRemoteObject implements IClient {
     int count = 0;
 
     /**
-     * Create a new slave evaluator with a set of simulation environments.
+     * Create a new client evaluator with a set of simulation environments.
      * @param simulators    The simulation environments
      * @throws RemoteException
      */
-    public Slave(Simulator[] simulators) throws RemoteException {
+    public ClientImpl(Simulator[] simulators) throws RemoteException {
         this.simulators = simulators;
     }
 
@@ -56,7 +56,7 @@ public class Slave extends UnicastRemoteObject implements IClient {
 
     /**
      * Get the count of processed programs.
-     * @return  The number programs processed by this slave
+     * @return  The number programs processed by this client
      */
     public int getCount() {
         return count;
@@ -76,16 +76,16 @@ public class Slave extends UnicastRemoteObject implements IClient {
         if (args.length == 1) {
             ip = args[0];
         } else if (args.length > 1) {
-            System.err.println("Usage: slave [master_address]");
+            System.err.println("Usage: client [master_address]");
             System.exit(-1);
         }
 
         String address = "//" + ip + "/Master";
         IMaster master = (IMaster) Naming.lookup(address);
         Simulator[] sims = master.getEvaluationSimulators();
-        Slave me = new Slave(sims);
+        ClientImpl me = new ClientImpl(sims);
         SlaveWindow sw = new SlaveWindow(me);
-        master.registerSlave(me);
+        master.registerClient(me);
         sw.run();
     }
 }
