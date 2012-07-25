@@ -72,6 +72,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
         this.geneticProgram = geneticProgram;
         this.simulators = simulators;
         this.generations = generations;
+        programsRemaining = geneticProgram.getPopulationSize();
     }
 
     /**
@@ -83,7 +84,6 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
         geneticProgram.addPopulationObserver(this);
         Naming.rebind(address, this);
         geneticProgram.initialize();
-        programsRemaining = geneticProgram.getPopulationSize();
 
         new Thread(this).start();
 
