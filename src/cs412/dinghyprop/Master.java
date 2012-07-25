@@ -30,9 +30,9 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     private Simulator[] simulators;
 
     /**
-     * The list of registered {@code ISlave}s
+     * The list of registered {@code IClient}s
      */
-    private final transient Queue<ISlave> slaves = new ConcurrentLinkedQueue<ISlave>();
+    private final transient Queue<IClient> clients = new ConcurrentLinkedQueue<IClient>();
 
     /**
      * Programs that are pending evaluation
@@ -68,7 +68,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
 
     /**
      * Create a new master object.
-     * @param simulators    The simulation environments to supply to slaves
+     * @param simulators    The simulation environments to supply to clients
      * @throws RemoteException
      */
     public Master(GeneticProgram geneticProgram, Simulator[] simulators, int generations)
@@ -128,7 +128,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * @param program    The program itself
      */
     private void sendForEvaluation(final int index, final Program program) {
-        final ISlave client = getNextSlave();
+        final IClient client = getNextSlave();
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -163,30 +163,30 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     @Override
-    public void registerSlave(ISlave slave) throws RemoteException {
-        enqueueSlave(slave);
+    public void registerSlave(IClient client) throws RemoteException {
+        enqueueSlave(client);
     }
 
     /**
-     * Enqueue a slave for processing, handling notification.
-     * @param slave    The {@code ISlave} to enqueue
+     * Enqueue a client for processing, handling notification.
+     * @param client    The {@code IClient} to enqueue
      */
-    private synchronized void enqueueSlave(ISlave slave) {
-        slaves.add(slave);
+    private synchronized void enqueueSlave(IClient client) {
+        clients.add(client);
         notifyAll();
     }
 
     /**
-     * Obtain the next available {@code ISlave}.
-     * @return  The {@code ISlave} that has been waiting the longest
+     * Obtain the next available {@code IClient}.
+     * @return  The {@code IClient} that has been waiting the longest
      */
-    private synchronized ISlave getNextSlave() {
-        while (slaves.isEmpty()) {
+    private synchronized IClient getNextSlave() {
+        while (clients.isEmpty()) {
             try {
                 wait();
             } catch (InterruptedException ignored) { }
         }
-        return slaves.poll();
+        return clients.poll();
     }
 
     @Override

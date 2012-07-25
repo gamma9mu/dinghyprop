@@ -11,7 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 /**
  * Evaluation slave
  */
-public class Slave extends UnicastRemoteObject implements ISlave {
+public class Slave extends UnicastRemoteObject implements IClient {
     private static final long serialVersionUID = 7075703919341311722L;
 
     private Simulator[] simulators;

@@ -18,9 +18,9 @@ public interface IMaster extends Remote {
     Simulator[] getEvaluationSimulators() throws RemoteException;
 
     /**
-     * Register an evaluation slave to receive programs to evaluate.
-     * @param slave    The slave instance
+     * Register an evaluation client to receive programs to evaluate.
+     * @param client    The client instance
      * @throws RemoteException
      */
-    void registerSlave(ISlave slave) throws RemoteException;
+    void registerSlave(IClient client) throws RemoteException;
 }
