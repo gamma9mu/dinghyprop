@@ -16,6 +16,11 @@ public class Slave extends UnicastRemoteObject implements ISlave {
 
     private Simulator[] simulators;
 
+    /*
+     * Processed program count
+     */
+    int count = 0;
+
     /**
      * Create a new slave evaluator with a set of simulation environments.
      * @param simulators    The simulation environments
@@ -44,7 +49,21 @@ public class Slave extends UnicastRemoteObject implements ISlave {
             catch (CloneNotSupportedException ignored) { }
         }
 
+        count++;
+
         return fitness;
+    }
+
+    /**
+     * Get the count of processed programs.
+     * @return  The number programs processed by this slave
+     */
+    public int getCount() {
+        return count;
+    }
+
+    public String getStatus() {
+        return "Processing";
     }
 
     /**
@@ -65,6 +84,8 @@ public class Slave extends UnicastRemoteObject implements ISlave {
         IMaster master = (IMaster) Naming.lookup(address);
         Simulator[] sims = master.getEvaluationSimulators();
         Slave me = new Slave(sims);
+        SlaveWindow sw = new SlaveWindow(me);
         master.registerSlave(me);
+        sw.run();
     }
 }
