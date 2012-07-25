@@ -1,3 +1,5 @@
+package cs412.dinghyprop;
+
 import javax.swing.*;
 import java.awt.*;
 import cs412.dinghyprop.simulator.Simulator;
