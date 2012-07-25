@@ -9,10 +9,12 @@ public class History implements Observer {
 	private LinkedList<Integer> yValues;
 	private int count;
 	
-	public History() {
-		xValues = new LinkedList();
-		yValues = new LinkedList();
+	public History(int posX, int posY) {
+		xValues = new LinkedList<Integer>();
+		yValues = new LinkedList<Integer>();
 		count = 0;
+		xValues.add(posX);
+		yValues.add(posY);
 	}
 	
 	@Override

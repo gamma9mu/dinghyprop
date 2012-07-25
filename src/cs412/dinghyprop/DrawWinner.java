@@ -12,6 +12,7 @@ public class DrawWinner extends JPanel {
 	private int prevDinghyPosX;
 	private int prevDinghyPosY;
 	private Obstacle[] obstacles;
+	private Graphics2D graph;
 	
 	
 	public DrawWinner(Simulator current) {
@@ -25,6 +26,14 @@ public class DrawWinner extends JPanel {
 
 	@Override
 	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		graph = (Graphics2D)g;
+		
+		graph.setColor(Color.GREEN);
+		graph.fillOval(goal[0], goal[1], 1, 1);
+		
+		graph.setColor(Color.RED);
+		drawObstacles();
 		
 	
 	} 
@@ -37,5 +46,12 @@ public class DrawWinner extends JPanel {
 	
 	public void moveDinghy(int posX, int posY) {
 	
+	}
+	
+	private void drawObstacles() {
+		for(Obstacle obstacle : obstacles) {
+			int position[] = obstacle.getPosition();
+			graph.fillOval(position[0], position[1], 1, 1);
+		}
 	}
 }

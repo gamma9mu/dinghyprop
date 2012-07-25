@@ -29,7 +29,7 @@ public class Simulator extends Observable implements Cloneable, Serializable {
 		sizeY = maxY;
 		obstacles = new Obstacle[numObstacles];
 		dinghy = new Dinghy(dinghyX, dinghyY);
-		history = new History();
+		history = new History(dinghyX, dinghyY);
 		addObserver(history);
 	}
 	
