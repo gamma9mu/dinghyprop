@@ -3,7 +3,7 @@ package cs412.dinghyprop;
 import cs412.dinghyprop.genetics.GeneticProgram;
 import cs412.dinghyprop.genetics.IPopulationObserver;
 import cs412.dinghyprop.genetics.Program;
-import cs412.dinghyprop.simulator.Simulator;
+import cs412.dinghyprop.simulator.ISimulator;
 import cs412.dinghyprop.simulator.SimulatorRandom;
 
 import java.net.MalformedURLException;
@@ -27,7 +27,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     /**
      * The simulation environments of the GP run
      */
-    private Simulator[] simulators;
+    private ISimulator[] simulators;
 
     /**
      * The list of registered {@code IClient}s
@@ -73,7 +73,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * @param simulators    The simulation environments to supply to clients
      * @throws RemoteException
      */
-    public Master(GeneticProgram geneticProgram, Simulator[] simulators, int generations)
+    public Master(GeneticProgram geneticProgram, ISimulator[] simulators, int generations)
             throws RemoteException {
         this.geneticProgram = geneticProgram;
         this.simulators = simulators;
@@ -162,7 +162,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     @Override
-    public Simulator[] getEvaluationSimulators() throws RemoteException {
+    public ISimulator[] getEvaluationSimulators() throws RemoteException {
         return simulators;
     }
 
@@ -262,7 +262,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     public static void main(String[] args) throws Exception {
         GeneticProgram gp = new GeneticProgram(100,
                 GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 3);
-        Simulator[] simulators = {new SimulatorRandom(10, 10, 6).getSimulator(),
+        ISimulator[] simulators = {new SimulatorRandom(10, 10, 6).getSimulator(),
                 new SimulatorRandom(10, 10, 6).getSimulator(),
                 new SimulatorRandom(10, 10, 6).getSimulator()
         };

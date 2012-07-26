@@ -37,7 +37,7 @@ public class SimulatorRandom {
 		}
 	}
 
-    public Simulator getSimulator() {
+    public ISimulator getSimulator() {
         return sim;
     }
 

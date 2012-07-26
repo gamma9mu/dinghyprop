@@ -1,7 +1,7 @@
 package cs412.dinghyprop.interpreter;
 
 import cs412.dinghyprop.simulator.ExecutionException;
-import cs412.dinghyprop.simulator.Simulator;
+import cs412.dinghyprop.simulator.ISimulator;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  */
 public class Interpreter {
     private static Logger log = Logger.getLogger("Interpreter");
-    private Simulator simulator;
+    private ISimulator simulator;
     private Expression program;
     private boolean programRaised = false;
     private String programText;
@@ -22,7 +22,7 @@ public class Interpreter {
      *                     interpreter
      * @param program      The program to execute
      */
-    public Interpreter(Simulator simulator, String program) throws ParsingException {
+    public Interpreter(ISimulator simulator, String program) throws ParsingException {
         this.simulator = simulator;
         programText = program;
         this.program = new Parser(program).parse();
