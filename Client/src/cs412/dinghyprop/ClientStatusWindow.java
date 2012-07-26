@@ -47,7 +47,7 @@ public class ClientStatusWindow extends JFrame {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                while (sw.isClientRunning()) {
                     try {
                         Thread.sleep(400);
                     } catch (InterruptedException ignored) { }
@@ -71,4 +71,11 @@ public class ClientStatusWindow extends JFrame {
         });
     }
 
+    /**
+     * Inform whether the client reports itself as still running
+     * @return  True for yes, etc.
+     */
+    private boolean isClientRunning() {
+        return clientImpl.isRunning();
+    }
 }

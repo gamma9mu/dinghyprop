@@ -20,6 +20,7 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
     private transient IMaster master = null;
     private transient ISimulator[] simulators = null;
     private String status = "Not Connected";
+    private boolean running = true;
 
     /*
      * Processed program count
@@ -79,6 +80,7 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
     @Override
     public void release() throws RemoteException {
         master = null;
+        running = false;
         status = "Disconnected";
     }
 
@@ -104,5 +106,14 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
      */
     public String getServerAddress() {
         return masterAddress;
+    }
+
+    /**
+     * Inform whether this is still running.
+     * @return  True while there is a possibility of status updates, false
+     * otherwise
+     */
+    public boolean isRunning() {
+        return running;
     }
 }
