@@ -4,6 +4,9 @@ import cs412.dinghyprop.interpreter.Interpreter;
 import cs412.dinghyprop.interpreter.ParsingException;
 import cs412.dinghyprop.simulator.ISimulator;
 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -13,8 +16,10 @@ import java.rmi.server.UnicastRemoteObject;
 public class ClientImpl extends UnicastRemoteObject implements IClient {
     private static final long serialVersionUID = 7075703919341311722L;
 
-    private ISimulator[] simulators;
-    private boolean inUse = true;
+    private String masterAddress;
+    private transient IMaster master = null;
+    private transient ISimulator[] simulators = null;
+    private String status = "Not Connected";
 
     /*
      * Processed program count
@@ -23,11 +28,28 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
 
     /**
      * Create a new client evaluator with a set of simulation environments.
-     * @param simulators    The simulation environments
+     * @param address    The address of the RMI server
      * @throws RemoteException
      */
-    public ClientImpl(ISimulator[] simulators) throws RemoteException {
-        this.simulators = simulators;
+    public ClientImpl(String address) throws RemoteException {
+        super();
+        masterAddress = "//" + address + "/Master";
+    }
+
+    /**
+     * Attach to the server.
+     * @throws MalformedURLException
+     * @throws NotBoundException
+     * @throws RemoteException
+     */
+    public void initialize() throws MalformedURLException, NotBoundException, RemoteException {
+        status = "Looking up server...";
+        master = (IMaster) Naming.lookup(masterAddress);
+        status = "Obtaining environments...";
+        simulators = master.getEvaluationSimulators();
+        status = "Registering with server...";
+        master.registerClient(this);
+        status = "Processing...";
     }
 
     /**
@@ -56,7 +78,8 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
 
     @Override
     public void release() throws RemoteException {
-        inUse = false;
+        master = null;
+        status = "Disconnected";
     }
 
     /**
@@ -72,6 +95,6 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
      * @return  The current status
      */
     public String getStatus() {
-        return inUse ? "Processing" : "Disconnected";
+        return status;
     }
 }

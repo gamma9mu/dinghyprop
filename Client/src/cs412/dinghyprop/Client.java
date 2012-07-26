@@ -1,7 +1,5 @@
 package cs412.dinghyprop;
 
-import java.rmi.Naming;
-
 /**
  * Client class to handle registering a {@code ClientImpl}.
  */
@@ -12,12 +10,10 @@ public class Client {
      * @param address    The IP address of the master
      */
     public Client(String address) throws Exception {
-        String rmiAddress = "//" + address + "/Master";
-        IMaster master = (IMaster) Naming.lookup(rmiAddress);
-        ClientImpl client = new ClientImpl(master.getEvaluationSimulators());
+        ClientImpl client = new ClientImpl(address);
         ClientStatusWindow sw = new ClientStatusWindow(client);
         sw.run();
-        master.registerClient(client);
+        client.initialize();
     }
 
     /**
