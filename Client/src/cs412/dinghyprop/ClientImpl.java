@@ -14,6 +14,7 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
     private static final long serialVersionUID = 7075703919341311722L;
 
     private ISimulator[] simulators;
+    private boolean inUse = true;
 
     /*
      * Processed program count
@@ -53,6 +54,11 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
         return fitness;
     }
 
+    @Override
+    public void release() throws RemoteException {
+        inUse = false;
+    }
+
     /**
      * Get the count of processed programs.
      * @return  The number programs processed by this client
@@ -66,6 +72,6 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
      * @return  The current status
      */
     public String getStatus() {
-        return "Processing";
+        return inUse ? "Processing" : "Disconnected";
     }
 }

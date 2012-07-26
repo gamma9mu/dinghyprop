@@ -108,6 +108,9 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
             resetStatistics();
             geneticProgram.createNextGeneration();
         }
+        for (IClient client : clients)
+            client.release();
+        clients.clear();
         running = false;
     }
 
