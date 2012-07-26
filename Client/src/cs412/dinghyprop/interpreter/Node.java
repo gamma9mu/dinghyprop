@@ -46,22 +46,17 @@ final class Node extends JComponent {
         strHeight = height;
         int width = fm.stringWidth(value);
 
-        int maxH = 0, maxW = 0;
+        w = 0;
+        int maxH = 0;
         for (Node n : children) {
             n.computeSize(g);
-            maxW = (n.w > maxW) ? n.w : maxW;
+            w += n.w;
             maxH = (n.h > maxH) ? n.h : maxH;
         }
 
-        // normalize children's widths
-        for (Node n : children) {
-            n.w = maxW;
-        }
-
-        w = maxW * children.size();
         h = height;
+        w += ((children.size() - 1) * HSPACE);
         if (! children.isEmpty()) {
-            w += ((children.size() - 1) * HSPACE);
             h += VSPACE + maxH;
         }
         // ensure this width accounts for the width of 'value'

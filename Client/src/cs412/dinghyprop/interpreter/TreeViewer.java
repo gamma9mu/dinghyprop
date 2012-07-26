@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  * {@code JScrollPane}.  A convenience method is provided that creates a
  * {@code JFrame} with the created TreeViewer in a {@code JScrollPane}.
  */
-public final class TreeViewer extends JPanel {
+public final class TreeViewer extends JPanel implements Scrollable {
     private static final long serialVersionUID = -447063110938138711L;
     private Node root;
     private boolean sizeComputed = false;
@@ -27,10 +27,14 @@ public final class TreeViewer extends JPanel {
      */
     public static JFrame createFramedExpression(Expression expression) {
         JFrame jf = new JFrame();
+        jf.setLayout(new BorderLayout());
         TreeViewer tv = new TreeViewer(expression);
         JScrollPane jsp = new JScrollPane();
         jsp.setViewportView(tv);
-        jf.add(jsp);
+        jf.add(jsp, BorderLayout.CENTER);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        jf.setPreferredSize(new Dimension(screenSize.width / 3, screenSize.height / 2));
+
         jf.pack();
         return jf;
     }
@@ -100,6 +104,31 @@ public final class TreeViewer extends JPanel {
     @Override
     public String toString() {
         return "TreeViewer{root=" + root + ", sizeComputed=" + sizeComputed + '}';
+    }
+
+    @Override
+    public Dimension getPreferredScrollableViewportSize() {
+        return getPreferredSize();
+    }
+
+    @Override
+    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return 1;
+    }
+
+    @Override
+    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return 1;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportWidth() {
+        return false;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportHeight() {
+        return false;
     }
 
     /**
