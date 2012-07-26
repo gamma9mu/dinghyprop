@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_simulator" default="compile.module.simulator">
+  <dirname property="module.simulator.basedir" file="${ant.file.module_simulator}"/>
+  
+  
+  <property name="compiler.args.simulator" value="${compiler.args}"/>
+  
+  <property name="simulator.output.dir" value="${module.simulator.basedir}/../out/production/Simulator"/>
+  <property name="simulator.testoutput.dir" value="${module.simulator.basedir}/../out/test/Simulator"/>
+  
+  <path id="simulator.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="simulator.module.production.classpath">
+    <pathelement location="${remotes.output.dir}"/>
+  </path>
+  
+  <path id="simulator.runtime.production.module.classpath">
+    <pathelement location="${simulator.output.dir}"/>
+    <path refid="remotes.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="simulator.module.classpath">
+    <pathelement location="${simulator.output.dir}"/>
+    <pathelement location="${remotes.testoutput.dir}"/>
+    <pathelement location="${remotes.output.dir}"/>
+  </path>
+  
+  <path id="simulator.runtime.module.classpath">
+    <pathelement location="${simulator.testoutput.dir}"/>
+    <pathelement location="${simulator.output.dir}"/>
+    <path refid="remotes.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.simulator">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.simulator">
+    <patternset refid="excluded.from.module.simulator"/>
+  </patternset>
+  
+  <path id="simulator.module.sourcepath">
+    <dirset dir="${module.simulator.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.simulator" depends="compile.module.simulator.production,compile.module.simulator.tests" description="Compile module Simulator"/>
+  
+  <target name="compile.module.simulator.production" depends="compile.module.remotes" description="Compile module Simulator; production classes">
+    <mkdir dir="${simulator.output.dir}"/>
+    <javac destdir="${simulator.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.simulator}"/>
+      <bootclasspath refid="simulator.module.bootclasspath"/>
+      <classpath refid="simulator.module.production.classpath"/>
+      <src refid="simulator.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.simulator"/>
+    </javac>
+    
+    <copy todir="${simulator.output.dir}">
+      <fileset dir="${module.simulator.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.simulator.tests" depends="compile.module.simulator.production" description="compile module Simulator; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.simulator" description="cleanup module">
+    <delete dir="${simulator.output.dir}"/>
+    <delete dir="${simulator.testoutput.dir}"/>
+  </target>
+</project>

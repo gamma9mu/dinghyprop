@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_dinghyprop" default="compile.module.dinghyprop">
+  <dirname property="module.dinghyprop.basedir" file="${ant.file.module_dinghyprop}"/>
+  
+  
+  <property name="compiler.args.dinghyprop" value="${compiler.args}"/>
+  
+  <property name="dinghyprop.output.dir" value="${module.dinghyprop.basedir}/out/production/Dinghyprop"/>
+  <property name="dinghyprop.testoutput.dir" value="${module.dinghyprop.basedir}/out/test/Dinghyprop"/>
+  
+  <path id="dinghyprop.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="dinghyprop.module.production.classpath">
+    <pathelement location="jar/testng-jdk15.jar"/>
+    <pathelement location="${remotes.output.dir}"/>
+    <pathelement location="${client.output.dir}"/>
+    <pathelement location="${server.output.dir}"/>
+    <pathelement location="${simulator.output.dir}"/>
+  </path>
+  
+  <path id="dinghyprop.runtime.production.module.classpath">
+    <pathelement location="${dinghyprop.output.dir}"/>
+    <pathelement location="jar/testng-jdk15.jar"/>
+    <path refid="remotes.runtime.production.module.classpath"/>
+    <path refid="client.runtime.production.module.classpath"/>
+    <path refid="server.runtime.production.module.classpath"/>
+    <path refid="simulator.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="dinghyprop.module.classpath">
+    <pathelement location="${dinghyprop.output.dir}"/>
+    <pathelement location="jar/testng-jdk15.jar"/>
+    <pathelement location="${remotes.testoutput.dir}"/>
+    <pathelement location="${remotes.output.dir}"/>
+    <pathelement location="${client.testoutput.dir}"/>
+    <pathelement location="${client.output.dir}"/>
+    <pathelement location="${server.testoutput.dir}"/>
+    <pathelement location="${server.output.dir}"/>
+    <pathelement location="${simulator.testoutput.dir}"/>
+    <pathelement location="${simulator.output.dir}"/>
+  </path>
+  
+  <path id="dinghyprop.runtime.module.classpath">
+    <pathelement location="${dinghyprop.testoutput.dir}"/>
+    <pathelement location="${dinghyprop.output.dir}"/>
+    <pathelement location="jar/testng-jdk15.jar"/>
+    <path refid="remotes.runtime.module.classpath"/>
+    <path refid="client.runtime.module.classpath"/>
+    <path refid="server.runtime.module.classpath"/>
+    <path refid="simulator.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.dinghyprop">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.dinghyprop">
+    <patternset refid="excluded.from.module.dinghyprop"/>
+  </patternset>
+  
+  <path id="dinghyprop.module.sourcepath">
+    <dirset dir="${module.dinghyprop.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="dinghyprop.module.test.sourcepath">
+    <dirset dir="${module.dinghyprop.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.dinghyprop" depends="compile.module.dinghyprop.production,compile.module.dinghyprop.tests" description="Compile module Dinghyprop"/>
+  
+  <target name="compile.module.dinghyprop.production" depends="compile.module.remotes,compile.module.client,compile.module.server,compile.module.simulator" description="Compile module Dinghyprop; production classes">
+    <mkdir dir="${dinghyprop.output.dir}"/>
+    <javac destdir="${dinghyprop.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.dinghyprop}"/>
+      <bootclasspath refid="dinghyprop.module.bootclasspath"/>
+      <classpath refid="dinghyprop.module.production.classpath"/>
+      <src refid="dinghyprop.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.dinghyprop"/>
+    </javac>
+    
+    <copy todir="${dinghyprop.output.dir}">
+      <fileset dir="${module.dinghyprop.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.dinghyprop.tests" depends="compile.module.dinghyprop.production" description="compile module Dinghyprop; test classes" unless="skip.tests">
+    <mkdir dir="${dinghyprop.testoutput.dir}"/>
+    <javac destdir="${dinghyprop.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.dinghyprop}"/>
+      <bootclasspath refid="dinghyprop.module.bootclasspath"/>
+      <classpath refid="dinghyprop.module.classpath"/>
+      <src refid="dinghyprop.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.dinghyprop"/>
+    </javac>
+    
+    <copy todir="${dinghyprop.testoutput.dir}">
+      <fileset dir="${module.dinghyprop.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.dinghyprop" description="cleanup module">
+    <delete dir="${dinghyprop.output.dir}"/>
+    <delete dir="${dinghyprop.testoutput.dir}"/>
+  </target>
+</project>

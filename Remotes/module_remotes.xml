@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_remotes" default="compile.module.remotes">
+  <dirname property="module.remotes.basedir" file="${ant.file.module_remotes}"/>
+  
+  
+  <property name="compiler.args.remotes" value="${compiler.args}"/>
+  
+  <property name="remotes.output.dir" value="${module.remotes.basedir}/../out/production/Remotes"/>
+  <property name="remotes.testoutput.dir" value="${module.remotes.basedir}/../out/test/Remotes"/>
+  
+  <path id="remotes.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="remotes.module.production.classpath"/>
+  
+  <path id="remotes.runtime.production.module.classpath">
+    <pathelement location="${remotes.output.dir}"/>
+  </path>
+  
+  <path id="remotes.module.classpath">
+    <pathelement location="${remotes.output.dir}"/>
+  </path>
+  
+  <path id="remotes.runtime.module.classpath">
+    <pathelement location="${remotes.testoutput.dir}"/>
+    <pathelement location="${remotes.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.remotes">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.remotes">
+    <patternset refid="excluded.from.module.remotes"/>
+  </patternset>
+  
+  <path id="remotes.module.sourcepath">
+    <dirset dir="${module.remotes.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.remotes" depends="compile.module.remotes.production,compile.module.remotes.tests" description="Compile module Remotes"/>
+  
+  <target name="compile.module.remotes.production" description="Compile module Remotes; production classes">
+    <mkdir dir="${remotes.output.dir}"/>
+    <javac destdir="${remotes.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.remotes}"/>
+      <bootclasspath refid="remotes.module.bootclasspath"/>
+      <classpath refid="remotes.module.production.classpath"/>
+      <src refid="remotes.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.remotes"/>
+    </javac>
+    
+    <copy todir="${remotes.output.dir}">
+      <fileset dir="${module.remotes.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.remotes.tests" depends="compile.module.remotes.production" description="compile module Remotes; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.remotes" description="cleanup module">
+    <delete dir="${remotes.output.dir}"/>
+    <delete dir="${remotes.testoutput.dir}"/>
+  </target>
+</project>
