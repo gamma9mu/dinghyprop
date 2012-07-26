@@ -9,7 +9,6 @@ import java.awt.*;
 public class ClientStatusWindow extends JFrame {
     private static final long serialVersionUID = 4245107449408098871L;
 
-    private JLabel addressLabel;
     private JLabel statusLabel;
     private JLabel processedLabel;
 
@@ -22,16 +21,16 @@ public class ClientStatusWindow extends JFrame {
     public ClientStatusWindow(ClientImpl clientImpl) {
         this.clientImpl = clientImpl;
 
-        addressLabel = new JLabel("Server: " + clientImpl.getServerAddress());
-        processedLabel = new JLabel("Processed: 0");
-        processedLabel.setPreferredSize(new Dimension(300, 16));
-        statusLabel = new JLabel("Status: Initializing");
-        statusLabel.setPreferredSize(new Dimension(300, 16));
+        processedLabel = new JLabel("0");
+        statusLabel = new JLabel("Initializing");
 
-        setLayout(new GridLayout(3, 1));
-        getContentPane().add(addressLabel, 0);
-        getContentPane().add(processedLabel, 1);
-        getContentPane().add(statusLabel, 2);
+        setLayout(new GridLayout(3, 2));
+        getContentPane().add(new JLabel("Server: ", SwingConstants.RIGHT));
+        getContentPane().add(new JLabel(clientImpl.getServerAddress() + "    "));
+        getContentPane().add(new JLabel("Processed: ", SwingConstants.RIGHT));
+        getContentPane().add(processedLabel);
+        getContentPane().add(new JLabel("Status: ", SwingConstants.RIGHT));
+        getContentPane().add(statusLabel);
 
         setTitle("DGP Client");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -65,26 +64,11 @@ public class ClientStatusWindow extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                updateProcessed(clientImpl.getCount());
-                updateStatus(clientImpl.getStatus());
+                processedLabel.setText(Integer.toString(clientImpl.getCount()));
+                statusLabel.setText(clientImpl.getStatus());
                 repaint();
             }
         });
     }
 
-    /**
-     * Update the processed GUI field.
-     * @param processed    The new processed count
-     */
-    private void updateProcessed(int processed) {
-        processedLabel.setText("Processed: " + Integer.toString(processed));
-    }
-
-    /**
-     * Update the GUI status field.
-     * @param status    The new status
-     */
-    private void updateStatus(String status) {
-        statusLabel.setText("Status: " + status);
-    }
 }
