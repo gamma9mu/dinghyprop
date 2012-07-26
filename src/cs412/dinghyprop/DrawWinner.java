@@ -124,7 +124,8 @@ public class DrawWinner extends JPanel implements Observer{
 	private static void createGui(Simulator sim) {
 		DrawWinner draw;
 		if (sim == null)
-			draw = new DrawWinner(new SimulatorRandom(SIZEX, SIZEY, MAX_OBSTACLE).getSimulator());
+			draw = new DrawWinner((Simulator)
+                    new SimulatorRandom(SIZEX, SIZEY, MAX_OBSTACLE).getSimulator());
 		else
 			draw = new DrawWinner(sim);
 		JFrame frame = new JFrame("animation");
