@@ -134,7 +134,7 @@ public final class CheckpointLoader {
                     return instantiateSelector(name.trim(),
                             Integer.parseInt(argument));
                 }
-            } catch (ReflectiveOperationException e) {
+            } catch (Exception e) {
                 return null;
             }
 
