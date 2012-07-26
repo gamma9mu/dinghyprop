@@ -97,4 +97,12 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
     public String getStatus() {
         return status;
     }
+
+    /**
+     * Obtain the server's address
+     * @return  The full address string of the server
+     */
+    public String getServerAddress() {
+        return masterAddress;
+    }
 }

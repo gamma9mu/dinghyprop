@@ -9,6 +9,7 @@ import java.awt.*;
 public class ClientStatusWindow extends JFrame {
     private static final long serialVersionUID = 4245107449408098871L;
 
+    private JLabel addressLabel;
     private JLabel statusLabel;
     private JLabel processedLabel;
 
@@ -21,14 +22,16 @@ public class ClientStatusWindow extends JFrame {
     public ClientStatusWindow(ClientImpl clientImpl) {
         this.clientImpl = clientImpl;
 
+        addressLabel = new JLabel("Server: " + clientImpl.getServerAddress());
         processedLabel = new JLabel("Processed: 0");
         processedLabel.setPreferredSize(new Dimension(300, 16));
         statusLabel = new JLabel("Status: Initializing");
         statusLabel.setPreferredSize(new Dimension(300, 16));
 
-        setLayout(new GridLayout(2, 1));
-        getContentPane().add(processedLabel, 0);
-        getContentPane().add(statusLabel, 1);
+        setLayout(new GridLayout(3, 1));
+        getContentPane().add(addressLabel, 0);
+        getContentPane().add(processedLabel, 1);
+        getContentPane().add(statusLabel, 2);
 
         setTitle("DGP Client");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
