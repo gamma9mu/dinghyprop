@@ -19,8 +19,8 @@
   
   <path id="server.runtime.production.module.classpath">
     <pathelement location="${server.output.dir}"/>
-    <path refid="remotes.runtime.production.module.classpath"/>
-    <path refid="simulator.runtime.production.module.classpath"/>
+    <pathelement location="${remotes.output.dir}"/>
+    <pathelement location="${simulator.output.dir}"/>
   </path>
   
   <path id="server.module.classpath">
@@ -34,8 +34,10 @@
   <path id="server.runtime.module.classpath">
     <pathelement location="${server.testoutput.dir}"/>
     <pathelement location="${server.output.dir}"/>
-    <path refid="remotes.runtime.module.classpath"/>
-    <path refid="simulator.runtime.module.classpath"/>
+    <pathelement location="${remotes.testoutput.dir}"/>
+    <pathelement location="${remotes.output.dir}"/>
+    <pathelement location="${simulator.testoutput.dir}"/>
+    <pathelement location="${simulator.output.dir}"/>
   </path>
   
   

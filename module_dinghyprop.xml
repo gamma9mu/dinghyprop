@@ -13,25 +13,24 @@
   </path>
   
   <path id="dinghyprop.module.production.classpath">
-    <pathelement location="jar/testng-jdk15.jar"/>
     <pathelement location="${remotes.output.dir}"/>
     <pathelement location="${client.output.dir}"/>
     <pathelement location="${server.output.dir}"/>
     <pathelement location="${simulator.output.dir}"/>
+    <pathelement location="${basedir}/jar/testng-jdk15.jar"/>
   </path>
   
   <path id="dinghyprop.runtime.production.module.classpath">
     <pathelement location="${dinghyprop.output.dir}"/>
-    <pathelement location="jar/testng-jdk15.jar"/>
-    <path refid="remotes.runtime.production.module.classpath"/>
-    <path refid="client.runtime.production.module.classpath"/>
-    <path refid="server.runtime.production.module.classpath"/>
-    <path refid="simulator.runtime.production.module.classpath"/>
+    <pathelement location="${remotes.output.dir}"/>
+    <pathelement location="${client.output.dir}"/>
+    <pathelement location="${server.output.dir}"/>
+    <pathelement location="${simulator.output.dir}"/>
+    <pathelement location="${basedir}/jar/testng-jdk15.jar"/>
   </path>
   
   <path id="dinghyprop.module.classpath">
     <pathelement location="${dinghyprop.output.dir}"/>
-    <pathelement location="jar/testng-jdk15.jar"/>
     <pathelement location="${remotes.testoutput.dir}"/>
     <pathelement location="${remotes.output.dir}"/>
     <pathelement location="${client.testoutput.dir}"/>
@@ -40,16 +39,21 @@
     <pathelement location="${server.output.dir}"/>
     <pathelement location="${simulator.testoutput.dir}"/>
     <pathelement location="${simulator.output.dir}"/>
+    <pathelement location="${basedir}/jar/testng-jdk15.jar"/>
   </path>
   
   <path id="dinghyprop.runtime.module.classpath">
     <pathelement location="${dinghyprop.testoutput.dir}"/>
     <pathelement location="${dinghyprop.output.dir}"/>
-    <pathelement location="jar/testng-jdk15.jar"/>
-    <path refid="remotes.runtime.module.classpath"/>
-    <path refid="client.runtime.module.classpath"/>
-    <path refid="server.runtime.module.classpath"/>
-    <path refid="simulator.runtime.module.classpath"/>
+    <pathelement location="${remotes.testoutput.dir}"/>
+    <pathelement location="${remotes.output.dir}"/>
+    <pathelement location="${client.testoutput.dir}"/>
+    <pathelement location="${client.output.dir}"/>
+    <pathelement location="${server.testoutput.dir}"/>
+    <pathelement location="${server.output.dir}"/>
+    <pathelement location="${simulator.testoutput.dir}"/>
+    <pathelement location="${simulator.output.dir}"/>
+    <pathelement location="${basedir}/jar/testng-jdk15.jar"/>
   </path>
   
   
