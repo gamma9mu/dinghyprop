@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="6.0+" href="dgp.jnlp" version="1.0" codebase="http://localhost/dgp">
+  <information>
+    <title>DGP Client</title>
+    <vendor>CS412</vendor>
+    <description>Client for DGP demo.</description>
+    <icon href="dgp.jpg"/>
+  </information>
+
+  <resources>
+    <j2se version="1.6+" java-vm-args="-esa"/>
+    <jar href="Client.jar" download="progress"/>
+    <property name="injws" value="true"/>
+  </resources>
+  <application-desc/>
+</jnlp> 
