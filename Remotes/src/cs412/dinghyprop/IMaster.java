@@ -1,7 +1,7 @@
 package cs412.dinghyprop;
 
 import cs412.dinghyprop.genetics.Program;
-import cs412.dinghyprop.simulator.Simulator;
+import cs412.dinghyprop.simulator.ISimulator;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -16,7 +16,7 @@ public interface IMaster extends Remote {
      * @return  An array of the simulators to use to evaluate programs
      * @throws RemoteException
      */
-    Simulator[] getEvaluationSimulators() throws RemoteException;
+    ISimulator[] getEvaluationSimulators() throws RemoteException;
 
     /**
      * Register an evaluation client to receive programs to evaluate.

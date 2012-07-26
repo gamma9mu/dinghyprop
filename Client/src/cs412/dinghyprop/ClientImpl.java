@@ -2,7 +2,7 @@ package cs412.dinghyprop;
 
 import cs412.dinghyprop.interpreter.Interpreter;
 import cs412.dinghyprop.interpreter.ParsingException;
-import cs412.dinghyprop.simulator.Simulator;
+import cs412.dinghyprop.simulator.ISimulator;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -13,7 +13,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class ClientImpl extends UnicastRemoteObject implements IClient {
     private static final long serialVersionUID = 7075703919341311722L;
 
-    private Simulator[] simulators;
+    private ISimulator[] simulators;
 
     /*
      * Processed program count
@@ -25,7 +25,7 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
      * @param simulators    The simulation environments
      * @throws RemoteException
      */
-    public ClientImpl(Simulator[] simulators) throws RemoteException {
+    public ClientImpl(ISimulator[] simulators) throws RemoteException {
         this.simulators = simulators;
     }
 
@@ -39,7 +39,7 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
     public int evaluateProgram(String program) throws RemoteException {
         int fitness = 0;
 
-        for (Simulator simulator : simulators) {
+        for (ISimulator simulator : simulators) {
             try {
                 Interpreter interpreter = new Interpreter(simulator.clone(), program);
                 interpreter.run(100);

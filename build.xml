@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="dinghyprop" default="all">
+  
+  
+  <property file="dinghyprop.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="128m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/*.rbc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.zip"/>
+    <include name="*.apk"/>
+    <include name="*.war"/>
+    <include name="*.egg"/>
+    <include name="*.ear"/>
+    <include name="*.ane"/>
+    <include name="*.swc"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <include name="**/?*.properties"/>
+    <include name="**/?*.xml"/>
+    <include name="**/?*.gif"/>
+    <include name="**/?*.png"/>
+    <include name="**/?*.jpeg"/>
+    <include name="**/?*.jpg"/>
+    <include name="**/?*.html"/>
+    <include name="**/?*.dtd"/>
+    <include name="**/?*.tld"/>
+    <include name="**/?*.ftl"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin" value="${jdk.home}/bin"/>
+  <path id="jdk.classpath">
+    <fileset dir="${jdk.home}">
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/alt-rt.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/vecmath.jar"/>
+      <include name="jre/lib/ext/j3dutils.jar"/>
+      <include name="jre/lib/ext/j3dcore.jar"/>
+    </fileset>
+    <fileset dir="jar">
+        <include name="testng-jdk15.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home}"/>
+  <property name="project.jdk.bin" value="${jdk.bin}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath"/>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module Remotes -->
+  
+  <dirname property="module.remotes.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.remotes" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.remotes" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.remotes" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.remotes" value="${compiler.args}"/>
+  
+  <property name="remotes.output.dir" value="${module.remotes.basedir}/out/production/Remotes"/>
+  <property name="remotes.testoutput.dir" value="${module.remotes.basedir}/out/test/Remotes"/>
+  
+  <path id="remotes.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="remotes.module.production.classpath">
+    <path refid="${module.jdk.classpath.remotes}"/>
+  </path>
+  
+  <path id="remotes.runtime.production.module.classpath">
+    <pathelement location="${remotes.output.dir}"/>
+  </path>
+  
+  <path id="remotes.module.classpath">
+    <path refid="${module.jdk.classpath.remotes}"/>
+    <pathelement location="${remotes.output.dir}"/>
+  </path>
+  
+  <path id="remotes.runtime.module.classpath">
+    <pathelement location="${remotes.testoutput.dir}"/>
+    <pathelement location="${remotes.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.remotes">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.remotes">
+    <patternset refid="excluded.from.module.remotes"/>
+  </patternset>
+  
+  <path id="remotes.module.sourcepath">
+    <dirset dir="${module.remotes.basedir}/Remotes">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.remotes" depends="compile.module.remotes.production,compile.module.remotes.tests" description="Compile module Remotes"/>
+  
+  <target name="compile.module.remotes.production" description="Compile module Remotes; production classes">
+    <mkdir dir="${remotes.output.dir}"/>
+    <javac destdir="${remotes.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.remotes}/javac" includeantruntime="false">
+      <compilerarg line="${compiler.args.remotes}"/>
+      <bootclasspath refid="remotes.module.bootclasspath"/>
+      <classpath refid="remotes.module.production.classpath"/>
+      <src refid="remotes.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.remotes"/>
+    </javac>
+    
+    <copy todir="${remotes.output.dir}">
+      <fileset dir="${module.remotes.basedir}/Remotes/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.remotes.tests" depends="compile.module.remotes.production" description="compile module Remotes; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.remotes" description="cleanup module">
+    <delete dir="${remotes.output.dir}"/>
+    <delete dir="${remotes.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module Client -->
+  
+  <dirname property="module.client.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.client" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.client" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.client" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.client" value="${compiler.args}"/>
+  
+  <property name="client.output.dir" value="${module.client.basedir}/out/production/Client"/>
+  <property name="client.testoutput.dir" value="${module.client.basedir}/out/test/Client"/>
+  
+  <path id="client.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="client.module.production.classpath">
+    <path refid="${module.jdk.classpath.client}"/>
+    <pathelement location="${remotes.output.dir}"/>
+  </path>
+  
+  <path id="client.runtime.production.module.classpath">
+    <pathelement location="${client.output.dir}"/>
+    <path refid="remotes.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="client.module.classpath">
+    <path refid="${module.jdk.classpath.client}"/>
+    <pathelement location="${client.output.dir}"/>
+    <pathelement location="${remotes.testoutput.dir}"/>
+    <pathelement location="${remotes.output.dir}"/>
+  </path>
+  
+  <path id="client.runtime.module.classpath">
+    <pathelement location="${client.testoutput.dir}"/>
+    <pathelement location="${client.output.dir}"/>
+    <path refid="remotes.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.client">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.client">
+    <patternset refid="excluded.from.module.client"/>
+  </patternset>
+  
+  <path id="client.module.sourcepath">
+    <dirset dir="${module.client.basedir}/Client">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.client" depends="compile.module.client.production,compile.module.client.tests" description="Compile module Client"/>
+  
+  <target name="compile.module.client.production" depends="compile.module.remotes" description="Compile module Client; production classes">
+    <mkdir dir="${client.output.dir}"/>
+    <javac destdir="${client.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.client}/javac" includeantruntime="false">
+      <compilerarg line="${compiler.args.client}"/>
+      <bootclasspath refid="client.module.bootclasspath"/>
+      <classpath refid="client.module.production.classpath"/>
+      <src refid="client.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.client"/>
+    </javac>
+    
+    <copy todir="${client.output.dir}">
+      <fileset dir="${module.client.basedir}/Client/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.client.tests" depends="compile.module.client.production" description="compile module Client; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.client" description="cleanup module">
+    <delete dir="${client.output.dir}"/>
+    <delete dir="${client.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module Server -->
+  
+  <dirname property="module.server.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.server" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.server" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.server" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.server" value="${compiler.args}"/>
+  
+  <property name="server.output.dir" value="${module.server.basedir}/out/production/Server"/>
+  <property name="server.testoutput.dir" value="${module.server.basedir}/out/test/Server"/>
+  
+  <path id="server.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="server.module.production.classpath">
+    <path refid="${module.jdk.classpath.server}"/>
+    <pathelement location="${remotes.output.dir}"/>
+  </path>
+  
+  <path id="server.runtime.production.module.classpath">
+    <pathelement location="${server.output.dir}"/>
+    <path refid="remotes.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="server.module.classpath">
+    <path refid="${module.jdk.classpath.server}"/>
+    <pathelement location="${server.output.dir}"/>
+    <pathelement location="${remotes.testoutput.dir}"/>
+    <pathelement location="${remotes.output.dir}"/>
+  </path>
+  
+  <path id="server.runtime.module.classpath">
+    <pathelement location="${server.testoutput.dir}"/>
+    <pathelement location="${server.output.dir}"/>
+    <path refid="remotes.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.server">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.server">
+    <patternset refid="excluded.from.module.server"/>
+  </patternset>
+  
+  <path id="server.module.sourcepath">
+    <dirset dir="${module.server.basedir}/Server">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.server" depends="compile.module.server.production,compile.module.server.tests" description="Compile module Server"/>
+  
+  <target name="compile.module.server.production" depends="compile.module.remotes" description="Compile module Server; production classes">
+    <mkdir dir="${server.output.dir}"/>
+    <javac destdir="${server.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.server}/javac" includeantruntime="false">
+      <compilerarg line="${compiler.args.server}"/>
+      <bootclasspath refid="server.module.bootclasspath"/>
+      <classpath refid="server.module.production.classpath"/>
+      <src refid="server.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.server"/>
+    </javac>
+    
+    <copy todir="${server.output.dir}">
+      <fileset dir="${module.server.basedir}/Server/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.server.tests" depends="compile.module.server.production" description="compile module Server; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.server" description="cleanup module">
+    <delete dir="${server.output.dir}"/>
+    <delete dir="${server.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module Dinghyprop -->
+  
+  <dirname property="module.dinghyprop.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.dinghyprop" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.dinghyprop" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.dinghyprop" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.dinghyprop" value="${compiler.args}"/>
+  
+  <property name="dinghyprop.output.dir" value="${module.dinghyprop.basedir}/out/production/Dinghyprop"/>
+  <property name="dinghyprop.testoutput.dir" value="${module.dinghyprop.basedir}/out/test/Dinghyprop"/>
+  
+  <path id="dinghyprop.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="dinghyprop.module.production.classpath">
+    <path refid="${module.jdk.classpath.dinghyprop}"/>
+    <pathelement location="${idea.home}/plugins/testng/lib/testng-jdk15.jar"/>
+    <pathelement location="${remotes.output.dir}"/>
+    <pathelement location="${client.output.dir}"/>
+    <pathelement location="${server.output.dir}"/>
+  </path>
+  
+  <path id="dinghyprop.runtime.production.module.classpath">
+    <pathelement location="${dinghyprop.output.dir}"/>
+    <pathelement location="${idea.home}/plugins/testng/lib/testng-jdk15.jar"/>
+    <path refid="remotes.runtime.production.module.classpath"/>
+    <path refid="client.runtime.production.module.classpath"/>
+    <path refid="server.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="dinghyprop.module.classpath">
+    <path refid="${module.jdk.classpath.dinghyprop}"/>
+    <pathelement location="${dinghyprop.output.dir}"/>
+    <pathelement location="${idea.home}/plugins/testng/lib/testng-jdk15.jar"/>
+    <pathelement location="${remotes.testoutput.dir}"/>
+    <pathelement location="${remotes.output.dir}"/>
+    <pathelement location="${client.testoutput.dir}"/>
+    <pathelement location="${client.output.dir}"/>
+    <pathelement location="${server.testoutput.dir}"/>
+    <pathelement location="${server.output.dir}"/>
+  </path>
+  
+  <path id="dinghyprop.runtime.module.classpath">
+    <pathelement location="${dinghyprop.testoutput.dir}"/>
+    <pathelement location="${dinghyprop.output.dir}"/>
+    <pathelement location="${idea.home}/plugins/testng/lib/testng-jdk15.jar"/>
+    <path refid="remotes.runtime.module.classpath"/>
+    <path refid="client.runtime.module.classpath"/>
+    <path refid="server.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.dinghyprop">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.dinghyprop">
+    <patternset refid="excluded.from.module.dinghyprop"/>
+  </patternset>
+  
+  <path id="dinghyprop.module.sourcepath">
+    <dirset dir="${module.dinghyprop.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="dinghyprop.module.test.sourcepath">
+    <dirset dir="${module.dinghyprop.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.dinghyprop" depends="compile.module.dinghyprop.production,compile.module.dinghyprop.tests" description="Compile module Dinghyprop"/>
+  
+  <target name="compile.module.dinghyprop.production" depends="compile.module.remotes,compile.module.client,compile.module.server" description="Compile module Dinghyprop; production classes">
+    <mkdir dir="${dinghyprop.output.dir}"/>
+    <javac destdir="${dinghyprop.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.dinghyprop}/javac" includeantruntime="false">
+      <compilerarg line="${compiler.args.dinghyprop}"/>
+      <bootclasspath refid="dinghyprop.module.bootclasspath"/>
+      <classpath refid="dinghyprop.module.production.classpath"/>
+      <src refid="dinghyprop.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.dinghyprop"/>
+    </javac>
+    
+    <copy todir="${dinghyprop.output.dir}">
+      <fileset dir="${module.dinghyprop.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.dinghyprop.tests" depends="compile.module.dinghyprop.production" description="compile module Dinghyprop; test classes" unless="skip.tests">
+    <mkdir dir="${dinghyprop.testoutput.dir}"/>
+    <javac destdir="${dinghyprop.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.dinghyprop}/javac" includeantruntime="false">
+      <compilerarg line="${compiler.args.dinghyprop}"/>
+      <bootclasspath refid="dinghyprop.module.bootclasspath"/>
+      <classpath refid="dinghyprop.module.classpath"/>
+      <src refid="dinghyprop.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.dinghyprop"/>
+    </javac>
+    
+    <copy todir="${dinghyprop.testoutput.dir}">
+      <fileset dir="${module.dinghyprop.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.dinghyprop" description="cleanup module">
+    <delete dir="${dinghyprop.output.dir}"/>
+    <delete dir="${dinghyprop.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.remotes, clean.module.client, clean.module.server, clean.module.dinghyprop" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.remotes, compile.module.client, compile.module.server, compile.module.dinghyprop" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.client:jar" value="${basedir}/out/artifacts/Client_jar"/>
+    <property name="artifact.output.remotes:jar" value="${basedir}/out/artifacts/Remotes_jar"/>
+    <property name="artifact.output.server:jar" value="${basedir}/out/artifacts/Server_jar"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.Client.jar" value="${artifacts.temp.dir}/Client.jar"/>
+    <property name="temp.jar.path.Remotes.jar" value="${artifacts.temp.dir}/Remotes.jar"/>
+    <property name="temp.jar.path.Server.jar" value="${artifacts.temp.dir}/Server.jar"/>
+  </target>
+  
+  <target name="artifact.client:jar" depends="init.artifacts, compile.module.client, compile.module.remotes" description="Build &#39;Client:jar&#39; artifact">
+    <property name="artifact.temp.output.client:jar" value="${artifacts.temp.dir}/Client_jar"/>
+    <mkdir dir="${artifact.temp.output.client:jar}"/>
+    <jar destfile="${temp.jar.path.Client.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${client.output.dir}"/>
+      <zipfileset file="${basedir}/Client/META-INF/MANIFEST.MF" prefix="META-INF"/>
+      <zipfileset dir="${remotes.output.dir}"/>
+      <zipfileset file="${basedir}/out/production/Server/cs412/dinghyprop/Master_Stub.class" prefix="cs412/dinghyprop"/>
+    </jar>
+    <copy file="${temp.jar.path.Client.jar}" tofile="${artifact.temp.output.client:jar}/Client.jar"/>
+  </target>
+  
+  <target name="artifact.remotes:jar" depends="init.artifacts, compile.module.remotes" description="Build &#39;Remotes:jar&#39; artifact">
+    <property name="artifact.temp.output.remotes:jar" value="${artifacts.temp.dir}/Remotes_jar"/>
+    <mkdir dir="${artifact.temp.output.remotes:jar}"/>
+    <jar destfile="${temp.jar.path.Remotes.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${remotes.output.dir}"/>
+      <zipfileset file="${basedir}/Remotes/META-INF/MANIFEST.MF" prefix="META-INF"/>
+    </jar>
+    <copy file="${temp.jar.path.Remotes.jar}" tofile="${artifact.temp.output.remotes:jar}/Remotes.jar"/>
+  </target>
+  
+  <target name="artifact.server:jar" depends="init.artifacts, compile.module.server, compile.module.remotes" description="Build &#39;Server:jar&#39; artifact">
+    <property name="artifact.temp.output.server:jar" value="${artifacts.temp.dir}/Server_jar"/>
+    <mkdir dir="${artifact.temp.output.server:jar}"/>
+    <jar destfile="${temp.jar.path.Server.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset file="${basedir}/Server/src/META-INF/MANIFEST.MF" prefix="META-INF"/>
+      <zipfileset dir="${server.output.dir}"/>
+      <zipfileset dir="${remotes.output.dir}"/>
+    </jar>
+    <copy file="${temp.jar.path.Server.jar}" tofile="${artifact.temp.output.server:jar}/Server.jar"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.client:jar, artifact.remotes:jar, artifact.server:jar" description="Build all artifacts">
+    <mkdir dir="${artifact.output.client:jar}"/>
+    <copy todir="${artifact.output.client:jar}">
+      <fileset dir="${artifact.temp.output.client:jar}"/>
+    </copy>
+    <mkdir dir="${artifact.output.remotes:jar}"/>
+    <copy todir="${artifact.output.remotes:jar}">
+      <fileset dir="${artifact.temp.output.remotes:jar}"/>
+    </copy>
+    <mkdir dir="${artifact.output.server:jar}"/>
+    <copy todir="${artifact.output.server:jar}">
+      <fileset dir="${artifact.temp.output.server:jar}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>

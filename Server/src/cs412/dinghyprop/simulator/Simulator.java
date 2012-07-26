@@ -5,7 +5,7 @@ import java.util.Observable;
 /**
  * Dinghy environment simulator.
  */
-public class Simulator extends Observable implements Cloneable, Serializable {
+public class Simulator extends Observable implements ISimulator, Serializable {
 	private static final int DEFAULT_TERMINATION_FITNESS = 300;
 	private Goal goal = null;
 	private Obstacle[] obstacles;
@@ -55,7 +55,8 @@ public class Simulator extends Observable implements Cloneable, Serializable {
 	*  @param function The action that must be taken by the dinghy
 	*  @throws UnknownFunctionException if the action is not valid.
 	*/
-	public void invoke(String function) throws UnknownFunctionException {
+	@Override
+    public void invoke(String function) throws UnknownFunctionException {
 		if (function.compareTo("move") == 0) {
 			invokeMove();
 			notifyObservers(dinghy); }
@@ -84,7 +85,8 @@ public class Simulator extends Observable implements Cloneable, Serializable {
 	*  @return The value of the referenced variable
 	*  @throws VariableReferenceException If the variable does not exist
 	*/
-	public int reference(String variable) throws VariableReferenceException {
+	@Override
+    public int reference(String variable) throws VariableReferenceException {
 		int[] goalPos = goal.getPosition();
 		int[] pos = dinghy.getPosition();
 		int min = sizeX + sizeY;
@@ -277,7 +279,8 @@ public class Simulator extends Observable implements Cloneable, Serializable {
 	*  the goal distance metric, the success metric, and the travel metric.
 	*  @return The fitness of the program
 	*/
-	public int getFitness() {
+	@Override
+    public int getFitness() {
 		return getGoalDistanceMetric() + getSuccessMetric() + getTravelMetric();
 	}
 
@@ -285,7 +288,8 @@ public class Simulator extends Observable implements Cloneable, Serializable {
 	* Determine whether execution can continue.
 	* @return  Whether execution can continue
 	*/
-	public boolean canContinue() {
+	@Override
+    public boolean canContinue() {
 		return getFitness() < terminationFitness && canContinue;
 	}
 

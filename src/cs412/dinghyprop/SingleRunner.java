@@ -5,7 +5,7 @@ import cs412.dinghyprop.genetics.Program;
 import cs412.dinghyprop.genetics.TournamentSelector;
 import cs412.dinghyprop.interpreter.Interpreter;
 import cs412.dinghyprop.interpreter.ParsingException;
-import cs412.dinghyprop.simulator.Simulator;
+import cs412.dinghyprop.simulator.ISimulator;
 import cs412.dinghyprop.simulator.SimulatorRandom;
 
 import java.io.File;
@@ -24,7 +24,7 @@ public class SingleRunner {
     private static final int SIM_DIM = 20;
     private static final int GOAL = 300;
     private GeneticProgram gp;
-    private Simulator simulator;
+    private ISimulator simulator;
     private boolean success = false;
     private int best = Integer.MIN_VALUE;
     private File checkpointDir;
@@ -110,7 +110,7 @@ public class SingleRunner {
      * @return  The evaluated program's fitness
      */
     private int evaluateProgram(Program program) {
-        Simulator sim;
+        ISimulator sim;
         try {
             sim = simulator.clone();
         } catch (CloneNotSupportedException ignored) {
