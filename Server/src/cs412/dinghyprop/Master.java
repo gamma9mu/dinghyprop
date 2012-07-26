@@ -12,12 +12,14 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Logger;
 
 /**
  * GP master server
  */
 public class Master extends UnicastRemoteObject implements IMaster, IPopulationObserver, Runnable {
     private static final long serialVersionUID = 7213091562277551698L;
+    private static Logger log = Logger.getLogger("Master");
 
     /**
      * The GP for this run
@@ -100,14 +102,19 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
             while (programsRemaining > 0)
                 try { wait(); } catch (InterruptedException ignored) { }
 
-            if (best >= targetFitness)
+            if (best >= targetFitness) {
+                log.info("Successful individual found.");
                 break;
+            }
 
-            System.out.println("Creating generation #" + Integer.toString(i));
+            log.info("Creating generation #" + Integer.toString(i));
             programsRemaining = geneticProgram.getPopulationSize();
             resetStatistics();
             geneticProgram.createNextGeneration();
         }
+
+        log.info("GP run complete.");
+        log.info("Releasing clients.");
         for (IClient client : clients)
             client.release();
         clients.clear();
