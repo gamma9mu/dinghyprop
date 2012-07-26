@@ -89,7 +89,7 @@
     <property name="temp.jar.path.Server.jar" value="${artifacts.temp.dir}/Server.jar"/>
   </target>
   
-  <target name="artifact.client:jar" depends="init.artifacts, compile.module.client, compile.module.remotes" description="Build &#39;Client:jar&#39; artifact">
+  <target name="artifact.client:jar" depends="init.artifacts, compile.module.client, compile.module.remotes, compile.module.simulator" description="Build &#39;Client:jar&#39; artifact">
     <property name="artifact.temp.output.client:jar" value="${artifacts.temp.dir}/Client_jar"/>
     <mkdir dir="${artifact.temp.output.client:jar}"/>
     <jar destfile="${temp.jar.path.Client.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
@@ -97,6 +97,7 @@
       <zipfileset file="${basedir}/Client/META-INF/MANIFEST.MF" prefix="META-INF"/>
       <zipfileset dir="${remotes.output.dir}"/>
       <zipfileset file="${basedir}/out/production/Server/cs412/dinghyprop/Master_Stub.class" prefix="cs412/dinghyprop"/>
+      <zipfileset dir="${simulator.output.dir}"/>
     </jar>
     <copy file="${temp.jar.path.Client.jar}" tofile="${artifact.temp.output.client:jar}/Client.jar"/>
   </target>
@@ -119,6 +120,7 @@
       <zipfileset dir="${server.output.dir}"/>
       <zipfileset dir="${remotes.output.dir}"/>
       <zipfileset dir="${simulator.output.dir}"/>
+      <zipfileset file="${basedir}/out/production/Client/cs412/dinghyprop/ClientImpl_Stub.class" prefix="cs412/dinghyprop"/>
     </jar>
     <copy file="${temp.jar.path.Server.jar}" tofile="${artifact.temp.output.server:jar}/Server.jar"/>
   </target>
