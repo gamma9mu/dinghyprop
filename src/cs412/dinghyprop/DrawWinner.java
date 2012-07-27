@@ -27,7 +27,9 @@ public class DrawWinner extends JPanel implements Observer{
 	
 	
 	public DrawWinner() {
-				
+		sizeX = 300;
+		sizeY=300;
+		currentWinner = null;		
 		
 	}
 	
@@ -46,31 +48,33 @@ public class DrawWinner extends JPanel implements Observer{
 		} catch (ParsingException pe) {
 			pe.printStackTrace();
 		}
+		this.repaint();
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		graph = (Graphics2D)g;
+		if(currentWinner != null) {
+			graph.setColor(Color.GREEN);
+			graph.fillOval(goal[0] * 10, goal[1] * 10, 10, 10);
 		
-		graph.setColor(Color.GREEN);
-		graph.fillOval(goal[0] * 2, goal[1] * 2, 10, 10);
-		
-		graph.setColor(Color.RED);
-		drawObstacles();
+			graph.setColor(Color.RED);
+			drawObstacles();
+		}
 			
 	
 	} 
 	
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(sizeX * 2, sizeY * 2);
+		return new Dimension(sizeX * 10, sizeY * 10);
 	
 	}
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		Dinghy temp = (Dinghy)arg;
+		Dinghy temp = currentWinner.getDinghy();
 		int[] position = temp.getPosition();
 		moveDinghy(position[0], position[1]);
 	}
@@ -78,8 +82,8 @@ public class DrawWinner extends JPanel implements Observer{
 	public void moveDinghy(int posX, int posY) {
 		this.repaint();
 		graph.setColor(Color.BLUE);
-		int tempX = posX * 2;
-		int tempY = posY * 2;
+		int tempX = posX * 10;
+		int tempY = posY * 10;
 		int[] xPositions = null;
 		int[] yPositions = null;
 		try{
@@ -162,7 +166,7 @@ public class DrawWinner extends JPanel implements Observer{
 		frame = new JFrame("animation");
 		Container pane = frame.getContentPane();
 		frame.add(dropDown, BorderLayout.NORTH);
-		frame.add(dropDown, BorderLayout.CENTER);
+		frame.add(draw, BorderLayout.CENTER);
 		frame.add(button, BorderLayout.SOUTH);
 		
 		frame.pack();
