@@ -23,8 +23,12 @@ public class SimulatorFile {
 	Simulator sim;
 	int[] size, dinghy, goal;
 	int numObstacles;
-	
-	public SimulatorFile(File filename) {
+
+    /**
+     * Constructor that reads the file and initializes the simulation environment
+     * @param filename The file that contains the simulation environment
+     */
+    public SimulatorFile(File filename) {
 		file = filename;
 		try{
 			in = new Scanner(file);}
@@ -48,19 +52,28 @@ public class SimulatorFile {
 		}
 		
 	}
-	
+
+    /**
+     * Sets the size of the simulation environment by reading from the file
+     */
 	private void setSize(){
 		size = new int[2];
 		size[0] = in.nextInt();
 		size[1] = in.nextInt();
 	}
-	
+
+    /**
+     * Sets the position of the dinghy by reading the ints from the file.
+     */
 	private void setDinghy(){
 		dinghy = new int[2];
 		dinghy[0] = in.nextInt();
 		dinghy[1] = in.nextInt();
 	}
-	
+
+    /**
+     * Sets the position of the goal by reading from the file
+     */
 	private void setGoal() {
 		goal = new int[2];
 		goal[0] = in.nextInt();
