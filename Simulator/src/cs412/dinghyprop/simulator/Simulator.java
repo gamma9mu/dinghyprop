@@ -344,8 +344,12 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 	public Obstacle[] getObstacles() {
 		return obstacles;
 	}
-	
-	public int[] getDinghy() {
+
+    /**
+     * Gets the dinghy position
+     * @return An array containing the current position of the dinghy
+     */
+    public int[] getDinghy() {
 		return dinghy.getPosition();
 	}
 	
