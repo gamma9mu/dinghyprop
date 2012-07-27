@@ -89,36 +89,28 @@ public class DrawWinner extends JPanel implements Observer{
 		try{
 			switch(currentWinner.reference("heading")) {
 				case 0:
-					int[] xTemp = {tempX, tempX,
+                    xPositions = new int[]{tempX, tempX,
 						5 + tempX, 10 + tempX, 10 + tempX};
-					int[] yTemp = {17 + tempY, 10 + tempY, 
-						tempY, 10 + tempY, 17 + tempY};
-					xPositions = xTemp;
-					yPositions = yTemp;
+					yPositions = new int[]{17 + tempY, 10 + tempY,
+                        tempY, 10 + tempY, 17 + tempY};
 					break;
 				case 90:
-					int[] xTemp90 = {tempX, 10 + tempX,
+                    xPositions = new int[]{tempX, 10 + tempX,
 						17 + tempX, 10 + tempX, tempX};
-					int[] yTemp90 = {tempY, tempY,
-						5 + tempY, 10 + tempY, 10 + tempY};
-					xPositions = xTemp90;
-					yPositions = yTemp90;
+					yPositions = new int[]{tempY, tempY,
+                        5 + tempY, 10 + tempY, 10 + tempY};
 					break;
 				case 180:
-					int[] xTemp180 = {tempX, tempX,
+                    xPositions = new int[]{tempX, tempX,
 						5 + tempX, 10 + tempX, 10 + tempX};
-					int[] yTemp180 = {tempY, 10 + tempY,
-						17 + tempY, 10 + tempY, tempY};
-					xPositions = xTemp180;
-					yPositions = yTemp180;
+					yPositions = new int[]{tempY, 10 + tempY,
+                        17 + tempY, 10 + tempY, tempY};
 					break;
 				case 270:
-					int[] xTemp270 = {17 + tempX, 7 + tempX, 
+                    xPositions = new int[]{17 + tempX, 7 + tempX,
 						tempX, 7 + tempX, 17 + tempX};
-					int[] yTemp270 = {tempY, tempY,
-						5 + tempY, 10 + tempY, 10 + tempY};
-					xPositions = xTemp270;
-					yPositions = yTemp270;
+					yPositions = new int[]{tempY, tempY,
+                        5 + tempY, 10 + tempY, 10 + tempY};
 					break;
 			}
 		} catch(cs412.dinghyprop.simulator.VariableReferenceException e) {
@@ -130,7 +122,7 @@ public class DrawWinner extends JPanel implements Observer{
 	private void drawObstacles() {
 		int count = 0;
 		for(Obstacle obstacle : obstacles) {
-			int position[] = obstacle.getPosition();
+			int[] position = obstacle.getPosition();
 			graph.fillOval(position[0] * 2, position[1] * 2, 10, 10);
 			count++;
 		}
