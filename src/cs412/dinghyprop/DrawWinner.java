@@ -13,36 +13,34 @@ import java.rmi.*;
 
 
 public class DrawWinner extends JPanel implements Observer{
-	private int sizeX, sizeY;
-	private Simulator currentWinner;
-	private Interpreter interpreter;
-	private int[] goal;
-	private Obstacle[] obstacles;
-	private Graphics2D graph;
-	private static IMaster master;
-	private static JComboBox dropDown;
-	private static ISimulator[] sims;
-	private static DrawWinner draw;
+    private static final long serialVersionUID = -5236126589222504417L;
+    private int sizeX, sizeY;
+	private Simulator currentWinner = null;
+    private int[] goal = null;
+	private Obstacle[] obstacles = null;
+	private Graphics2D graph = null;
+	private static IMaster master = null;
+	private static JComboBox dropDown = null;
+	private static ISimulator[] sims = null;
+	private static DrawWinner draw = null;
 	
 	
 	public DrawWinner() {
 		sizeX = 300;
-		sizeY=300;
-		currentWinner = null;		
-		
+		sizeY = 300;
 	}
 	
 	public void setSimulation(ISimulator current, Program prog) {
 		currentWinner = (Simulator)current;
 		currentWinner.addObserver(this);
-		int size[] = currentWinner.getSize();
+		int[] size = currentWinner.getSize();
 		sizeX = size[0];
 		sizeY = size[1];
 		
 		goal = currentWinner.getGoal();
 		obstacles = currentWinner.getObstacles();
 		try{
-			interpreter = new Interpreter(currentWinner, prog.program);
+            Interpreter interpreter = new Interpreter(currentWinner, prog.program);
 			interpreter.run(100);
 		} catch (ParsingException pe) {
 			pe.printStackTrace();
@@ -147,7 +145,8 @@ public class DrawWinner extends JPanel implements Observer{
 		JButton button = new JButton("Get Current Winner");
 		button.addActionListener(
 			new ActionListener() {
-				public void actionPerformed(ActionEvent event) {
+				@Override
+                public void actionPerformed(ActionEvent e) {
 					startAnimation();
 				}
 			}
@@ -195,9 +194,9 @@ public class DrawWinner extends JPanel implements Observer{
 			System.exit(1);
 		}
 		
-	
 		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				createGui();
 			}
 		});
