@@ -22,7 +22,6 @@ public class DrawWinner extends JPanel implements Observer{
 	private static IMaster master;
 	private static JComboBox dropDown;
 	private static ISimulator[] sims;
-	private static JFrame frame;
 	private static DrawWinner draw;
 	
 	
@@ -90,40 +89,40 @@ public class DrawWinner extends JPanel implements Observer{
 		try{
 			switch(currentWinner.reference("heading")) {
 				case 0:
-					int[] xTemp = {0 + tempX, 0 + tempX, 
+					int[] xTemp = {tempX, tempX,
 						5 + tempX, 10 + tempX, 10 + tempX};
 					int[] yTemp = {17 + tempY, 10 + tempY, 
-						0 + tempY, 10 + tempY, 17 + tempY};
+						tempY, 10 + tempY, 17 + tempY};
 					xPositions = xTemp;
 					yPositions = yTemp;
 					break;
 				case 90:
-					int[] xTemp90 = {0 + tempX, 10 + tempX, 
-						17 + tempX, 10 + tempX, 0 + tempX};
-					int[] yTemp90 = {0 + tempY, 0 + tempY, 
+					int[] xTemp90 = {tempX, 10 + tempX,
+						17 + tempX, 10 + tempX, tempX};
+					int[] yTemp90 = {tempY, tempY,
 						5 + tempY, 10 + tempY, 10 + tempY};
 					xPositions = xTemp90;
 					yPositions = yTemp90;
 					break;
 				case 180:
-					int[] xTemp180 = {0 + tempX, 0 + tempX, 
+					int[] xTemp180 = {tempX, tempX,
 						5 + tempX, 10 + tempX, 10 + tempX};
-					int[] yTemp180 = {0 + tempY, 10 + tempY, 
-						17 + tempY, 10 + tempY, 0 + tempY};
+					int[] yTemp180 = {tempY, 10 + tempY,
+						17 + tempY, 10 + tempY, tempY};
 					xPositions = xTemp180;
 					yPositions = yTemp180;
 					break;
 				case 270:
 					int[] xTemp270 = {17 + tempX, 7 + tempX, 
-						0 + tempX, 7 + tempX, 17 + tempX};
-					int[] yTemp270 = {0 + tempY, 0 + tempY, 
+						tempX, 7 + tempX, 17 + tempX};
+					int[] yTemp270 = {tempY, tempY,
 						5 + tempY, 10 + tempY, 10 + tempY};
 					xPositions = xTemp270;
 					yPositions = yTemp270;
 					break;
 			}
 		} catch(cs412.dinghyprop.simulator.VariableReferenceException e) {
-			
+			System.out.println("We caught something");
 		}
 		graph.fillPolygon(xPositions, yPositions, 5);
 	}
@@ -164,8 +163,7 @@ public class DrawWinner extends JPanel implements Observer{
 		
 		draw = new DrawWinner();
 		
-		frame = new JFrame("animation");
-		Container pane = frame.getContentPane();
+		JFrame frame = new JFrame("animation");
 		frame.add(dropDown, BorderLayout.NORTH);
 		frame.add(draw, BorderLayout.CENTER);
 		frame.add(button, BorderLayout.SOUTH);
