@@ -14,6 +14,7 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 	private int sizeY;
 	private boolean canContinue = true;
 	private int terminationFitness = DEFAULT_TERMINATION_FITNESS;
+	static final long serialVersionUID = 3186189958128685645L;
 
 	/**
 	*  Constructor that sets up the simulator environment

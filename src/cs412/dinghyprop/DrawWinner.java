@@ -44,7 +44,7 @@ public class DrawWinner extends JPanel implements Observer{
 		obstacles = currentWinner.getObstacles();
 		try{
 			interpreter = new Interpreter(currentWinner, prog.program);
-			interpreter.execute();
+			interpreter.run(100);
 		} catch (ParsingException pe) {
 			pe.printStackTrace();
 		}
@@ -77,6 +77,7 @@ public class DrawWinner extends JPanel implements Observer{
 		
 		int[] position = currentWinner.getDinghy();
 		moveDinghy(position[0], position[1]);
+		System.out.println("Moving to " + position[0]);
 	}
 	
 	public void moveDinghy(int posX, int posY) {
