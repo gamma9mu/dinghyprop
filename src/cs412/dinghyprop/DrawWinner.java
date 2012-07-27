@@ -14,8 +14,9 @@ import java.rmi.*;
 
 public class DrawWinner extends JPanel implements Observer{
     private static final long serialVersionUID = -5236126589222504417L;
+    private static final int DRAW_DELAY = 300;
     private int sizeX, sizeY;
-	private Simulator currentWinner = null;
+	private Simulator currentSimulator = null;
     private int[] goal = null;
 	private Obstacle[] obstacles = null;
     private static IMaster master = null;
@@ -23,37 +24,49 @@ public class DrawWinner extends JPanel implements Observer{
 	private static ISimulator[] sims = null;
 	private static DrawWinner draw = null;
     private int[] position = {0, 0};
-	
-	
-	public DrawWinner() {
+    private transient Thread interpreterThread = null;
+
+
+    public DrawWinner() {
 		sizeX = 30;
 		sizeY = 30;
 	}
 	
-	public void setSimulation(ISimulator current, Program prog) {
-		currentWinner = (Simulator)current;
-		currentWinner.addObserver(this);
-		int[] size = currentWinner.getSize();
+	public void setSimulation(ISimulator current, final Program prog) throws CloneNotSupportedException {
+        if (interpreterThread != null)
+            interpreterThread.stop();
+		currentSimulator = ((Simulator) current).clone();
+        currentSimulator.addObserver(this);
+		int[] size = currentSimulator.getSize();
 		sizeX = size[0];
 		sizeY = size[1];
-		
-		goal = currentWinner.getGoal();
-		obstacles = currentWinner.getObstacles();
 
-		try{
-            Interpreter interpreter = new Interpreter(currentWinner, prog.program);
-			interpreter.run(100);
-		} catch (ParsingException pe) {
-			pe.printStackTrace();
-		}
-		this.repaint();
+        position = currentSimulator.getDinghy();
+
+		goal = currentSimulator.getGoal();
+		obstacles = currentSimulator.getObstacles();
+        System.out.println(prog.program);
+        interpreterThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Interpreter interpreter = new Interpreter(currentSimulator, prog.program);
+                    interpreter.run(100);
+                } catch (ParsingException pe) {
+                    pe.printStackTrace();
+                }
+            }
+        });
+        interpreterThread.start();
+
+        repaint();
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
         Graphics2D graph = (Graphics2D) g;
-		if(currentWinner != null) {
+		if(currentSimulator != null) {
 			graph.setColor(Color.GREEN);
 			graph.fillOval(goal[0] * 10, goal[1] * 10, 10, 10);
 		
@@ -61,21 +74,19 @@ public class DrawWinner extends JPanel implements Observer{
 			drawObstacles(g);
             moveDinghy(g, position[0], position[1]);
         }
-
 	}
 	
 	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(sizeX * 10, sizeY * 10);
-	
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
-        position = currentWinner.getDinghy();
-		System.out.println("Moving to " + position[0]);
+        position = currentSimulator.getDinghy();
         repaint();
-	}
+        try { Thread.sleep(DRAW_DELAY); } catch (InterruptedException ignored) { }
+    }
 	
 	public void moveDinghy(Graphics g, int posX, int posY) {
 		this.repaint();
@@ -85,8 +96,8 @@ public class DrawWinner extends JPanel implements Observer{
 		int[] xPositions = null;
 		int[] yPositions = null;
 		try{
-			switch(currentWinner.reference("heading")) {
-				case 0:
+			switch(currentSimulator.reference("heading")) {
+				case 180:
                     xPositions = new int[]{tempX, tempX,
 						5 + tempX, 10 + tempX, 10 + tempX};
 					yPositions = new int[]{17 + tempY, 10 + tempY,
@@ -98,7 +109,7 @@ public class DrawWinner extends JPanel implements Observer{
 					yPositions = new int[]{tempY, tempY,
                         5 + tempY, 10 + tempY, 10 + tempY};
 					break;
-				case 180:
+				case 0:
                     xPositions = new int[]{tempX, tempX,
 						5 + tempX, 10 + tempX, 10 + tempX};
 					yPositions = new int[]{tempY, 10 + tempY,
@@ -118,13 +129,10 @@ public class DrawWinner extends JPanel implements Observer{
 	}
 	
 	private void drawObstacles(Graphics g) {
-		int count = 0;
 		for(Obstacle obstacle : obstacles) {
 			int[] position = obstacle.getPosition();
 			g.fillOval(position[0] * 2, position[1] * 2, 10, 10);
-			count++;
 		}
-		System.out.println(count);
 	}
 
 
@@ -137,7 +145,11 @@ public class DrawWinner extends JPanel implements Observer{
             e.printStackTrace();
         }
         ISimulator sim = sims[index];
-        draw.setSimulation(sim, program);
+        try {
+            draw.setSimulation(sim, program);
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
     }
 
 	private static void createGui() {
