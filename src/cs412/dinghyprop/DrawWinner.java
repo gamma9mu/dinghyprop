@@ -1,38 +1,51 @@
 package cs412.dinghyprop;
 
+import cs412.dinghyprop.simulator.*;
+import cs412.dinghyprop.interpreter.*;
+import cs412.dinghyprop.genetics.*;
+
 import javax.swing.*;
 import java.awt.*;
-import cs412.dinghyprop.simulator.Simulator;
-import cs412.dinghyprop.simulator.Obstacle;
-import cs412.dinghyprop.simulator.SimulatorRandom;
-import cs412.dinghyprop.simulator.Dinghy;
+import java.awt.event.*;
 import java.util.Observer;
 import java.util.Observable;
+import java.rmi.*;
+
 
 public class DrawWinner extends JPanel implements Observer{
-	private int sizeX;
-	private int sizeY;
+	private int sizeX, sizeY;
 	private Simulator currentWinner;
+	private Interpreter interpreter;
 	private int[] goal;
-	private int prevDinghyPosX;
-	private int prevDinghyPosY;
 	private Obstacle[] obstacles;
 	private Graphics2D graph;
-	private static final int SIZEX = 300;
-	private static final int SIZEY = 300;
-	private static final int MAX_OBSTACLE = 20;
+	private static IMaster master;
+	private static JComboBox dropDown;
+	private static ISimulator[] sims;
+	private static JFrame frame;
+	private static DrawWinner draw;
 	
 	
-	public DrawWinner(Simulator current) {
-		currentWinner = current;
+	public DrawWinner() {
+				
+		
+	}
+	
+	public void setSimulation(ISimulator current, Program prog) {
+		currentWinner = (Simulator)current;
 		currentWinner.addObserver(this);
 		int size[] = currentWinner.getSize();
 		sizeX = size[0];
 		sizeY = size[1];
+		
 		goal = currentWinner.getGoal();
 		obstacles = currentWinner.getObstacles();
-		
-		
+		try{
+			interpreter = new Interpreter(currentWinner, prog.program);
+			interpreter.execute();
+		} catch (ParsingException pe) {
+			pe.printStackTrace();
+		}
 	}
 
 	@Override
@@ -121,15 +134,37 @@ public class DrawWinner extends JPanel implements Observer{
 	}
 	
 	
-	private static void createGui(Simulator sim) {
-		DrawWinner draw;
-		if (sim == null)
-			draw = new DrawWinner((Simulator)
-                    new SimulatorRandom(SIZEX, SIZEY, MAX_OBSTACLE).getSimulator());
-		else
-			draw = new DrawWinner(sim);
-		JFrame frame = new JFrame("animation");
-		frame.getContentPane().add(draw);
+	private static void createGui() {
+		
+		try {
+			sims = master.getEvaluationSimulators();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		dropDown = new JComboBox();
+		for(int i = 0; i < sims.length; i++) {
+			dropDown.addItem("Simulator " + i);
+		}
+		
+		JButton button = new JButton("Get Current Winner");
+		button.addActionListener(
+			new ActionListener() {
+				public void actionPerformed(ActionEvent event) {
+					startAnimation();
+				}
+			}
+		);
+		
+		draw = new DrawWinner();
+		
+		frame = new JFrame("animation");
+		Container pane = frame.getContentPane();
+		frame.add(dropDown, BorderLayout.NORTH);
+		frame.add(dropDown, BorderLayout.CENTER);
+		frame.add(button, BorderLayout.SOUTH);
+		
 		frame.pack();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationByPlatform(true);
@@ -137,10 +172,38 @@ public class DrawWinner extends JPanel implements Observer{
 		
 	}
 	
+	private static void startAnimation() {
+		int index = dropDown.getSelectedIndex();
+		Program program = null;
+		try {
+			program = master.getCurrentLeader();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		ISimulator sim = sims[index];
+		draw.setSimulation(sim, program);
+	}
+	
 	public static void main(String[] args) {
+		String masterName = "//";
+		if(args.length == 0)
+			masterName += "localhost";
+		else
+			masterName += args[0];
+		masterName += "/Master";
+		try {
+			master = (IMaster)Naming.lookup(masterName);
+		} catch(java.rmi.ConnectException ce){
+			System.err.println("Could not connect");
+		} catch(Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+	
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				createGui(null);
+				createGui();
 			}
 		});
 	}
