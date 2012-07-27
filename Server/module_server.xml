@@ -68,6 +68,10 @@
       <patternset refid="excluded.from.compilation.server"/>
     </javac>
     
+    <rmic base="${server.output.dir}" verify="true">
+      <classpath refid="server.module.production.classpath"/>
+    </rmic>
+    
     <copy todir="${server.output.dir}">
       <fileset dir="${module.server.basedir}/src">
         <patternset refid="compiler.resources"/>

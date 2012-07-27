@@ -62,6 +62,10 @@
       <src refid="client.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.client"/>
     </javac>
+
+    <rmic base="${client.output.dir}" verify="true">
+      <classpath refid="client.module.production.classpath"/>
+    </rmic>
     
     <copy todir="${client.output.dir}">
       <fileset dir="${module.client.basedir}/src">
