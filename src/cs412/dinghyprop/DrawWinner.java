@@ -74,8 +74,8 @@ public class DrawWinner extends JPanel implements Observer{
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		Dinghy temp = currentWinner.getDinghy();
-		int[] position = temp.getPosition();
+		
+		int[] position = currentWinner.getDinghy();
 		moveDinghy(position[0], position[1]);
 	}
 	

@@ -345,8 +345,8 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 		return obstacles;
 	}
 	
-	public Dinghy getDinghy() {
-		return dinghy;
+	public int[] getDinghy() {
+		return dinghy.getPosition();
 	}
 	
 
