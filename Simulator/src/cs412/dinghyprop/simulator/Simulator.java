@@ -58,18 +58,17 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 	*/
 	@Override
     public void invoke(String function) throws UnknownFunctionException {
-		if (function.compareTo("move") == 0) {
+		if (function.compareTo("move") == 0)
 			invokeMove();
-			setChanged();
-			notifyObservers(); }
-		else if (function.compareTo("turn-left") == 0)
-			dinghy.turnLeft();
+        else if (function.compareTo("turn-left") == 0)
+            dinghy.turnLeft();
 		else if (function.compareTo("turn-right") == 0)
 			dinghy.turnRight();
 		else
 			throw new UnknownFunctionException(function);
-			
-		clearChanged();
+
+        setChanged();
+        notifyObservers();
 	}
 	
 	/**
