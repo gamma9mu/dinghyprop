@@ -7,8 +7,10 @@ import cs412.dinghyprop.simulator.ISimulator;
 import cs412.dinghyprop.simulator.SimulatorRandom;
 
 import java.net.MalformedURLException;
-import java.rmi.Naming;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -91,7 +93,9 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      */
     public synchronized void runGP() throws MalformedURLException, RemoteException {
         geneticProgram.addPopulationObserver(this);
-        Naming.rebind(address, this);
+        Registry registry = LocateRegistry.getRegistry();
+        Remote this_stub = exportObject(this, 54614);
+        registry.rebind(address, this_stub);
         geneticProgram.initialize();
         leader = geneticProgram.getProgram(0); // A safe default
 
