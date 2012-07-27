@@ -5,12 +5,12 @@ package cs412.dinghyprop.simulator;
 *  dinghy that is in the simulation
 */
 public class Dinghy extends Point{
-	    // Variable to store the total distance travelled
-	    private int distTravelled;
-	    // Enumeration to represent the direction of the dinghy
-    	private enum Direction { NORTH, EAST, SOUTH, WEST;}
-	    // Variable to store current direction of dinghy
-    	private Direction direc;
+	// Variable to store the total distance travelled
+	private int distTravelled;
+	// Enumeration to represent the direction of the dinghy
+    private enum Direction { NORTH, EAST, SOUTH, WEST;}
+	// Variable to store current direction of dinghy
+    private Direction direc;
 
 	/**
 	*  Constructor that sets up initial position and
