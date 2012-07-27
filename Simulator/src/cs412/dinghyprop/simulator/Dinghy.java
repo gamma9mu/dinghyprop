@@ -5,11 +5,11 @@ package cs412.dinghyprop.simulator;
 *  dinghy that is in the simulation
 */
 public class Dinghy extends Point{
-	// Variable to store the total distance travelled
-	private int distTravelled;
-	// Enumeration to represent the direction of the dinghy
+	    // Variable to store the total distance travelled
+	    private int distTravelled;
+	    // Enumeration to represent the direction of the dinghy
     	private enum Direction { NORTH, EAST, SOUTH, WEST;}
-	// Variable to store current direction of dinghy
+	    // Variable to store current direction of dinghy
     	private Direction direc;
 
 	/**
@@ -44,7 +44,7 @@ public class Dinghy extends Point{
 	*  @param distY The Y distance to move the dinghy.
 	*/
 	protected void movePos(int distX, int distY){
-        	int[] currPos = this.getPosition();
+        int[] currPos = this.getPosition();
 		distTravelled += calculateDistTravel(distX, distY, currPos);
 		this.setX(currPos[0] + distX);
 		this.setY(currPos[1] + distY);
