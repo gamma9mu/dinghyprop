@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 public class Master extends UnicastRemoteObject implements IMaster, IPopulationObserver, Runnable {
     private static final long serialVersionUID = 7213091562277551698L;
     private static Logger log = Logger.getLogger("Master");
+    private static final int POPULATION_SIZE = 10000;
+    private static final int GENERATIONS = 100000;
 
     /**
      * The GP for this run
@@ -273,13 +275,13 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        GeneticProgram gp = new GeneticProgram(10000,
+        GeneticProgram gp = new GeneticProgram(POPULATION_SIZE,
                 GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 3);
         ISimulator[] simulators = {new SimulatorRandom(10, 10, 6).getSimulator(),
                 new SimulatorRandom(10, 10, 6).getSimulator(),
                 new SimulatorRandom(10, 10, 6).getSimulator()
         };
-        new Master(gp, simulators, 100000).runGP();
+        new Master(gp, simulators, GENERATIONS).runGP();
     }
 
     /**
