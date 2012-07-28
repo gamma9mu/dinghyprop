@@ -273,13 +273,13 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        GeneticProgram gp = new GeneticProgram(100,
+        GeneticProgram gp = new GeneticProgram(10000,
                 GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 3);
         ISimulator[] simulators = {new SimulatorRandom(10, 10, 6).getSimulator(),
                 new SimulatorRandom(10, 10, 6).getSimulator(),
                 new SimulatorRandom(10, 10, 6).getSimulator()
         };
-        new Master(gp, simulators, 1000).runGP();
+        new Master(gp, simulators, 100000).runGP();
     }
 
     /**
