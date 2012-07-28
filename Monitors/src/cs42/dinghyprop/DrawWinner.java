@@ -1,5 +1,6 @@
-package cs412.dinghyprop;
+package cs42.dinghyprop;
 
+import cs412.dinghyprop.IMaster;
 import cs412.dinghyprop.simulator.*;
 import cs412.dinghyprop.interpreter.*;
 import cs412.dinghyprop.genetics.*;
