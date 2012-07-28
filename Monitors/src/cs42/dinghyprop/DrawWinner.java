@@ -28,7 +28,7 @@ public class DrawWinner extends JPanel implements Observer{
 	private static ISimulator[] sims = null;
 	private static DrawWinner draw = null;
     private int[] position = {0, 0};
-    private transient Thread interpreterThread = null;
+    protected transient volatile Thread interpreterThread = null;
 
     /**
      * Constructor that sets initial size of animation window
@@ -46,7 +46,7 @@ public class DrawWinner extends JPanel implements Observer{
      */
 	public void setSimulation(ISimulator current, final Program prog) throws CloneNotSupportedException {
         if (interpreterThread != null)
-            interpreterThread.stop();
+            interpreterThread = null;
 		currentSimulator = ((Simulator) current).clone();
         currentSimulator.addObserver(this);
 		int[] size = currentSimulator.getSize();
@@ -63,7 +63,12 @@ public class DrawWinner extends JPanel implements Observer{
             public void run() {
                 try {
                     Interpreter interpreter = new Interpreter(currentSimulator, prog.program);
-                    interpreter.run(100);
+                    Thread me = Thread.currentThread();
+                    for (int i = 0; i < 100; i++) {
+                        if (interpreterThread != me)
+                            break;
+                        interpreter.execute();
+                    }
                 } catch (ParsingException pe) {
                     pe.printStackTrace();
                 }
