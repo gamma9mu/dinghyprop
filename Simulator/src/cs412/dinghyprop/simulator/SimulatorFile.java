@@ -54,6 +54,14 @@ public class SimulatorFile {
 	}
 
     /**
+     * Obtain the simulator.
+     * @return  The simulator constructed from the file
+     */
+    public Simulator getSim() {
+        return sim;
+    }
+
+    /**
      * Sets the size of the simulation environment by reading from the file
      */
 	private void setSize(){

@@ -4,7 +4,6 @@ import cs412.dinghyprop.genetics.GeneticProgram;
 import cs412.dinghyprop.genetics.IPopulationObserver;
 import cs412.dinghyprop.genetics.Program;
 import cs412.dinghyprop.simulator.ISimulator;
-import cs412.dinghyprop.simulator.SimulatorRandom;
 
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
@@ -271,16 +270,22 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
 
     /**
      * Register a new {@code Master} with RMI.
-     * @param args    ignored
+     * @param args    One argument: the directory name where simulator files
+     *                are stored
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
+        if (args.length != 1) {
+            System.err.println("Usage: Master <simulation_directory>");
+            System.exit(-1);
+        }
+
+        SimulationDirLoader sdl = new SimulationDirLoader(args[0]);
+        ISimulator[] simulators = sdl.load();
+
         GeneticProgram gp = new GeneticProgram(POPULATION_SIZE,
                 GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 3);
-        ISimulator[] simulators = {new SimulatorRandom(10, 10, 6).getSimulator(),
-                new SimulatorRandom(10, 10, 6).getSimulator(),
-                new SimulatorRandom(10, 10, 6).getSimulator()
-        };
+
         new Master(gp, simulators, GENERATIONS).runGP();
     }
 
