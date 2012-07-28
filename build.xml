@@ -115,6 +115,7 @@
       <zipfileset dir="${remotes.output.dir}"/>
       <zipfileset dir="${simulator.output.dir}"/>
       <zipfileset dir="${client.output.dir}"/>
+      <zipfileset file="${basedir}/out/production/Server/cs412/dinghyprop/Master_Stub.class" prefix="cs412/dinghyprop"/>
     </jar>
     <copy file="${temp.jar.path.Monitors.jar}" tofile="${artifact.temp.output.monitors:jar}/Monitors.jar"/>
   </target>
