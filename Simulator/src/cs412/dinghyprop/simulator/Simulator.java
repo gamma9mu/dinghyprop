@@ -6,13 +6,19 @@ import java.util.Observable;
  * Dinghy environment simulator.
  */
 public class Simulator extends Observable implements ISimulator, Serializable {
+    // Constant to store the default fitness for termination
 	private static final int DEFAULT_TERMINATION_FITNESS = 300;
+    // Variable to store the goal of the simulation
 	private Goal goal = null;
+    // Array to store the obstacles in the simulation
 	private Obstacle[] obstacles;
+    // Variable to store the dinghy in the simulation
 	private Dinghy dinghy;
-	private int sizeX;
-	private int sizeY;
+    // Variables to store the size of the simulation
+	private int sizeX, sizeY;
+    // Variable to determine if simulation can continue
 	private boolean canContinue = true;
+    // Variable that stores the current termination fitness
 	private int terminationFitness = DEFAULT_TERMINATION_FITNESS;
 	static final long serialVersionUID = 3186189958128685645L;
 
