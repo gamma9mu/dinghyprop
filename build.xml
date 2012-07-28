@@ -66,6 +66,8 @@
   
   <import file="${basedir}/Simulator/module_simulator.xml"/>
   
+  <import file="${basedir}/Monitors/module_monitors.xml"/>
+  
   <import file="${basedir}/Server/module_server.xml"/>
   
   <import file="${basedir}/module_dinghyprop.xml"/>
@@ -74,17 +76,19 @@
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.remotes, clean.module.client, clean.module.simulator, clean.module.server, clean.module.dinghyprop" description="cleanup all"/>
+  <target name="clean" depends="clean.module.remotes, clean.module.client, clean.module.simulator, clean.module.monitors, clean.module.server, clean.module.dinghyprop" description="cleanup all"/>
   
-  <target name="build.modules" depends="init, clean, compile.module.remotes, compile.module.client, compile.module.simulator, compile.module.server, compile.module.dinghyprop" description="build all modules"/>
+  <target name="build.modules" depends="init, clean, compile.module.remotes, compile.module.client, compile.module.simulator, compile.module.monitors, compile.module.server, compile.module.dinghyprop" description="build all modules"/>
   
   <target name="init.artifacts">
     <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
     <property name="artifact.output.client:jar" value="${basedir}/out/artifacts/Client_jar"/>
+    <property name="artifact.output.monitors:jar" value="${basedir}/out/artifacts/Monitors_jar"/>
     <property name="artifact.output.remotes:jar" value="${basedir}/out/artifacts/Remotes_jar"/>
     <property name="artifact.output.server:jar" value="${basedir}/out/artifacts/Server_jar"/>
     <mkdir dir="${artifacts.temp.dir}"/>
     <property name="temp.jar.path.Client.jar" value="${artifacts.temp.dir}/Client.jar"/>
+    <property name="temp.jar.path.Monitors.jar" value="${artifacts.temp.dir}/Monitors.jar"/>
     <property name="temp.jar.path.Remotes.jar" value="${artifacts.temp.dir}/Remotes.jar"/>
     <property name="temp.jar.path.Server.jar" value="${artifacts.temp.dir}/Server.jar"/>
   </target>
@@ -100,6 +104,19 @@
       <zipfileset dir="${simulator.output.dir}"/>
     </jar>
     <copy file="${temp.jar.path.Client.jar}" tofile="${artifact.temp.output.client:jar}/Client.jar"/>
+  </target>
+  
+  <target name="artifact.monitors:jar" depends="init.artifacts, compile.module.monitors, compile.module.remotes, compile.module.simulator, compile.module.client" description="Build &#39;Monitors:jar&#39; artifact">
+    <property name="artifact.temp.output.monitors:jar" value="${artifacts.temp.dir}/Monitors_jar"/>
+    <mkdir dir="${artifact.temp.output.monitors:jar}"/>
+    <jar destfile="${temp.jar.path.Monitors.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset file="${basedir}/Monitors/src/META-INF/MANIFEST.MF" prefix="META-INF"/>
+      <zipfileset dir="${monitors.output.dir}"/>
+      <zipfileset dir="${remotes.output.dir}"/>
+      <zipfileset dir="${simulator.output.dir}"/>
+      <zipfileset dir="${client.output.dir}"/>
+    </jar>
+    <copy file="${temp.jar.path.Monitors.jar}" tofile="${artifact.temp.output.monitors:jar}/Monitors.jar"/>
   </target>
   
   <target name="artifact.remotes:jar" depends="init.artifacts, compile.module.remotes" description="Build &#39;Remotes:jar&#39; artifact">
@@ -125,10 +142,14 @@
     <copy file="${temp.jar.path.Server.jar}" tofile="${artifact.temp.output.server:jar}/Server.jar"/>
   </target>
   
-  <target name="build.all.artifacts" depends="artifact.client:jar, artifact.remotes:jar, artifact.server:jar" description="Build all artifacts">
+  <target name="build.all.artifacts" depends="artifact.client:jar, artifact.monitors:jar, artifact.remotes:jar, artifact.server:jar" description="Build all artifacts">
     <mkdir dir="${artifact.output.client:jar}"/>
     <copy todir="${artifact.output.client:jar}">
       <fileset dir="${artifact.temp.output.client:jar}"/>
+    </copy>
+    <mkdir dir="${artifact.output.monitors:jar}"/>
+    <copy todir="${artifact.output.monitors:jar}">
+      <fileset dir="${artifact.temp.output.monitors:jar}"/>
     </copy>
     <mkdir dir="${artifact.output.remotes:jar}"/>
     <copy todir="${artifact.output.remotes:jar}">

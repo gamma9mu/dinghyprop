@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_monitors" default="compile.module.monitors">
+  <dirname property="module.monitors.basedir" file="${ant.file.module_monitors}"/>
+  
+  
+  <property name="compiler.args.monitors" value="${compiler.args}"/>
+  
+  <property name="monitors.output.dir" value="${module.monitors.basedir}/../out/production/Monitors"/>
+  <property name="monitors.testoutput.dir" value="${module.monitors.basedir}/../out/test/Monitors"/>
+  
+  <path id="monitors.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="monitors.module.production.classpath">
+    <pathelement location="${remotes.output.dir}"/>
+    <pathelement location="${simulator.output.dir}"/>
+    <pathelement location="${client.output.dir}"/>
+  </path>
+  
+  <path id="monitors.runtime.production.module.classpath">
+    <pathelement location="${monitors.output.dir}"/>
+    <pathelement location="${remotes.output.dir}"/>
+    <pathelement location="${simulator.output.dir}"/>
+    <pathelement location="${client.output.dir}"/>
+  </path>
+  
+  <path id="monitors.module.classpath">
+    <pathelement location="${monitors.output.dir}"/>
+    <pathelement location="${remotes.testoutput.dir}"/>
+    <pathelement location="${remotes.output.dir}"/>
+    <pathelement location="${simulator.testoutput.dir}"/>
+    <pathelement location="${simulator.output.dir}"/>
+    <pathelement location="${client.testoutput.dir}"/>
+    <pathelement location="${client.output.dir}"/>
+  </path>
+  
+  <path id="monitors.runtime.module.classpath">
+    <pathelement location="${monitors.testoutput.dir}"/>
+    <pathelement location="${monitors.output.dir}"/>
+    <pathelement location="${remotes.testoutput.dir}"/>
+    <pathelement location="${remotes.output.dir}"/>
+    <pathelement location="${simulator.testoutput.dir}"/>
+    <pathelement location="${simulator.output.dir}"/>
+    <pathelement location="${client.testoutput.dir}"/>
+    <pathelement location="${client.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.monitors">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.monitors">
+    <patternset refid="excluded.from.module.monitors"/>
+  </patternset>
+  
+  <path id="monitors.module.sourcepath">
+    <dirset dir="${module.monitors.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.monitors" depends="compile.module.monitors.production,compile.module.monitors.tests" description="Compile module Monitors"/>
+  
+  <target name="compile.module.monitors.production" depends="compile.module.remotes,compile.module.simulator,compile.module.client" description="Compile module Monitors; production classes">
+    <mkdir dir="${monitors.output.dir}"/>
+    <javac destdir="${monitors.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.monitors}"/>
+      <bootclasspath refid="monitors.module.bootclasspath"/>
+      <classpath refid="monitors.module.production.classpath"/>
+      <src refid="monitors.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.monitors"/>
+    </javac>
+    
+    <copy todir="${monitors.output.dir}">
+      <fileset dir="${module.monitors.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.monitors.tests" depends="compile.module.monitors.production" description="compile module Monitors; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.monitors" description="cleanup module">
+    <delete dir="${monitors.output.dir}"/>
+    <delete dir="${monitors.testoutput.dir}"/>
+  </target>
+</project>
