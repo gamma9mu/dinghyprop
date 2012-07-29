@@ -25,14 +25,13 @@ import java.util.Observer;
 public class DrawWinner extends JPanel implements Observer{
     private static final long serialVersionUID = -5236126589222504417L;
     private static final int DRAW_DELAY = 300;
-    private int sizeX, sizeY;
+    private int sizeX = 100, sizeY = 100;
     private Simulator currentSimulator = null;
     private int[] goal = null;
     private Obstacle[] obstacles = null;
-    private static IMaster master = null;
-    private static JComboBox dropDown = null;
-    private static ISimulator[] sims = null;
-    private static DrawWinner draw = null;
+    private IMaster server;
+    private JComboBox dropDown;
+    private ISimulator[] sims = null;
     private String currentProgram = "";
     private int[] position = {0, 0};
     protected transient volatile Thread interpreterThread = null;
@@ -44,10 +43,50 @@ public class DrawWinner extends JPanel implements Observer{
     /**
      * Constructor that sets initial size of animation window
      */
-    public DrawWinner() throws IOException {
+    public DrawWinner(IMaster master) throws IOException {
+        server = master;
         dinghy = ImageIO.read(getClass().getClassLoader().getResource("dinghy.png"));
-        sizeX = 300;
-        sizeY = 300;
+
+        try {
+            sims = server.getEvaluationSimulators();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                    "Could not retrieve simulators\nCause: " + e.getLocalizedMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        dropDown = new JComboBox();
+        for (int i = 0; i < sims.length; i++) {
+            dropDown.addItem("Simulator " + i);
+        }
+        dropDown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateSimulator();
+            }
+        });
+
+        JButton update = new JButton("Get Current Winner");
+        /**
+         * Sets up an action listener on the button to grab the current winning program each time the button
+         * is pressed. It then starts the animation.
+         */
+        update.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startAnimation();
+            }
+        });
+
+        JFrame frame = new JFrame("animation");
+        frame.add(dropDown, BorderLayout.NORTH);
+        frame.add(this, BorderLayout.CENTER);
+        frame.add(update, BorderLayout.SOUTH);
+
+        frame.pack();
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setLocationByPlatform(true);
+        frame.setVisible(true);
     }
 
     /**
@@ -73,17 +112,17 @@ public class DrawWinner extends JPanel implements Observer{
         interpreterThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Interpreter interpreter = new Interpreter(currentSimulator, prog);
-                    Thread me = Thread.currentThread();
-                    for (int i = 0; i < 100; i++) {
-                        if (interpreterThread != me)
-                            break;
-                        interpreter.execute();
-                    }
-                } catch (ParsingException pe) {
-                    pe.printStackTrace();
+            try {
+                Interpreter interpreter = new Interpreter(currentSimulator, prog);
+                Thread me = Thread.currentThread();
+                for (int i = 0; i < 100; i++) {
+                    if (interpreterThread != me)
+                        break;
+                    interpreter.execute();
                 }
+            } catch (ParsingException pe) {
+                pe.printStackTrace();
+            }
             }
         });
         interpreterThread.start();
@@ -99,31 +138,17 @@ public class DrawWinner extends JPanel implements Observer{
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
         Graphics2D graph = (Graphics2D) g;
-        Dimension wsize = getSize();
 
         // Blank the background
         graph.setColor(Color.white);
         graph.fill(new Rectangle(getWidth(), getHeight()));
 
         if(currentSimulator != null) {
-            // Compute the scaling factors
-            int[] ssize = currentSimulator.getSize();
-            scalingFactor = (int) (Math.sqrt(
-                    (wsize.width - 10) * (wsize.width - 10)
-                            + (wsize.height - 10) * (wsize.height - 10))
-                    / Math.sqrt(ssize[0] * ssize[0] + ssize[1] * ssize[1]));
-            halfStep = scalingFactor / 2;
-            imageScaleRate = scalingFactor / 10;
-
-            int w = currentSimulator.getSize()[0] * scalingFactor;
-            int h = currentSimulator.getSize()[1] * scalingFactor;
+            computeScalers();
 
             // Draw the grid
             graph.setColor(Color.black);
-            for (int i = 0; i <= h; i += scalingFactor)
-                graph.drawLine(5, i+5, w+5, i+5);
-            for (int i = 0; i <= w; i += scalingFactor)
-                graph.drawLine(i+5, 5, i+5, h+5);
+            drawGrid(graph);
 
             // Draw the goal
             graph.setColor(Color.GREEN);
@@ -137,6 +162,44 @@ public class DrawWinner extends JPanel implements Observer{
             drawDinghy(graph, position[0], position[1]);
         }
 	}
+
+    /**
+     * Draw a grid to represent possible object locations.
+     * @param graph    The graphics to draw with
+     */
+    private void drawGrid(Graphics2D graph) {
+        int width = currentSimulator.getSize()[0] * scalingFactor;
+        int height = currentSimulator.getSize()[1] * scalingFactor;
+
+        for (int i = 0; i <= height; i += scalingFactor)
+            graph.drawLine(5, i+5, width+5, i+5);
+
+        for (int i = 0; i <= width; i += scalingFactor)
+            graph.drawLine(i+5, 5, i+5, height+5);
+    }
+
+    /**
+     * Compute the scaling factors for the current simulator and window size
+     * combination.
+     */
+    private void computeScalers() {
+        Dimension wsize = getSize();
+        int[] ssize = currentSimulator.getSize();
+
+        // Compute overall scaling factor
+        scalingFactor = (int) (Math.sqrt(
+                (wsize.width - 10) * (wsize.width - 10)
+                        + (wsize.height - 10) * (wsize.height - 10))
+                / Math.sqrt(ssize[0] * ssize[0] + ssize[1] * ssize[1]));
+        // Get a half step scaling factor
+        halfStep = scalingFactor / 2;
+
+        // Compute a scaling factor for the dinghy image (which is not to scale
+        // with the rest of the graphics)
+        imageScaleRate = scalingFactor / 10;
+        if (imageScaleRate < 1)
+            imageScaleRate = 1;
+    }
 
     /**
      * This method gets the dimensions for the animation from the simulation environment
@@ -172,9 +235,8 @@ public class DrawWinner extends JPanel implements Observer{
 
         int tempX = x * scalingFactor;
         int tempY = y * scalingFactor;
-        int imageScaleFactor = scalingFactor / 10;
-        int w = (dinghy.getWidth(null) / 2) * imageScaleFactor;
-        int h = (dinghy.getHeight(null) / 2) * imageScaleFactor;
+        int w = (dinghy.getWidth(null) / 2) * imageScaleRate;
+        int h = (dinghy.getHeight(null) / 2) * imageScaleRate;
         int quadrants = 0;
 		try{
             int heading = currentSimulator.reference("heading");
@@ -198,7 +260,7 @@ public class DrawWinner extends JPanel implements Observer{
 
         AffineTransform at = AffineTransform.getTranslateInstance(tempX + 5, tempY + 5);
         at.concatenate(AffineTransform.getQuadrantRotateInstance(quadrants));
-        at.concatenate(AffineTransform.getScaleInstance(imageScaleFactor, imageScaleFactor));
+        at.concatenate(AffineTransform.getScaleInstance(imageScaleRate, imageScaleRate));
         g.drawImage(dinghy, at, null);
     }
 
@@ -232,7 +294,7 @@ public class DrawWinner extends JPanel implements Observer{
      */
     private void startAnimation() {
         try {
-            currentProgram = master.getCurrentLeader().program;
+            currentProgram = server.getCurrentLeader().program;
         } catch(Exception e) {
             JOptionPane.showMessageDialog(this,
                     "Could not retrieve program\nCause: " + e.getLocalizedMessage(),
@@ -247,7 +309,7 @@ public class DrawWinner extends JPanel implements Observer{
     private void updateSimulator() {
         ISimulator sim = sims[dropDown.getSelectedIndex()];
         try {
-            draw.setSimulation(sim);
+            setSimulation(sim);
         } catch (CloneNotSupportedException e) {
             JOptionPane.showMessageDialog(this,
                     "Could not create simulator\nCause: " + e.getLocalizedMessage(),
@@ -256,87 +318,24 @@ public class DrawWinner extends JPanel implements Observer{
     }
 
     /**
-     * This method gets all of the simulators from master by calling getEvaluationSimulators. It then creates the JFrame
-     * that will show all of the GUI components. This includes the drop down box, button, and animation screen.
-     */
-    private static void createGui() throws IOException {
-		try {
-			sims = master.getEvaluationSimulators();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-
-        draw = new DrawWinner();
-
-		dropDown = new JComboBox();
-		for(int i = 0; i < sims.length; i++) {
-			dropDown.addItem("Simulator " + i);
-		}
-        dropDown.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                draw.updateSimulator();
-            }
-        });
-
-		JButton button = new JButton("Get Current Winner");
-        /**
-         * Sets up an action listener on the button to grab the current winning program each time the button
-         * is pressed. It then starts the animation.
-         */
-		button.addActionListener(
-			new ActionListener() {
-				@Override
-                public void actionPerformed(ActionEvent e) {
-					draw.startAnimation();
-				}
-			}
-		);
-
-		JFrame frame = new JFrame("animation");
-		frame.add(dropDown, BorderLayout.NORTH);
-		frame.add(draw, BorderLayout.CENTER);
-		frame.add(button, BorderLayout.SOUTH);
-
-		frame.pack();
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setLocationByPlatform(true);
-		frame.setVisible(true);
-
-	}
-
-    /**
-     * The main method that sets up the RMI connection based on CLI arguments. It then calls createGui to set up the
-     * JFrame.
+     * The main method that sets up the RMI connection based on CLI arguments.
+     * It then sets up the DrawWinner.
      * @param args Command Line arguments that specify the IP address to connect to.
      */
     public static void main(String[] args) {
-		String masterName = "//";
+		String masterName;
 		if(args.length == 0)
-			masterName += "localhost";
+			masterName = "//localhost/Master";
 		else
-			masterName += args[0];
-		masterName += "/Master";
+			masterName = "//" + args[0] + "/Master";
+
 		try {
-			master = (IMaster)Naming.lookup(masterName);
-		} catch(java.rmi.ConnectException ce){
+			IMaster master = (IMaster)Naming.lookup(masterName);
+            new DrawWinner(master);
+        } catch (IOException e) {
+            System.err.println("Error initializing DrawWinner.");
+		} catch(Exception e){
 			System.err.println("Could not connect");
-		} catch(Exception e) {
-			e.printStackTrace();
-			System.exit(1);
 		}
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-            public void run() {
-                try {
-                    createGui();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.exit(-1);
-                }
-            }
-		});
 	}
-	
 }
