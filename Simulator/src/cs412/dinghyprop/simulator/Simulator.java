@@ -136,11 +136,10 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 	private int referenceFront(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
 			int temp = dinghy.getDistanceFront(obstacle);
-			if (temp < upperBound && temp != -1 && temp != 0)
-				upperBound = temp;
-			else if (temp == 0) {
-				canContinue = false;
-			}
+            if (temp == 0)
+                canContinue = false;
+            if (temp < upperBound && temp != -1 && temp != 0)
+                upperBound = temp;
 		}
 		return upperBound;
 	}

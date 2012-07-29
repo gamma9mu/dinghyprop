@@ -1,6 +1,11 @@
-package cs42.dinghyprop;
+/*
+ * Brian Guthrie and Kevin Reuter
+ * DinghyProp
+ * CS412 - Summer 2012
+ */
 
-import cs412.dinghyprop.IMaster;
+package cs412.dinghyprop;
+
 import cs412.dinghyprop.interpreter.Interpreter;
 import cs412.dinghyprop.interpreter.ParsingException;
 import cs412.dinghyprop.simulator.ISimulator;
