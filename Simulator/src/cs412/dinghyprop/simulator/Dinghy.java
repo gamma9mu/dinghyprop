@@ -56,13 +56,19 @@ public class Dinghy extends Point{
      * @param y    The y dimension of the map
      */
 	public void wrap(int x, int y) {
-		int[] currPos = getPosition();
+        int[] currPos = getPosition();
 
-		if (currPos[0] > x)
-			setX(currPos[0] - x);
+        if (currPos[0] > x)
+            setX(currPos[0] - x);
 
-		if (currPos[1] > y)
-			setY(currPos[1] - y);
+        if (currPos[0] < 0)
+            setX(currPos[0] + x);
+
+        if (currPos[1] > y)
+            setY(currPos[1] - y);
+
+        if (currPos[1] < 0)
+            setY(currPos[1] + y);
 	}
 
 	/**
