@@ -11,11 +11,20 @@ package cs412.dinghyprop.simulator;
 *  dinghy that is in the simulation
 */
 public class Dinghy extends Point{
-	// Variable to store the total distance travelled
+    private static final long serialVersionUID = -4129944364781066537L;
+    /**
+     * Variable to store the total distance travelled
+     */
 	private int distTravelled;
-	// Enumeration to represent the direction of the dinghy
-    private enum Direction { NORTH, EAST, SOUTH, WEST;}
-	// Variable to store current direction of dinghy
+
+    /**
+     * Enumeration to represent the direction of the dinghy
+     */
+    private enum Direction { NORTH, EAST, SOUTH, WEST }
+
+    /**
+     * Variable to store current direction of dinghy
+     */
     private Direction direc;
 
 	/**
@@ -30,7 +39,6 @@ public class Dinghy extends Point{
 		direc = Direction.NORTH;
 	}
 	
-	
 	/**
 	*  This constructor allows for the dinghy to be cloned
 	*  to allow for the same simulation to be used by all
@@ -41,19 +49,6 @@ public class Dinghy extends Point{
 		super(dinghy.getPosition()[0], dinghy.getPosition()[1]);
 		distTravelled = dinghy.distTravelled;
 		direc = dinghy.direc;
-	}
-
-	/**
-	*  Allows for the dinghy to be moved to a new position.
-	*  (Probably not needed)
-	*  @param distX The X distance to move the dinghy.
-	*  @param distY The Y distance to move the dinghy.
-	*/
-	protected void movePos(int distX, int distY){
-        int[] currPos = this.getPosition();
-		distTravelled += calculateDistTravel(distX, distY, currPos);
-		this.setX(currPos[0] + distX);
-		this.setY(currPos[1] + distY);
 	}
 
     /**
@@ -89,19 +84,14 @@ public class Dinghy extends Point{
 			case NORTH:
 				incY(dist);
 				break;
-			
 			case EAST:
 				incX(dist);
 				break;
-			
 			case SOUTH:
-				dist = 0 - dist;
-				incY(dist);
+				incY(0 - dist);
 				break;
-			
 			case WEST:
-				dist = 0 - dist;
-				incX(dist);
+				incX(0 - dist);
 				break;
 		}
 	}
@@ -152,17 +142,8 @@ public class Dinghy extends Point{
 	protected int getDistTravelled() {
 		return distTravelled;
 	}
-	
-	/**
-	*  Method that calculates the distance between current position
-	*  and the position dinghy will move to.(Probably not needed)
-	*  @return distance between two points as an int.
-	*/
-	private int calculateDistTravel(int changeX, int changeY, int[] currPos) {
-		return (int)Math.sqrt(Math.pow(changeY - currPos[1], 2) + Math.pow(changeX - currPos[0], 2));
-	}
 
-	/**
+    /**
 	*  Gets the direction to the left of the dinghy
 	*  @return The direction to the left of the dinghy.
 	*/
@@ -309,32 +290,17 @@ public class Dinghy extends Point{
 	protected int getDistanceShortLeft(Obstacle obst) {
 		int[] obstaclePosition = obst.getPosition();
 		int[] dinghyPosition = this.getPosition();
-		int result = -1;
-		
-		switch (direc) {
-			case NORTH:
-				if(checkConditions(obstaclePosition, dinghyPosition, -1, '>')) {
-					result = this.getDistance(obst);
-				}
-				break;
-			case EAST:
-				if(checkConditions(obstaclePosition, dinghyPosition, 1, '>')) {
-					result = this.getDistance(obst);
-				}
-				break;
-			case SOUTH:
-				if(checkConditions(obstaclePosition, dinghyPosition, -1, '<')) {
-					result = this.getDistance(obst);
-				}				
-				break;
-			case WEST:
-				if(checkConditions(obstaclePosition, dinghyPosition, 1, '<')) {
-					result = this.getDistance(obst);
-				}
-				break;
-		}
-		
-		return result;
+
+        if (direc == Direction.NORTH && checkConditions(obstaclePosition, dinghyPosition, -1, '>'))
+            return this.getDistance(obst);
+        if (direc == Direction.EAST && checkConditions(obstaclePosition, dinghyPosition, 1, '>'))
+            return this.getDistance(obst);
+        if (direc == Direction.SOUTH && checkConditions(obstaclePosition, dinghyPosition, -1, '<'))
+            return this.getDistance(obst);
+        if (direc == Direction.WEST && checkConditions(obstaclePosition, dinghyPosition, 1, '<'))
+            return this.getDistance(obst);
+
+		return -1;
 	}
 	
 	/**
@@ -346,31 +312,17 @@ public class Dinghy extends Point{
 	protected int getDistanceShortRight(Obstacle obst) {
 		int[] obstaclePosition = obst.getPosition();
 		int[] dinghyPosition = this.getPosition();
-		int result = -1;
-		
-		switch(direc) {
-			case NORTH:
-				if(checkConditions(obstaclePosition, dinghyPosition, 1, '>')) {
-					result = this.getDistance(obst);
-				}
-				break;
-			case EAST:
-				if(checkConditions(obstaclePosition, dinghyPosition, -1, '<')) {
-					result = this.getDistance(obst);
-				}
-				break;
-			case SOUTH:
-				if(checkConditions(obstaclePosition, dinghyPosition, 1, '<')) {
-					result = this.getDistance(obst);
-				}
-				break;
-			case WEST:
-				if(checkConditions(obstaclePosition, dinghyPosition, -1, '>')) {
-					result = this.getDistance(obst);
-				}
-				break;
-		}
-		return result;
+
+        if (direc == Direction.NORTH && checkConditions(obstaclePosition, dinghyPosition, 1, '>'))
+            return this.getDistance(obst);
+        if (direc == Direction.EAST && checkConditions(obstaclePosition, dinghyPosition, -1, '<'))
+            return this.getDistance(obst);
+        if (direc == Direction.SOUTH && checkConditions(obstaclePosition, dinghyPosition, 1, '<'))
+            return this.getDistance(obst);
+        if (direc == Direction.WEST && checkConditions(obstaclePosition, dinghyPosition, -1, '>'))
+            return this.getDistance(obst);
+
+        return -1;
 	}
 	
 	/**
@@ -379,22 +331,14 @@ public class Dinghy extends Point{
 	*  @param obstaclePos An array that stores the current obstacle position.
 	*  @param dinghyPos An array that stores the current dinghy position.
 	*  @param expectedVal Stores the expected slope value.
-	*  @param oper Tells method wheter to use greater-than or less-than symbol
+	*  @param oper Tells method whether to use greater-than or less-than symbol
 	*  @return Returns true if slope is correct and obstacle is in correct plane.
 	*/
 	private boolean checkConditions(int[] obstaclePos, int[] dinghyPos, int expectedVal, char oper) {
-		boolean result = false;
-		if(oper == '<'){
-			if(checkSlope(obstaclePos, dinghyPos, expectedVal) && obstaclePos[1] < dinghyPos[1]){
-				result = true;
-			}
-		}
-		else if(oper == '>') {
-			if(checkSlope(obstaclePos, dinghyPos, expectedVal) && obstaclePos[1] > dinghyPos[1]){
-				result = true;
-			}
-		}
-		return result;
+        if (oper == '<')
+            return checkSlope(obstaclePos, dinghyPos, expectedVal) && obstaclePos[1] < dinghyPos[1];
+		else // oper == '>'
+			 return checkSlope(obstaclePos, dinghyPos, expectedVal) && obstaclePos[1] > dinghyPos[1];
 	}
 	
 	/**
@@ -422,11 +366,6 @@ public class Dinghy extends Point{
 	*  @return True if the slope is equal to expectedValue.
 	*/
 	private boolean checkSlope(int[] obstaclePosition, int[] dinghyPosition, int expectedValue) {
-		boolean result = false;
-		if(getSlope(obstaclePosition, dinghyPosition) == expectedValue) {
-			result = true;
-		}
-		
-		return result;
+        return getSlope(obstaclePosition, dinghyPosition) == expectedValue;
 	}
 }

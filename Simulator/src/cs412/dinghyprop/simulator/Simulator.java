@@ -245,18 +245,8 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 		travelMetric = (travelMetric > 100) ? 100 : travelMetric;
 		return travelMetric;
 	}
-	
-	/**
-	*  Moves the dinghy by a given amount
-	*  Not sure this is needed anymore.
-	*  @param x The X value used to move the dinghy
-	*  @param y The Y value used to move the dinghy
-	*/
-	public void moveDinghy(int x, int y) {
-		dinghy.movePos(x, y);
-	}
-	
-	/**
+
+    /**
 	*  Gets the total size of the simulation environment
 	*  @return The total size of the simulation environment
 	*/
