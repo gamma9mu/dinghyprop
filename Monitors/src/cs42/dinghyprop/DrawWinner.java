@@ -20,22 +20,24 @@ public class DrawWinner extends JPanel implements Observer{
     private static final long serialVersionUID = -5236126589222504417L;
     private static final int DRAW_DELAY = 300;
     private int sizeX, sizeY;
-	private Simulator currentSimulator = null;
+    private Simulator currentSimulator = null;
     private int[] goal = null;
-	private Obstacle[] obstacles = null;
+    private Obstacle[] obstacles = null;
     private static IMaster master = null;
-	private static JComboBox dropDown = null;
-	private static ISimulator[] sims = null;
-	private static DrawWinner draw = null;
+    private static JComboBox dropDown = null;
+    private static ISimulator[] sims = null;
+    private static DrawWinner draw = null;
     private int[] position = {0, 0};
     protected transient volatile Thread interpreterThread = null;
+    private int scalingFactor = 2;
+    private int halfStep = 1;
 
     /**
      * Constructor that sets initial size of animation window
      */
     public DrawWinner() {
-		sizeX = 30;
-		sizeY = 30;
+		sizeX = 300;
+		sizeY = 300;
 	}
 
     /**
@@ -57,7 +59,6 @@ public class DrawWinner extends JPanel implements Observer{
 
 		goal = currentSimulator.getGoal();
 		obstacles = currentSimulator.getObstacles();
-        System.out.println(prog.program);
         interpreterThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -87,13 +88,42 @@ public class DrawWinner extends JPanel implements Observer{
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
         Graphics2D graph = (Graphics2D) g;
-		if(currentSimulator != null) {
-			graph.setColor(Color.GREEN);
-			graph.fillOval(goal[0] * 10, goal[1] * 10, 10, 10);
-		
-			graph.setColor(Color.RED);
-			drawObstacles(g);
-            moveDinghy(g, position[0], position[1]);
+        Dimension wsize = getSize();
+
+        // Blank the background
+        graph.setColor(Color.white);
+        graph.fill(new Rectangle(getWidth(), getHeight()));
+
+        if(currentSimulator != null) {
+            // Compute the scaling factors
+            int[] ssize = currentSimulator.getSize();
+            scalingFactor = (int) (Math.sqrt(
+                    (wsize.width - 10) * (wsize.width - 10)
+                            + (wsize.height - 10) * (wsize.height - 10))
+                    / Math.sqrt(ssize[0] * ssize[0] + ssize[1] * ssize[1]));
+            halfStep = scalingFactor / 2;
+
+            int w = currentSimulator.getSize()[0] * scalingFactor;
+            int h = currentSimulator.getSize()[1] * scalingFactor;
+
+            // Draw the grid
+            graph.setColor(Color.black);
+            for (int i = 0; i <= h; i += scalingFactor)
+                graph.drawLine(5, i+5, w+5, i+5);
+            for (int i = 0; i <= w; i += scalingFactor)
+                graph.drawLine(i+5, 5, i+5, h+5);
+
+            // Draw the goal
+            graph.setColor(Color.GREEN);
+            drawCenteredScaledCircle(graph, goal[0], goal[1]);
+
+            // Draw the obstacles
+            graph.setColor(Color.RED);
+			drawObstacles(graph);
+
+            // Draw the dinghy
+            g.setColor(Color.BLUE);
+            moveDinghy(graph, position[0], position[1]);
         }
 	}
 
@@ -103,7 +133,7 @@ public class DrawWinner extends JPanel implements Observer{
      */
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(sizeX * 10, sizeY * 10);
+		return new Dimension(sizeX * scalingFactor, sizeY * scalingFactor);
 	}
 
     /**
@@ -126,11 +156,11 @@ public class DrawWinner extends JPanel implements Observer{
      * @param posX  The X Position of the dinghy.
      * @param posY  The Y Position of the dinghy.
      */
-	public void moveDinghy(Graphics g, int posX, int posY) {
+	public void moveDinghy(Graphics2D g, int posX, int posY) {
 		this.repaint();
-		g.setColor(Color.BLUE);
-		int tempX = posX * 10;
-		int tempY = posY * 10;
+
+		int tempX = (posX * scalingFactor) - halfStep;
+		int tempY = (posY * scalingFactor) - halfStep;
 		int[] xPositions = null;
 		int[] yPositions = null;
 		try{
@@ -170,12 +200,24 @@ public class DrawWinner extends JPanel implements Observer{
      * This method draws all of the obstacles in the simulation environment on the animation screen.
      * @param g  The current Graphics object.
      */
-    private void drawObstacles(Graphics g) {
+    private void drawObstacles(Graphics2D g) {
 		for(Obstacle obstacle : obstacles) {
-			int[] position = obstacle.getPosition();
-			g.fillOval(position[0] * 2, position[1] * 2, 10, 10);
+			int[] pos = obstacle.getPosition();
+            drawCenteredScaledCircle(g, pos[0], pos[1]);
 		}
 	}
+
+    /**
+     * Draws a scaled circle centered on a point.
+     * @param g    The {@code Graphics2D} to draw with (with color set)
+     * @param x    The x coordinate
+     * @param y    The y coordinate
+     */
+    private void drawCenteredScaledCircle(Graphics2D g, int x, int y) {
+        int x0 = (x * scalingFactor) - halfStep + 5;
+        int y0 = (y * scalingFactor) - halfStep + 5;
+        g.fillOval(x0, y0, scalingFactor, scalingFactor);
+    }
 
     /**
      * This method starts the animation process every time a user presses the button to request the current winner. It
