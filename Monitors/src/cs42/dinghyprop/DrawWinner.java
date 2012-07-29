@@ -92,19 +92,17 @@ public class DrawWinner extends JPanel implements Observer{
     /**
      * This method sends the simulation to the interpreter and paints the simulation on the screen
      * @param current  The current simulation being passed to the interpreter
-     * @throws CloneNotSupportedException When a clone is not supported on the simulation.
      */
-	public void setSimulation(ISimulator current) throws CloneNotSupportedException {
+	public void setSimulation(ISimulator current) {
         if (interpreterThread != null)
             interpreterThread = null;
-		currentSimulator = ((Simulator) current).clone();
+        currentSimulator = (Simulator) current;
         currentSimulator.addObserver(this);
 		int[] size = currentSimulator.getSize();
 		sizeX = size[0];
 		sizeY = size[1];
 
         position = currentSimulator.getDinghy();
-
 		goal = currentSimulator.getGoal();
 		obstacles = currentSimulator.getObstacles();
 
@@ -307,8 +305,8 @@ public class DrawWinner extends JPanel implements Observer{
      * Update the simulation to the selected simulator.
      */
     private void updateSimulator() {
-        ISimulator sim = sims[dropDown.getSelectedIndex()];
         try {
+            ISimulator sim = sims[dropDown.getSelectedIndex()].clone();
             setSimulation(sim);
         } catch (CloneNotSupportedException e) {
             JOptionPane.showMessageDialog(this,
