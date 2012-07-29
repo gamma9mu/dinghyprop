@@ -6,12 +6,11 @@
 
 package cs412.dinghyprop.simulator;
 
-import java.io.Serializable;
 import java.util.Observable;
 /**
  * Dinghy environment simulator.
  */
-public class Simulator extends Observable implements ISimulator, Serializable {
+public class Simulator extends Observable implements ISimulator {
     // Constant to store the default fitness for termination
 	private static final int DEFAULT_TERMINATION_FITNESS = 300;
     // Variable to store the goal of the simulation
@@ -26,7 +25,7 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 	private boolean canContinue = true;
     // Variable that stores the current termination fitness
 	private int terminationFitness = DEFAULT_TERMINATION_FITNESS;
-	static final long serialVersionUID = 3186189958128685645L;
+	private static final long serialVersionUID = 3186189958128685645L;
 
 	/**
 	*  Constructor that sets up the simulator environment
@@ -70,14 +69,14 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 	*/
 	@Override
     public void invoke(String function) throws UnknownFunctionException {
-		if (function.compareTo("move") == 0)
-			invokeMove();
+        if (function.compareTo("move") == 0)
+            invokeMove();
         else if (function.compareTo("turn-left") == 0)
             dinghy.turnLeft();
-		else if (function.compareTo("turn-right") == 0)
-			dinghy.turnRight();
-		else
-			throw new UnknownFunctionException(function);
+        else if (function.compareTo("turn-right") == 0)
+            dinghy.turnRight();
+        else
+            throw new UnknownFunctionException(function);
 
         setChanged();
         notifyObservers();
@@ -145,7 +144,7 @@ public class Simulator extends Observable implements ISimulator, Serializable {
             if (temp == 0)
                 canContinue = false;
             if (temp < upperBound && temp != -1 && temp != 0)
-                upperBound = temp;
+                return temp;
 		}
 		return upperBound;
 	}
@@ -158,11 +157,10 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 	private int referenceLeft(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
 			int temp = dinghy.getDistanceLeft(obstacle);
-			if (temp < upperBound && temp != -1 && temp != 0)
-				upperBound = temp;
-			else if (temp == 0) {
-				canContinue = false;
-			}
+            if (temp == 0)
+                canContinue = false;
+            if (temp < upperBound && temp != -1 && temp != 0)
+                return temp;
 		}
 		return upperBound;
 	}
@@ -175,11 +173,11 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 	private int referenceRight(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
 			int temp = dinghy.getDistanceRight(obstacle);
-			if (temp < upperBound && temp != -1 && temp != 0)
-				upperBound = temp;
-			else if (temp == 0) {
-				canContinue = false;
-			}
+            if (temp == 0)
+                canContinue = false;
+            if (temp < upperBound && temp != -1 && temp != 0)
+				return temp;
+
 		}
 		return upperBound;
 	}
@@ -192,11 +190,10 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 	private int referenceRear(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
 			int temp = dinghy.getDistanceRear(obstacle);
-			if (temp < upperBound && temp != -1 && temp != 0)
-				upperBound = temp;
-			else if (temp == 0) {
-				canContinue = false;
-			}
+            if (temp == 0)
+                canContinue = false;
+            if (temp < upperBound && temp != -1 && temp != 0)
+				return temp;
 		}
 		return upperBound;
 	}
@@ -209,12 +206,10 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 	private int referenceShortLeft(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
 			int temp = dinghy.getDistanceShortLeft(obstacle);
-			if(temp < upperBound && temp !=-1 && temp != 0)
-				upperBound = temp;
-			else if (temp == 0) 
-				canContinue = false;
-							
-			
+            if (temp == 0)
+                canContinue = false;
+            if(temp < upperBound && temp !=-1 && temp != 0)
+				return temp;
 		}
 		return upperBound;
 	}
@@ -227,10 +222,10 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 	private int referenceShortRight(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
 			int temp = dinghy.getDistanceShortRight(obstacle);
-			if(temp < upperBound && temp != -1 && temp !=0)
-				upperBound = temp;
-			else if (temp == 0)
-				canContinue = false;
+            if (temp == 0)
+                canContinue = false;
+            if(temp < upperBound && temp != -1 && temp !=0)
+				return temp;
 		}
 		return upperBound;
 	}
@@ -327,8 +322,7 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 	*  @return The size of the simulation environment.
 	*/
 	public int[] getSize() {
-		int[] size = {sizeX, sizeY};
-		return size;
+        return new int[]{sizeX, sizeY};
 	}
 	
 	/**
