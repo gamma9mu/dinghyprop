@@ -336,9 +336,9 @@ public class Dinghy extends Point{
 	*/
 	private boolean checkConditions(int[] obstaclePos, int[] dinghyPos, int expectedVal, char oper) {
         if (oper == '<')
-            return checkSlope(obstaclePos, dinghyPos, expectedVal) && obstaclePos[1] < dinghyPos[1];
+            return getSlope(obstaclePos, dinghyPos) == expectedVal && obstaclePos[1] < dinghyPos[1];
 		else // oper == '>'
-			 return checkSlope(obstaclePos, dinghyPos, expectedVal) && obstaclePos[1] > dinghyPos[1];
+            return getSlope(obstaclePos, dinghyPos) == expectedVal && obstaclePos[1] > dinghyPos[1];
 	}
 	
 	/**
@@ -356,16 +356,5 @@ public class Dinghy extends Point{
 		}
 		
 		return result;
-	}
-	
-	/**
-	*  Checks to see if the slope is equal to the expected value.
-	*  @param obstaclePosition An array that stores the current obstacle position.
-	*  @param dinghyPosition An array that stores the current dinghy position.
-	*  @param expectedValue The expected slope value.
-	*  @return True if the slope is equal to expectedValue.
-	*/
-	private boolean checkSlope(int[] obstaclePosition, int[] dinghyPosition, int expectedValue) {
-        return getSlope(obstaclePosition, dinghyPosition) == expectedValue;
 	}
 }
