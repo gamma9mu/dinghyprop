@@ -1,3 +1,9 @@
+/*
+ * Brian Guthrie and Kevin Reuter
+ * DinghyProp
+ * CS412 - Summer 2012
+ */
+
 package cs412.dinghyprop.genetics;
 
 import java.io.Serializable;

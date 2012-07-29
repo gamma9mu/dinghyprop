@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Brian Guthrie and Kevin Reuter
+  ~ DinghyProp
+  ~ CS412 - Summer 2012
+  -->
+
 <jnlp spec="6.0+" href="dgp.jnlp" version="1.0" codebase="http://localhost/dgp">
   <information>
     <title>DGP Client</title>

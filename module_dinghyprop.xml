@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Brian Guthrie and Kevin Reuter
+  ~ DinghyProp
+  ~ CS412 - Summer 2012
+  -->
+
 <project name="module_dinghyprop" default="compile.module.dinghyprop">
   <dirname property="module.dinghyprop.basedir" file="${ant.file.module_dinghyprop}"/>
   
