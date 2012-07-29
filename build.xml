@@ -82,10 +82,10 @@
   
   <target name="init.artifacts">
     <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
-    <property name="artifact.output.client:jar" value="${basedir}/out/artifacts/Client_jar"/>
-    <property name="artifact.output.monitors:jar" value="${basedir}/out/artifacts/Monitors_jar"/>
-    <property name="artifact.output.remotes:jar" value="${basedir}/out/artifacts/Remotes_jar"/>
-    <property name="artifact.output.server:jar" value="${basedir}/out/artifacts/Server_jar"/>
+    <property name="artifact.output.client:jar" value="${basedir}/out/artifacts/"/>
+    <property name="artifact.output.monitors:jar" value="${basedir}/out/artifacts/"/>
+    <property name="artifact.output.remotes:jar" value="${basedir}/out/artifacts/"/>
+    <property name="artifact.output.server:jar" value="${basedir}/out/artifacts/"/>
     <mkdir dir="${artifacts.temp.dir}"/>
     <property name="temp.jar.path.Client.jar" value="${artifacts.temp.dir}/Client.jar"/>
     <property name="temp.jar.path.Monitors.jar" value="${artifacts.temp.dir}/Monitors.jar"/>
@@ -94,7 +94,7 @@
   </target>
   
   <target name="artifact.client:jar" depends="init.artifacts, compile.module.client, compile.module.remotes, compile.module.simulator" description="Build &#39;Client:jar&#39; artifact">
-    <property name="artifact.temp.output.client:jar" value="${artifacts.temp.dir}/Client_jar"/>
+    <property name="artifact.temp.output.client:jar" value="${artifacts.temp.dir}/"/>
     <mkdir dir="${artifact.temp.output.client:jar}"/>
     <jar destfile="${temp.jar.path.Client.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
       <zipfileset dir="${client.output.dir}"/>
@@ -107,7 +107,7 @@
   </target>
   
   <target name="artifact.monitors:jar" depends="init.artifacts, compile.module.monitors, compile.module.remotes, compile.module.simulator, compile.module.client" description="Build &#39;Monitors:jar&#39; artifact">
-    <property name="artifact.temp.output.monitors:jar" value="${artifacts.temp.dir}/Monitors_jar"/>
+    <property name="artifact.temp.output.monitors:jar" value="${artifacts.temp.dir}/"/>
     <mkdir dir="${artifact.temp.output.monitors:jar}"/>
     <jar destfile="${temp.jar.path.Monitors.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
       <zipfileset file="${basedir}/Monitors/src/META-INF/MANIFEST.MF" prefix="META-INF"/>
@@ -121,7 +121,7 @@
   </target>
   
   <target name="artifact.remotes:jar" depends="init.artifacts, compile.module.remotes" description="Build &#39;Remotes:jar&#39; artifact">
-    <property name="artifact.temp.output.remotes:jar" value="${artifacts.temp.dir}/Remotes_jar"/>
+    <property name="artifact.temp.output.remotes:jar" value="${artifacts.temp.dir}/"/>
     <mkdir dir="${artifact.temp.output.remotes:jar}"/>
     <jar destfile="${temp.jar.path.Remotes.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
       <zipfileset dir="${remotes.output.dir}"/>
@@ -131,7 +131,7 @@
   </target>
   
   <target name="artifact.server:jar" depends="init.artifacts, compile.module.server, compile.module.remotes, compile.module.simulator" description="Build &#39;Server:jar&#39; artifact">
-    <property name="artifact.temp.output.server:jar" value="${artifacts.temp.dir}/Server_jar"/>
+    <property name="artifact.temp.output.server:jar" value="${artifacts.temp.dir}/"/>
     <mkdir dir="${artifact.temp.output.server:jar}"/>
     <jar destfile="${temp.jar.path.Server.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
       <zipfileset file="${basedir}/Server/src/META-INF/MANIFEST.MF" prefix="META-INF"/>
