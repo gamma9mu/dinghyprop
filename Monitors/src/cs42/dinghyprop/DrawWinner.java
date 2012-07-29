@@ -38,7 +38,7 @@ public class DrawWinner extends JPanel implements Observer{
     private int scalingFactor = 2;
     private int halfStep = 1;
     private int imageScaleRate = scalingFactor / 10;
-    private Image dinghy;
+    private transient Image dinghy;
 
     /**
      * Constructor that sets initial size of animation window
