@@ -85,6 +85,7 @@ public class Simulator extends Observable implements ISimulator, Serializable {
 	private void invokeMove() {
 		dinghy.move(1);
 		dinghy.wrap(sizeX, sizeY);
+        referenceFront(1);
 	}
 
 	/**
