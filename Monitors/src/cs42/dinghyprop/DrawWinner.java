@@ -295,7 +295,7 @@ public class DrawWinner extends JPanel implements Observer{
 		frame.add(button, BorderLayout.SOUTH);
 
 		frame.pack();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setLocationByPlatform(true);
 		frame.setVisible(true);
 
