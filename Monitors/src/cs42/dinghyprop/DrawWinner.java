@@ -1,7 +1,6 @@
 package cs42.dinghyprop;
 
 import cs412.dinghyprop.IMaster;
-import cs412.dinghyprop.genetics.Program;
 import cs412.dinghyprop.interpreter.Interpreter;
 import cs412.dinghyprop.interpreter.ParsingException;
 import cs412.dinghyprop.simulator.ISimulator;
@@ -34,6 +33,7 @@ public class DrawWinner extends JPanel implements Observer{
     private static JComboBox dropDown = null;
     private static ISimulator[] sims = null;
     private static DrawWinner draw = null;
+    private String currentProgram = "";
     private int[] position = {0, 0};
     protected transient volatile Thread interpreterThread = null;
     private int scalingFactor = 2;
@@ -52,10 +52,9 @@ public class DrawWinner extends JPanel implements Observer{
     /**
      * This method sends the simulation to the interpreter and paints the simulation on the screen
      * @param current  The current simulation being passed to the interpreter
-     * @param prog  The current program being tested by the interpreter.
      * @throws CloneNotSupportedException When a clone is not supported on the simulation.
      */
-	public void setSimulation(ISimulator current, final Program prog) throws CloneNotSupportedException {
+	public void setSimulation(ISimulator current) throws CloneNotSupportedException {
         if (interpreterThread != null)
             interpreterThread = null;
 		currentSimulator = ((Simulator) current).clone();
@@ -68,11 +67,13 @@ public class DrawWinner extends JPanel implements Observer{
 
 		goal = currentSimulator.getGoal();
 		obstacles = currentSimulator.getObstacles();
+
+        final String prog = currentProgram;
         interpreterThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Interpreter interpreter = new Interpreter(currentSimulator, prog.program);
+                    Interpreter interpreter = new Interpreter(currentSimulator, prog);
                     Thread me = Thread.currentThread();
                     for (int i = 0; i < 100; i++) {
                         if (interpreterThread != me)
@@ -228,16 +229,21 @@ public class DrawWinner extends JPanel implements Observer{
      * program. It then sends the simulation and the program to the setSimulation method.
      */
     private void startAnimation() {
-        int index = dropDown.getSelectedIndex();
-        Program program = null;
         try {
-            program = master.getCurrentLeader();
+            currentProgram = master.getCurrentLeader().program;
+            updateSimulator();
         } catch(Exception e) {
             e.printStackTrace();
         }
-        ISimulator sim = sims[index];
+    }
+
+    /**
+     * Update the simulation to the selected simulator.
+     */
+    private void updateSimulator() {
+        ISimulator sim = sims[dropDown.getSelectedIndex()];
         try {
-            draw.setSimulation(sim, program);
+            draw.setSimulation(sim);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
@@ -248,20 +254,24 @@ public class DrawWinner extends JPanel implements Observer{
      * that will show all of the GUI components. This includes the drop down box, button, and animation screen.
      */
     private static void createGui() throws IOException {
-
 		try {
 			sims = master.getEvaluationSimulators();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 
+        draw = new DrawWinner();
 
 		dropDown = new JComboBox();
 		for(int i = 0; i < sims.length; i++) {
 			dropDown.addItem("Simulator " + i);
 		}
-
-        draw = new DrawWinner();
+        dropDown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                draw.updateSimulator();
+            }
+        });
 
 		JButton button = new JButton("Get Current Winner");
         /**
