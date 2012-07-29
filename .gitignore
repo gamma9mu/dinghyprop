@@ -1,3 +1,4 @@
+out/
 *.class
 
 # Package Files #
@@ -12,5 +13,5 @@
 # Checkpoints
 gp_*/
 
-# Class documentation
+# Course documentation
 doc/
