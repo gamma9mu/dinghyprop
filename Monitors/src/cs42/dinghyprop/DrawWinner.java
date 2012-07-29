@@ -331,9 +331,13 @@ public class DrawWinner extends JPanel implements Observer{
 			IMaster master = (IMaster)Naming.lookup(masterName);
             new DrawWinner(master);
         } catch (IOException e) {
-            System.err.println("Error initializing DrawWinner.");
+            JOptionPane.showMessageDialog(null,
+                    "Cause: " + e.getLocalizedMessage(),
+                    "Error Initializing", JOptionPane.ERROR_MESSAGE);
 		} catch(Exception e){
-			System.err.println("Could not connect");
+            JOptionPane.showMessageDialog(null,
+                    "Cause: " + e.getLocalizedMessage(),
+                    "Could Not Connect", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }
