@@ -38,6 +38,7 @@ public class DrawWinner extends JPanel implements Observer{
     protected transient volatile Thread interpreterThread = null;
     private int scalingFactor = 2;
     private int halfStep = 1;
+    private int imageScaleRate = scalingFactor / 10;
     private Image dinghy;
 
     /**
@@ -112,6 +113,7 @@ public class DrawWinner extends JPanel implements Observer{
                             + (wsize.height - 10) * (wsize.height - 10))
                     / Math.sqrt(ssize[0] * ssize[0] + ssize[1] * ssize[1]));
             halfStep = scalingFactor / 2;
+            imageScaleRate = scalingFactor / 10;
 
             int w = currentSimulator.getSize()[0] * scalingFactor;
             int h = currentSimulator.getSize()[1] * scalingFactor;
@@ -196,7 +198,7 @@ public class DrawWinner extends JPanel implements Observer{
 
         AffineTransform at = AffineTransform.getTranslateInstance(tempX + 5, tempY + 5);
         at.concatenate(AffineTransform.getQuadrantRotateInstance(quadrants));
-        at.concatenate(AffineTransform.getScaleInstance(scalingFactor/10, scalingFactor/10));
+        at.concatenate(AffineTransform.getScaleInstance(imageScaleFactor, imageScaleFactor));
         g.drawImage(dinghy, at, null);
     }
 
