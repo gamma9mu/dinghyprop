@@ -43,12 +43,10 @@ public class SimulatorFile {
 		
 		setGoal();
 		sim.setGoal(goal[0], goal[1]);
-		System.out.println("Goal: " + goal[0] + ' ' + goal[1]);
 		for(int i = 0; i < numObstacles; i++){
 			int obstX = in.nextInt();
 			int obstY = in.nextInt();
 			sim.addObstacle(i, obstX, obstY);
-			System.out.println("Obstacle " + i + ": " + obstX + ' ' + obstY);
 		}
 		
 	}
