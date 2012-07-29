@@ -233,10 +233,12 @@ public class DrawWinner extends JPanel implements Observer{
     private void startAnimation() {
         try {
             currentProgram = master.getCurrentLeader().program;
-            updateSimulator();
         } catch(Exception e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Could not retrieve program\nCause: " + e.getLocalizedMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
+        updateSimulator();
     }
 
     /**
@@ -247,7 +249,9 @@ public class DrawWinner extends JPanel implements Observer{
         try {
             draw.setSimulation(sim);
         } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Could not create simulator\nCause: " + e.getLocalizedMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
