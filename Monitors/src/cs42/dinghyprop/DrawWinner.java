@@ -323,7 +323,7 @@ public class DrawWinner extends JPanel implements Observer{
     public static void main(String[] args) {
 		String masterName;
 		if(args.length == 0)
-			masterName = "//localhost/Master";
+			masterName = "//127.0.0.1/Master";
 		else
 			masterName = "//" + args[0] + "/Master";
 
