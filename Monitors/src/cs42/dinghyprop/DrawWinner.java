@@ -1,16 +1,23 @@
 package cs42.dinghyprop;
 
 import cs412.dinghyprop.IMaster;
-import cs412.dinghyprop.simulator.*;
-import cs412.dinghyprop.interpreter.*;
-import cs412.dinghyprop.genetics.*;
+import cs412.dinghyprop.genetics.Program;
+import cs412.dinghyprop.interpreter.Interpreter;
+import cs412.dinghyprop.interpreter.ParsingException;
+import cs412.dinghyprop.simulator.ISimulator;
+import cs412.dinghyprop.simulator.Obstacle;
+import cs412.dinghyprop.simulator.Simulator;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Observer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
+import java.io.IOException;
+import java.rmi.Naming;
 import java.util.Observable;
-import java.rmi.*;
+import java.util.Observer;
 
 /**
  * This class creates the animation of the current winning program.
@@ -31,14 +38,16 @@ public class DrawWinner extends JPanel implements Observer{
     protected transient volatile Thread interpreterThread = null;
     private int scalingFactor = 2;
     private int halfStep = 1;
+    private Image dinghy;
 
     /**
      * Constructor that sets initial size of animation window
      */
-    public DrawWinner() {
-		sizeX = 300;
-		sizeY = 300;
-	}
+    public DrawWinner() throws IOException {
+        dinghy = ImageIO.read(getClass().getClassLoader().getResource("dinghy.png"));
+        sizeX = 300;
+        sizeY = 300;
+    }
 
     /**
      * This method sends the simulation to the interpreter and paints the simulation on the screen
@@ -122,8 +131,7 @@ public class DrawWinner extends JPanel implements Observer{
 			drawObstacles(graph);
 
             // Draw the dinghy
-            g.setColor(Color.BLUE);
-            moveDinghy(graph, position[0], position[1]);
+            drawDinghy(graph, position[0], position[1]);
         }
 	}
 
@@ -153,48 +161,43 @@ public class DrawWinner extends JPanel implements Observer{
      * This method calculates the position of the dinghy based on heading. It then adds the dinghy polygon to the
      * animation screen.
      * @param g  The current Graphics object.
-     * @param posX  The X Position of the dinghy.
-     * @param posY  The Y Position of the dinghy.
+     * @param x  The X Position of the dinghy.
+     * @param y  The Y Position of the dinghy.
      */
-	public void moveDinghy(Graphics2D g, int posX, int posY) {
+	public void drawDinghy(Graphics2D g, int x, int y) {
 		this.repaint();
 
-		int tempX = (posX * scalingFactor) - halfStep;
-		int tempY = (posY * scalingFactor) - halfStep;
-		int[] xPositions = null;
-		int[] yPositions = null;
+        int tempX = x * scalingFactor;
+        int tempY = y * scalingFactor;
+        int imageScaleFactor = scalingFactor / 10;
+        int w = (dinghy.getWidth(null) / 2) * imageScaleFactor;
+        int h = (dinghy.getHeight(null) / 2) * imageScaleFactor;
+        int quadrants = 0;
 		try{
-			switch(currentSimulator.reference("heading")) {
-				case 180:
-                    xPositions = new int[]{tempX, tempX,
-						5 + tempX, 10 + tempX, 10 + tempX};
-					yPositions = new int[]{17 + tempY, 10 + tempY,
-                        tempY, 10 + tempY, 17 + tempY};
-					break;
-				case 90:
-                    xPositions = new int[]{tempX, 10 + tempX,
-						17 + tempX, 10 + tempX, tempX};
-					yPositions = new int[]{tempY, tempY,
-                        5 + tempY, 10 + tempY, 10 + tempY};
-					break;
-				case 0:
-                    xPositions = new int[]{tempX, tempX,
-						5 + tempX, 10 + tempX, 10 + tempX};
-					yPositions = new int[]{tempY, 10 + tempY,
-                        17 + tempY, 10 + tempY, tempY};
-					break;
-				case 270:
-                    xPositions = new int[]{17 + tempX, 7 + tempX,
-						tempX, 7 + tempX, 17 + tempX};
-					yPositions = new int[]{tempY, tempY,
-                        5 + tempY, 10 + tempY, 10 + tempY};
-					break;
+            int heading = currentSimulator.reference("heading");
+            if (heading == 0) {
+                    tempX -= w;
+                    tempY -= h;
+            } else if (heading == 90) {
+                    quadrants = 3;
+                    tempX -= h;
+                    tempY += w;
+            } else if (heading == 180) {
+                    quadrants = 2;
+                    tempX += w;
+                    tempY += h;
+            } else /* if (heading == 270) */ {
+                    quadrants = 1;
+                    tempX += h;
+                    tempY -= w;
 			}
-		} catch(cs412.dinghyprop.simulator.VariableReferenceException e) {
-			System.out.println("We caught something");
-		}
-		g.fillPolygon(xPositions, yPositions, 5);
-	}
+		} catch(cs412.dinghyprop.simulator.VariableReferenceException ignored) { }
+
+        AffineTransform at = AffineTransform.getTranslateInstance(tempX + 5, tempY + 5);
+        at.concatenate(AffineTransform.getQuadrantRotateInstance(quadrants));
+        at.concatenate(AffineTransform.getScaleInstance(scalingFactor/10, scalingFactor/10));
+        g.drawImage(dinghy, at, null);
+    }
 
     /**
      * This method draws all of the obstacles in the simulation environment on the animation screen.
@@ -244,7 +247,7 @@ public class DrawWinner extends JPanel implements Observer{
      * This method gets all of the simulators from master by calling getEvaluationSimulators. It then creates the JFrame
      * that will show all of the GUI components. This includes the drop down box, button, and animation screen.
      */
-    private static void createGui() {
+    private static void createGui() throws IOException {
 
 		try {
 			sims = master.getEvaluationSimulators();
@@ -310,8 +313,13 @@ public class DrawWinner extends JPanel implements Observer{
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
             public void run() {
-				createGui();
-			}
+                try {
+                    createGui();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.exit(-1);
+                }
+            }
 		});
 	}
 	
