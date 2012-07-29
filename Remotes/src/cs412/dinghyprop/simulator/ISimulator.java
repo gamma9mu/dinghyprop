@@ -1,9 +1,11 @@
 package cs412.dinghyprop.simulator;
 
+import java.io.Serializable;
+
 /**
  * Simulator Interface
  */
-public interface ISimulator extends Cloneable {
+public interface ISimulator extends Cloneable, Serializable {
 
     /**
      *  This method receives an action from the interpreter and

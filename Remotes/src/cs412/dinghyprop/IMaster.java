@@ -3,13 +3,14 @@ package cs412.dinghyprop;
 import cs412.dinghyprop.genetics.Program;
 import cs412.dinghyprop.simulator.ISimulator;
 
+import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
  * RMI Interface for the server.
  */
-public interface IMaster extends Remote {
+public interface IMaster extends Remote, Serializable {
 
     /**
      * Obtain a copy of the evaluation simulators.
