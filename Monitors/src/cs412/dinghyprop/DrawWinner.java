@@ -125,8 +125,10 @@ public class DrawWinner extends JPanel implements Observer{
                         break;
                     interpreter.execute();
                 }
-            } catch (ParsingException pe) {
-                pe.printStackTrace();
+            } catch (ParsingException e) {
+                JOptionPane.showMessageDialog(null,
+                        "Cause: " + e.getLocalizedMessage(),
+                        "Non-executable Program", JOptionPane.ERROR_MESSAGE);
             }
             }
         });
