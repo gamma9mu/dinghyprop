@@ -7,7 +7,9 @@
 package cs412.dinghyprop;
 
 import cs412.dinghyprop.interpreter.Interpreter;
+import cs412.dinghyprop.interpreter.Parser;
 import cs412.dinghyprop.interpreter.ParsingException;
+import cs412.dinghyprop.interpreter.TreeViewer;
 import cs412.dinghyprop.simulator.ISimulator;
 import cs412.dinghyprop.simulator.Obstacle;
 import cs412.dinghyprop.simulator.Simulator;
@@ -298,12 +300,19 @@ public class DrawWinner extends JPanel implements Observer{
     private void startAnimation() {
         try {
             currentProgram = server.getCurrentLeader().program;
+            TreeViewer.createFramedExpression(
+                    new Parser(currentProgram).parse()
+            ).setVisible(true);
+            updateSimulator();
+        } catch (ParsingException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Cause: " + e.getLocalizedMessage(),
+                    "Non-executable Program", JOptionPane.ERROR_MESSAGE);
         } catch(Exception e) {
             JOptionPane.showMessageDialog(this,
                     "Could not retrieve program\nCause: " + e.getLocalizedMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
-        updateSimulator();
     }
 
     /**
