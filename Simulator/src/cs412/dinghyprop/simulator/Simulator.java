@@ -19,6 +19,8 @@ public class Simulator extends Observable implements ISimulator {
 	private Obstacle[] obstacles;
     // Variable to store the dinghy in the simulation
 	private Dinghy dinghy;
+    // Initial start to goal distance
+    private int startToGoalDist = 0;
     // Variables to store the size of the simulation
 	private int sizeX, sizeY;
     // Variable to determine if simulation can continue
@@ -59,6 +61,7 @@ public class Simulator extends Observable implements ISimulator {
 	*/
 	public void setGoal(int x, int y){
 		goal = new Goal(x, y);
+        startToGoalDist = dinghy.getDistance(goal);
 	}
 	
 	/**
@@ -242,37 +245,24 @@ public class Simulator extends Observable implements ISimulator {
 	}
 
     /**
-	*  Gets the total size of the simulation environment
-	*  @return The total size of the simulation environment
-	*/
-	public double getTotalDistance() {
-        	return Math.sqrt(Math.pow(sizeX, 2) + Math.pow(sizeY, 2));
-	}
-	
-	/**
-	*  Gets the distance to goal divided by the total distance for scoring
-	*  the program.
-	*  @return The goal distance metric for scoring.
-	*/
+	 * Compute the percent improvement in the dinghy's distance from the goal
+	 * @return The goal distance metric for scoring.
+	 */
 	public int getGoalDistanceMetric() {
-		double goalDist = goal.getDistance(dinghy);
-		double result = 100 - (goalDist / getTotalDistance()) * 100;
-		return (int)result;
+		double goalDistImprovement = startToGoalDist - goal.getDistance(dinghy);
+        goalDistImprovement = (goalDistImprovement < 0) ? 0 : goalDistImprovement;
+        return 100 * ((int) goalDistImprovement / startToGoalDist);
 	}
 	
 	/**
-	*  Checks to see if the dinghy reached the goal for scoring
-	*  the program.
-	*  @return 100 if the goal was reached, 0 if it was not.
-	*/
-	public int getSuccessMetric() { 
-		boolean success = goal.success(dinghy);
-		int points = 0;
-		if(success){
-			points = 100;
-		}
-		return points;
-	}
+	 * Compute a bonus for reaching the goal.
+	 * @return 100 if the goal was reached, 0 if it was not.
+	 */
+	public int getSuccessMetric() {
+        if(goal.success(dinghy))
+            return 100;
+        return 0;
+    }
 
 	/**
 	*  Calculates the fitness of the program. This is calculated by adding
