@@ -94,7 +94,7 @@ public class Simulator extends Observable implements ISimulator {
      * or has reached the goal.
 	 */
 	private void invokeMove() {
-		dinghy.move(1);
+		dinghy.move();
 		dinghy.wrap(sizeX, sizeY);
         referenceFront(1);
         if (dinghy.getDistance(goal) == 0)

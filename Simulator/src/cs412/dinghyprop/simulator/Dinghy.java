@@ -75,23 +75,22 @@ public class Dinghy extends Point{
 	/**
 	*  Moves the dinghy a given distance in the
 	*  current direction.
-	*  @param dist The distance to move the dinghy.
-	*/
-	protected void move(int dist) {
-		distTravelled += dist;
+     */
+	protected void move() {
+		distTravelled++;
 
 		switch(direc) {
 			case NORTH:
-				incY(dist);
+				incY(1);
 				break;
 			case EAST:
-				incX(dist);
+				incX(1);
 				break;
 			case SOUTH:
-				incY(0 - dist);
+				incY(-1);
 				break;
 			case WEST:
-				incX(0 - dist);
+				incX(-1);
 				break;
 		}
 	}
