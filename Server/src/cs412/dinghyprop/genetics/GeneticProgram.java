@@ -183,6 +183,11 @@ public final class GeneticProgram {
     /**
      * Grow an individual to fill a tree to a given maximum height.  Only leaf
      * nodes will be terminals.
+     *
+     * <b>Important:</b> Calling this method with {@code maxHeight} = 1 will
+     * produce in a single terminal, which will likely not parse as a valid
+     * program.
+     *
      * @param maxHeight    The maximum height of the individual
      * @return  A newly grown individual
      */
