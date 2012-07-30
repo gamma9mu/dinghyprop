@@ -157,7 +157,7 @@ public final class GeneticProgram {
     private String grow(int maxHeight) {
         String res = grow_help(maxHeight);
         if (!res.startsWith("(") && !res.endsWith(")")) {
-            res = "(+ 0 " + res + ')';
+            res = '(' + randomFunction() + ' ' + grow(maxHeight) + res + ')';
         }
         return res;
     }
