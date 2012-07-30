@@ -43,5 +43,11 @@ public interface ISimulator extends Cloneable, Serializable {
      */
     boolean canContinue();
 
+    /**
+     * Determine the fitness representing success for this environment.
+     * @return The goal fitness
+     */
+    public int getTerminationFitness();
+
     ISimulator clone() throws CloneNotSupportedException;
 }

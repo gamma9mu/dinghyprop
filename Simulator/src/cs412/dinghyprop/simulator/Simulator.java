@@ -296,11 +296,8 @@ public class Simulator extends Observable implements ISimulator {
 		return clone;
 	}
 
-	/**
-	* Retrieve the termination fitness currently in use.
-	* @return  The goal fitness
-	*/
-	public int getTerminationFitness() {
+	@Override
+    public int getTerminationFitness() {
 		return terminationFitness;
 	}
 

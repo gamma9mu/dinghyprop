@@ -133,7 +133,10 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
         log.info("Starting program dispatcher");
         new Thread(this).start();
 
-        int targetFitness = 300 * simulators.length;
+        int targetFitness = 0;
+        for (ISimulator simulator : simulators)
+            targetFitness += simulator.getTerminationFitness();
+
         for (int i = 1; i <= generations; i++) {
             while (programsRemaining > 0)
                 try { wait(); } catch (InterruptedException ignored) { }
