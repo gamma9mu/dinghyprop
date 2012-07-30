@@ -11,13 +11,18 @@ import cs412.dinghyprop.genetics.IPopulationObserver;
 import cs412.dinghyprop.genetics.Program;
 import cs412.dinghyprop.simulator.ISimulator;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -83,6 +88,16 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      */
     Program leader = null;
 
+    /*
+     * Checkpointing directory
+     */
+    File checkpointDir;
+
+    /*
+     * File numbering for checkpoints
+     */
+    int checkpointFileIndex = 0;
+
     /**
      * Create a new master object.
      * @param simulators    The simulation environments to supply to clients
@@ -96,6 +111,14 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
         this.generations = generations;
         programsRemaining = geneticProgram.getPopulationSize();
         resetStatistics();
+
+        // setup checkpointing
+        String checkpointDirName = "gp_" + new Date().toString().replace(' ', '_');
+        checkpointDir = new File(checkpointDirName);
+        if (!checkpointDir.mkdir()) {
+            log.warning("Could not create checkpoint directory: "
+                    + checkpointDirName + "\nCheckpointing disabled.");
+        }
     }
 
     /**
@@ -104,12 +127,10 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * @throws RemoteException
      */
     public synchronized void runGP() throws MalformedURLException, RemoteException {
-        geneticProgram.addPopulationObserver(this);
-        Registry registry = LocateRegistry.getRegistry();
-        registry.rebind(address, this);
-        geneticProgram.initialize();
-        leader = geneticProgram.getProgram(0); // A safe default
+        initRMI();
+        initGP();
 
+        log.info("Starting program dispatcher");
         new Thread(this).start();
 
         int targetFitness = 300 * simulators.length;
@@ -126,15 +147,48 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
             programsRemaining = geneticProgram.getPopulationSize();
             resetStatistics();
             leader = frontRunner;
+            writeCheckpoint(String.format("gen_%08d", checkpointFileIndex));
             geneticProgram.createNextGeneration();
         }
 
+        cleanup();
+    }
+
+    /**
+     * Register with RMI.
+     * @throws RemoteException
+     */
+    private void initRMI() throws RemoteException {
+        log.info("Registering with RMI");
+        Registry registry = LocateRegistry.getRegistry();
+        registry.rebind(address, this);
+    }
+
+    /**
+     * Setup GP related state.
+     */
+    private void initGP() {
+        log.info("Initializing GP");
+        geneticProgram.addPopulationObserver(this);
+        geneticProgram.initialize();
+        leader = geneticProgram.getProgram(0); // A safe default
+    }
+
+    /**
+     * Releases clients, stops the program dispatch thread and writes a final
+     * checkpoint.
+     * @throws RemoteException
+     */
+    private void cleanup() throws RemoteException {
         log.info("GP run complete.");
+        running = false;
+
         log.info("Releasing clients.");
         for (IClient client : clients)
             client.release();
         clients.clear();
-        running = false;
+
+        writeCheckpoint("final_generation");
     }
 
     /**
@@ -149,6 +203,19 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
             }
             IndexedProgram entry = getNextProgram();
                 sendForEvaluation(entry.index, entry.program);
+        }
+    }
+
+    /**
+     * Write a checkpoint file.
+     * @param filename    The file's name
+     */
+    private void writeCheckpoint(String filename) {
+        File file = new File(checkpointDir, filename);
+        try {
+            geneticProgram.savePopulation(new FileOutputStream(file));
+        } catch (FileNotFoundException e) {
+            log.log(Level.WARNING, "Exception in dump", e);
         }
     }
 
