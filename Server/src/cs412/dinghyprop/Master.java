@@ -6,6 +6,7 @@
 
 package cs412.dinghyprop;
 
+import cs412.dinghyprop.genetics.CheckpointLoader;
 import cs412.dinghyprop.genetics.GeneticProgram;
 import cs412.dinghyprop.genetics.IPopulationObserver;
 import cs412.dinghyprop.genetics.Program;
@@ -356,23 +357,44 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
 
     /**
      * Register a new {@code Master} with RMI.
-     * @param args    One argument: the directory name where simulator files
-     *                are stored
+     * @param args    One required argument, the directory name where simulator files
+     *                are stored, and one optional argument: a checkpoint directory
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
-            System.err.println("Usage: Master <simulation_directory>");
+        if (args.length < 1) {
+            System.err.println("Usage: Master <simulation_directory> "
+                    + "[checkpoint_directory]");
             System.exit(-1);
         }
 
         SimulationDirLoader sdl = new SimulationDirLoader(args[0]);
         ISimulator[] simulators = sdl.load();
 
-        GeneticProgram gp = new GeneticProgram(POPULATION_SIZE,
-                GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 3);
+        GeneticProgram gp;
+        if (args.length == 2) {
+            gp = loadCheckpoint(args[1]);
+        } else {
+            gp = new GeneticProgram(POPULATION_SIZE,
+                    GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 3);
+        }
 
         new Master(gp, simulators, GENERATIONS).runGP();
+    }
+
+    /**
+     * Load a checkpoint of a genetic program.
+     * @param arg    The path to the checkpoint directory
+     * @return  The loaded genetic program, or null on error
+     */
+    private static GeneticProgram loadCheckpoint(String arg) {
+        CheckpointLoader cpl = new CheckpointLoader(arg);
+        GeneticProgram gp = cpl.instantiate();
+        if (gp == null) {
+            System.err.println("Could not load checkpoint.");
+            System.exit(-1);
+        }
+        return gp;
     }
 
     /**
