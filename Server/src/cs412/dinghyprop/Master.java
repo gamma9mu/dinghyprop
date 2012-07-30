@@ -74,7 +74,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     /*
      * Status for program dispatcher.
      */
-    private boolean running = true;
+    private volatile boolean running = true;
 
     /*
      * Statistics
