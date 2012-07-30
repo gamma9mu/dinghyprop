@@ -86,14 +86,19 @@ public class Simulator extends Observable implements ISimulator {
 	}
 	
 	/**
-	*  This method moves the dinghy one spot in its current
-	*  direction. It also wraps the dinghy to the other side of the
-	*  simulation if it reaches the edge.
-	*/
+	 * This method moves the dinghy one spot in its current direction. It also
+     * wraps the dinghy to the other side of the simulation if it reaches the
+     * edge.
+     *
+     * This method also checks whether the dinghy has collided with an obstacle
+     * or has reached the goal.
+	 */
 	private void invokeMove() {
 		dinghy.move(1);
 		dinghy.wrap(sizeX, sizeY);
         referenceFront(1);
+        if (dinghy.getDistance(goal) == 0)
+            canContinue = false;
 	}
 
 	/**
