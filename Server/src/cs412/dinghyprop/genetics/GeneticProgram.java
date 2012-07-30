@@ -448,16 +448,10 @@ public final class GeneticProgram {
      * could be found
      */
     private int findMatchingParen(String str, int start) {
-        try {
-            if (str.charAt(start) != '(') {
-                return -1;
+        if (str.charAt(start) != '(') {
+            return -1;
         }
-        } catch (StringIndexOutOfBoundsException e) {
-            System.err.println(e.getMessage());
-            System.err.println('"' + str + '"');
-            System.err.println("idx: " + start);
-            throw e;
-        }
+
         int match = 0;
         for (int i = start + 1; i < str.length(); i++) {
             switch (str.charAt(i)) {
