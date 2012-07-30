@@ -12,7 +12,16 @@ import java.security.SecureRandom;
 import java.util.*;
 
 /**
- * GP overseer.
+ * Dinghy navigation genetic programming
+ *
+ * After construction of a new {@code GeneticProgram}, any parameters should be
+ * set followed by calling {@code initialize()}.  Individuals should not be
+ * requested until initialization is complete.  The use of any setters,
+ * except {@code setProgramFitness()}, after the population may have strange
+ * effects, but are not disabled because this is random search...
+ *
+ * After construction from an exiting population, re-initializing will erase
+ * the population provided during construction.
  */
 public final class GeneticProgram {
     /**
@@ -52,33 +61,47 @@ public final class GeneticProgram {
      */
     public static enum INIT_POP_METHOD { GROW, FILL, RHALF_AND_HALF }
 
+    // arithmetic operators
     private static final Set<String> functions =
             new HashSet<String>(Arrays.asList("+", "-", "*", "/", "^"));
+    // comparison operators
     private static final Set<String> comparitors =
             new HashSet<String>(Arrays.asList("<", "<=", ">", ">=", "==", "!="));
+    // non-numeric terminals
     private static final Set<String> terminals =
             new HashSet<String>(Arrays.asList("(move)", "(turn-left)",
                     "(turn-right)", "front", "short-left", "short-right", "left",
                     "right", "rear", "position-x", "position-y", "goal-position-x",
                     "goal-position-y", "heading"));
 
+    // the current generation
     private Program[] population = null;
-
+    // the count of individuals in a generation
     private final int populationSize;
-    private double ifDensity = DEFAULT_IF_DENSITY;
-    private double constDensity = DEFAULT_CONSTANT_DENSITY;
-    private final Random rand = new SecureRandom();
+
+    // this object selects individuals for genetic operators
     private Selector selector = new TournamentSelector(2);
 
+    // population initialization method
     private INIT_POP_METHOD init_pop_method = INIT_POP_METHOD.RHALF_AND_HALF;
+    // max depth of initial generation's programs
     private int initialMaxDepth = 5;
+    // if construct density in initial population
+    private double ifDensity = DEFAULT_IF_DENSITY;
+    // constant:symbolic terminal ratio
+    private double constDensity = DEFAULT_CONSTANT_DENSITY;
 
+    // genetic operator usage ratios
     private double crossoverRate = DEFAULT_CROSSOVER_RATE;
     private double mutationRate = DEFAULT_MUTATION_RATE;
     private double reproductionRate = DEFAULT_REPRODUCTION_RATE;
 
+    // objects wanting notification of individual creation
     private List<IPopulationObserver> observers =
             new ArrayList<IPopulationObserver>(2);
+
+    // a good RNG
+    private final Random rand = new SecureRandom();
 
     /**
      * Create a new GP object and initialize its population.
@@ -373,6 +396,8 @@ public final class GeneticProgram {
 
     /**
      * Apply the genetic operators to create the next population.
+     * <b> This method will not verify that all individuals have been
+     * evaluated.</b>
      */
     public void createNextGeneration() {
         Program[] nextGeneration = new Program[populationSize];
