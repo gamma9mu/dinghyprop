@@ -140,10 +140,7 @@ public final class CheckpointLoader {
                     return instantiateSelector(name.trim(),
                             Integer.parseInt(argument));
                 }
-            } catch (Exception e) {
-                return null;
-            }
-
+            } catch (Exception ignored) { }
         }
         return null;
     }
