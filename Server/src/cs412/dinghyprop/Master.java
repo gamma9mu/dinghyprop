@@ -76,6 +76,11 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      */
     int best;
     int worst;
+    Program frontRunner = null;
+
+    /*
+     * Previous generation's leader
+     */
     Program leader = null;
 
     /**
@@ -120,6 +125,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
             log.info("Creating generation #" + Integer.toString(i));
             programsRemaining = geneticProgram.getPopulationSize();
             resetStatistics();
+            leader = frontRunner;
             geneticProgram.createNextGeneration();
         }
 
@@ -188,6 +194,10 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
 
     @Override
     public Program getCurrentLeader() throws RemoteException {
+        if (frontRunner == null)
+            return new Program("");
+        if (leader == null)
+            return frontRunner;
         return leader;
     }
 
@@ -257,7 +267,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
             worst = fitness;
         if (fitness > best) {
             best = fitness;
-            leader = geneticProgram.getProgram(index);
+            frontRunner = geneticProgram.getProgram(index);
         }
     }
 
