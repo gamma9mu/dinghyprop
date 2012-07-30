@@ -128,7 +128,10 @@ public final class GeneticProgram {
      * @return  A randomly chosen terminal
      */
     private String randomTerminal() {
-        return (String) terminals.toArray()[rand.nextInt(terminals.size())];
+        if (rand.nextBoolean())
+            return (String) terminals.toArray()[rand.nextInt(terminals.size())];
+        else
+            return Integer.toBinaryString(rand.nextInt(100));
     }
 
     /**
@@ -505,7 +508,7 @@ public final class GeneticProgram {
      * @return  A function or terminal drawn from the same pool as {@code str}.
      */
     private String getMutationReplacement(String str) {
-        String replacement = str;
+        String replacement = str; // fallback: no mutation
         if (functions.contains(str)) {
             do {
                 replacement = randomFunction();
@@ -518,8 +521,15 @@ public final class GeneticProgram {
             do {
                 replacement = randomTerminal();
             } while (str.compareTo(replacement) == 0);
+        } else { // A number
+            try {
+                Integer.parseInt(str); // verify first
+                do {
+                    replacement = randomTerminal();
+                } while (str.compareTo(replacement) == 0);
+            } catch (NumberFormatException ignored) { }
         }
-        return replacement; // fallback: no mutation
+        return replacement;
     }
 
     /**
