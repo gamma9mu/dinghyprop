@@ -23,6 +23,14 @@ public final class GeneticProgram {
     public static final double DEFAULT_IF_DENSITY = 0.1;
 
     /**
+     * When creating individuals for the initial population, this is the default
+     * density of integer terminals that will be generated (expressed as a
+     * fractional percent).  This will also be used in terminal mutation,
+     * setting the ratio of numbers relative to symbolic terminals.
+     */
+    public static final double DEFAULT_CONSTANT_DENSITY = 0.1;
+
+    /**
      * The default rate of crossover.
      */
     public static final double DEFAULT_CROSSOVER_RATE = 0.9;
@@ -58,6 +66,7 @@ public final class GeneticProgram {
 
     private final int populationSize;
     private double ifDensity = DEFAULT_IF_DENSITY;
+    private double constDensity = DEFAULT_CONSTANT_DENSITY;
     private final Random rand = new SecureRandom();
     private Selector selector = new TournamentSelector(2);
 
@@ -128,10 +137,10 @@ public final class GeneticProgram {
      * @return  A randomly chosen terminal
      */
     private String randomTerminal() {
-        if (rand.nextBoolean())
-            return (String) terminals.toArray()[rand.nextInt(terminals.size())];
-        else
+        if (rand.nextDouble() < constDensity)
             return Integer.toBinaryString(rand.nextInt(100));
+        else
+            return (String) terminals.toArray()[rand.nextInt(terminals.size())];
     }
 
     /**
