@@ -38,6 +38,8 @@ public class Interpreter {
      * Evaluate the program in the simulation
      */
     public void execute() {
+        if (! canContinue())
+            return;
         try {
             evaluateExpression(program);
         } catch (ExecutionException e) {
