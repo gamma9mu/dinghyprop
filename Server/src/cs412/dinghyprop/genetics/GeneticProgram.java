@@ -254,6 +254,14 @@ public final class GeneticProgram {
     }
 
     /**
+     * Retrieve the ratio for generating constants versus symbolic terminals.
+     * @return constant:symbolic terminal ratio as a fractional percent
+     */
+    public double getConstDensity() {
+        return constDensity;
+    }
+
+    /**
      * Retrieve the rate of crossover.
      * @return  The (average) percent of individuals created through crossover.
      */
@@ -308,6 +316,15 @@ public final class GeneticProgram {
      */
     public Selector getSelector() {
         return selector;
+    }
+
+    /**
+     * Set the ratio of constants versus symbolics used in generating terminals.
+     * @param constDensity constant:symbolic terminal ratio as a fractional
+     *                     percent
+     */
+    public void setConstDensity(double constDensity) {
+        this.constDensity = constDensity;
     }
 
     /**
