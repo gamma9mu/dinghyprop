@@ -13,23 +13,60 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
-* A drawable node in a tree.
+* A drawable counterpart to an Expression object.
 */
 final class Node extends JComponent {
-    private static Logger log = Logger.getLogger("Node");
-    private static final int HSPACE = 20;
-    private static final int VSPACE = 20;
     private static final long serialVersionUID = 8064723739784397824L;
+    private static Logger log = Logger.getLogger("Node");
+
+    /**
+     * Horizontal spacing between nodes
+     */
+    private static final int HSPACE = 20;
+
+    /**
+     * Vertical spacing between nodes
+     */
+    private static final int VSPACE = 20;
+
+    /**
+     * The printing value of the node
+     */
     String value;
+
+    /**
+     * Child nodes in the Node tree
+     */
     List<Node> children;
-    int x = 0, y = VSPACE;
-    int w = 0, h = 0;
+
+    /*
+     * x coordinate of this node in the drawing space
+     */
+    int x = 0;
+
+    /**
+     * y coordinate of this node in the drawing space
+     */
+    int y = VSPACE;
+
+    /**
+     * The width of this node when drawn
+     */
+    int w = 0;
+
+    /**
+     * The height of this node when drawn
+     */
+    int h = 0;
+
+    /**
+     * The height of the text when printing {@code value}
+     */
     int strHeight = 0;
 
     /**
-     * Create a new Node tree.
-     * @param value       The value to print for this node.
-     * @param children    The subtree below this node.
+     * @param value       the value to print for this node
+     * @param children    the child subtrees of this node
      */
     public Node(String value, List<Node> children) {
         this.value = value;
@@ -42,7 +79,8 @@ final class Node extends JComponent {
 
     /**
      * Compute the size necessary to properly display this (sub)tree.
-     * @param g    The {@code Graphics} object that would draw this.
+     *
+     * @param g    the graphics object that would draw this
      */
     public void computeSize(Graphics g) {
         log.entering("Node", "computeSize");
