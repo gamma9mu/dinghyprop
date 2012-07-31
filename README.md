@@ -1,5 +1,9 @@
-DinghyProp
-==========
+# DinghyProp
+
+#### Project Information
+
+    Brian Guthrie and Kevin Reuter
+    CS412 - Summer 2012
 
 
 DinghyProp is comprised of three layers: the GP layer, the interpreter, and the
@@ -10,8 +14,7 @@ simulation environment.  These sections are used to evaluate the fitness of the
 programs, which is returned to the master for use in selecting programs for
 reproduction.
 
-Genetic Programming Overview
-----------------------------
+## Genetic Programming Overview
 
 ### Objective
 Find a program that will navigate a boat through a simulated environment.  It
