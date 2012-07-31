@@ -221,14 +221,15 @@ public class DrawWinner extends JPanel implements Observer{
                 (wsize.width - 10) * (wsize.width - 10)
                         + (wsize.height - 10) * (wsize.height - 10))
                 / Math.sqrt(ssize[0] * ssize[0] + ssize[1] * ssize[1]));
+        scalingFactor = (scalingFactor < 1) ? 1 : scalingFactor;
+
         // Get a half step scaling factor
         halfStep = scalingFactor / 2;
 
         // Compute a scaling factor for the dinghy image (which is not to scale
         // with the rest of the graphics)
         imageScaleRate = scalingFactor / 10;
-        if (imageScaleRate < 1)
-            imageScaleRate = 1;
+        imageScaleRate = (imageScaleRate < 1) ? 1 : imageScaleRate;
     }
 
     /**
