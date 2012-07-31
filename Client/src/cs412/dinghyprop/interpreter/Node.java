@@ -32,22 +32,22 @@ final class Node extends JComponent {
     /**
      * The printing value of the node
      */
-    String value;
+    private String value;
 
     /**
      * Child nodes in the Node tree
      */
-    List<Node> children;
+    private List<Node> children;
 
     /*
      * x coordinate of this node in the drawing space
      */
-    int x = 0;
+    private int x = 0;
 
     /**
      * y coordinate of this node in the drawing space
      */
-    int y = VSPACE;
+    private int y = VSPACE;
 
     /**
      * The width of this node when drawn
