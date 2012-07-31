@@ -147,12 +147,18 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
                 break;
             }
 
-            log.info("Creating generation #" + Integer.toString(i));
-            programsRemaining = geneticProgram.getPopulationSize();
             resetStatistics();
             leader = frontRunner;
-            writeCheckpoint(String.format("gen_%08d", checkpointFileIndex));
+
+            if (i % 5 == 0) {
+                log.info("Writing checkpoint");
+                writeCheckpoint(String.format("gen_%08d", checkpointFileIndex));
+            }
+
+            log.info("Creating generation #" + Integer.toString(i));
+            programsRemaining = geneticProgram.getPopulationSize();
             geneticProgram.createNextGeneration();
+            log.info("Created  generation #" + Integer.toString(i));
         }
 
         cleanup();
