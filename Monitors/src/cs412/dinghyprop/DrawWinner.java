@@ -28,8 +28,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * This class creates the animation of the current winning program.
- *
+ * This class provides a client for monitoring the progress of DinghyProp's
+ * genetic programming by animating the current best-fit program.  By double-
+ * clicking the animation, a display of the programs AST (in tree form) is
+ * created and displayed.
  */
 public class DrawWinner extends JPanel implements Observer{
     private static final long serialVersionUID = -5236126589222504417L;
@@ -50,7 +52,9 @@ public class DrawWinner extends JPanel implements Observer{
     private transient Image dinghy;
 
     /**
-     * Constructor that sets initial size of animation window
+     * Create and configure a new DrawWinner from a server reference.
+     *
+     * @param master    the server to monitor
      */
     public DrawWinner(IMaster master) throws IOException {
         server = master;
@@ -122,8 +126,11 @@ public class DrawWinner extends JPanel implements Observer{
     }
 
     /**
-     * This method sends the simulation to the interpreter and paints the simulation on the screen
-     * @param current  The current simulation being passed to the interpreter
+     * Creates an interpreter with the current program and simulator, after
+     * registering as an observer to the simulator, and passes that to a thread
+     * that will run the simulation.
+     *
+     * @param current  the simulation to run
      */
 	public void setSimulation(ISimulator current) {
         if (interpreterThread != null)
@@ -161,8 +168,9 @@ public class DrawWinner extends JPanel implements Observer{
 	}
 
     /**
-     * This method paints the simulation environment on the screen.
-     * @param g The current graphics object.
+     * Paint the simulation environment on the screen.
+     *
+     * @param g the graphics object
      */
     @Override
 	protected void paintComponent(Graphics g) {
@@ -195,7 +203,8 @@ public class DrawWinner extends JPanel implements Observer{
 
     /**
      * Draw a grid to represent possible object locations.
-     * @param graph    The graphics to draw with
+     *
+     * @param graph    the graphics object
      */
     private void drawGrid(Graphics2D graph) {
         int width = currentSimulator.getSize()[0] * scalingFactor;
@@ -233,8 +242,8 @@ public class DrawWinner extends JPanel implements Observer{
     }
 
     /**
-     * This method gets the dimensions for the animation from the simulation environment
-     * @return The size of the animation screen.
+     * @return the preferred dimensions for the currently animated the
+     * simulation environment.
      */
 	@Override
 	public Dimension getPreferredSize() {
@@ -242,10 +251,11 @@ public class DrawWinner extends JPanel implements Observer{
 	}
 
     /**
-     * This method gets called whenever the simulation updates the dinghy. It then sets the new position of the
-     * dinghy and calls repaint.
-     * @param o The observable object that was updated.
-     * @param arg The object passed by notifyObservers
+     * Observer callback -- notifies that the dinghy has bee moved.
+     * Updates the dinghy's position schedules repainting.
+     *
+     * @param o the observable object that was updated
+     * @param arg the object passed by notifyObservers
      */
 	@Override
 	public void update(Observable o, Object arg) {
@@ -255,11 +265,12 @@ public class DrawWinner extends JPanel implements Observer{
     }
 
     /**
-     * This method calculates the position of the dinghy based on heading. It then adds the dinghy polygon to the
-     * animation screen.
-     * @param g  The current Graphics object.
-     * @param x  The X Position of the dinghy.
-     * @param y  The Y Position of the dinghy.
+     * Determines the position and heading of the dinghy and draws the boat
+     * image on the animation screen.
+     *
+     * @param g  the graphics object
+     * @param x  X position of the dinghy
+     * @param y  Y position of the dinghy
      */
 	public void drawDinghy(Graphics2D g, int x, int y) {
 		this.repaint();
@@ -296,8 +307,9 @@ public class DrawWinner extends JPanel implements Observer{
     }
 
     /**
-     * This method draws all of the obstacles in the simulation environment on the animation screen.
-     * @param g  The current Graphics object.
+     * Draw all of the obstacles in the simulation on the animation.
+     *
+     * @param g  the graphics object
      */
     private void drawObstacles(Graphics2D g) {
 		for(Obstacle obstacle : obstacles) {
@@ -308,9 +320,10 @@ public class DrawWinner extends JPanel implements Observer{
 
     /**
      * Draws a scaled circle centered on a point.
-     * @param g    The {@code Graphics2D} to draw with (with color set)
-     * @param x    The x coordinate
-     * @param y    The y coordinate
+     *
+     * @param g    the graphics object (with desired color already set)
+     * @param x    the x coordinate
+     * @param y    the y coordinate
      */
     private void drawCenteredScaledCircle(Graphics2D g, int x, int y) {
         int x0 = (x * scalingFactor) - halfStep + 5;
@@ -333,9 +346,10 @@ public class DrawWinner extends JPanel implements Observer{
     }
 
     /**
-     * Show an error dialog to report a {@code ParsingException} to the user.
+     * Report an exception to the user with a JOptionPane.
+     *
      * @param description    A brief description of the error (context)
-     * @param e    The exact cause of the error
+     * @param e    the exception that caused error
      */
     private void reportError(String description, Exception e) {
         JOptionPane.showMessageDialog(this,
@@ -356,9 +370,14 @@ public class DrawWinner extends JPanel implements Observer{
     }
 
     /**
-     * The main method that sets up the RMI connection based on CLI arguments.
-     * It then sets up the DrawWinner.
-     * @param args Command Line arguments that specify the IP address to connect to.
+     * Start a new DrawWinner application.
+     * <p>
+     * If an address is specified at the command line, it is used to locate a
+     * server.  If no address is specified on the command line, the default is
+     * 127.0.0.1.  The server is connected and used to create a new DrawWinner
+     * object.
+     *
+     * @param args an optional IP address of the server
      */
     public static void main(String[] args) {
 		String masterName;
