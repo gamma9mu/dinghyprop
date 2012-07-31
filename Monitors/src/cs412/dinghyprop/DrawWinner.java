@@ -19,6 +19,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.rmi.Naming;
@@ -62,6 +64,33 @@ public class DrawWinner extends JPanel implements Observer{
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
 
+        // Open a TreeViewer for the current program on double-click
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2)
+                    try {
+                        TreeViewer.createFramedExpression(
+                                new Parser(currentProgram).parse()
+                        ).setVisible(true);
+                    } catch (ParsingException pe) {
+                        reportParsingError(pe);
+                    }
+            }
+
+            @Override public void mousePressed(MouseEvent e) { }
+            @Override public void mouseReleased(MouseEvent e) { }
+            @Override public void mouseEntered(MouseEvent e) { }
+            @Override public void mouseExited(MouseEvent e) { }
+        });
+
+        initFrameAndDisplay();
+    }
+
+    /**
+     * Create a containing JFrame, add the controls, and display it.
+     */
+    private void initFrameAndDisplay() {
         dropDown = new JComboBox();
         for (int i = 0; i < sims.length; i++) {
             dropDown.addItem("Simulator " + i);
@@ -73,11 +102,9 @@ public class DrawWinner extends JPanel implements Observer{
             }
         });
 
+        // Sets up an action listener on the button to grab the current winning
+        // program each time the button is pressed. It then starts the animation.
         JButton update = new JButton("Get Current Winner");
-        /**
-         * Sets up an action listener on the button to grab the current winning program each time the button
-         * is pressed. It then starts the animation.
-         */
         update.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -300,12 +327,7 @@ public class DrawWinner extends JPanel implements Observer{
     private void startAnimation() {
         try {
             currentProgram = server.getCurrentLeader().program;
-            TreeViewer.createFramedExpression(
-                    new Parser(currentProgram).parse()
-            ).setVisible(true);
             updateSimulator();
-        } catch (ParsingException e) {
-            reportParsingError(e);
         } catch(Exception e) {
             JOptionPane.showMessageDialog(this,
                     "Could not retrieve program\nCause: " + e.getLocalizedMessage(),
