@@ -11,20 +11,26 @@ import java.rmi.RemoteException;
 
 /**
  * RMI Interface for the evaluation clients.
+ *
+ * This interface specifies the methods available for use by the server on
+ * clients that have registered as evaluation callback targets.
  */
 public interface IClient extends Remote {
 
     /**
-     * Evaluate a program's fitness.
+     * Calculates the total summed fitness over any test case(s) the IClient
+     * has access to.
+     *
      * @param program    The program text
-     * @return  The fitness of the program
-     * @throws RemoteException
+     * @return The fitness of the program
+     * @throws RemoteException if an RMI error occurs
      */
     int evaluateProgram(String program) throws RemoteException;
 
     /**
-     * Inform the client that it is not longer needed.
-     * @throws RemoteException
+     * Inform the client that it is not longer needed and may exit.
+     *
+     * @throws RemoteException if an RMI error occurs
      */
     void release() throws RemoteException;
 }
