@@ -17,8 +17,8 @@ import java.util.logging.Logger;
  * A creatively named class that displays trees.
  *
  * For all but the smallest trees, objects of this class should be placed in a
- * {@code JScrollPane}.  A convenience method is provided that creates a
- * {@code JFrame} with the created TreeViewer in a {@code JScrollPane}.
+ * {@link JScrollPane}.  A convenience method is provided that creates a
+ * {@link JFrame} with the created TreeViewer in a {@link JScrollPane}.
  */
 public final class TreeViewer extends JPanel implements Scrollable {
     private static final long serialVersionUID = -447063110938138711L;
@@ -26,10 +26,8 @@ public final class TreeViewer extends JPanel implements Scrollable {
     private boolean sizeComputed = false;
 
     /**
-     * Create a {@code JFrame} containing a TreeViewer wrapped in a
-     * {@code JScrollPane}.
-     * @param expression    The expression to display/
-     * @return  A JFrame displaying a scrollable TreeViewer
+     * @param expression    the expression to display
+     * @return  a JFrame displaying a scrollable TreeViewer
      */
     public static JFrame createFramedExpression(Expression expression) {
         JFrame jf = new JFrame();
@@ -46,9 +44,8 @@ public final class TreeViewer extends JPanel implements Scrollable {
     }
 
     /**
-     * Create a TreeViewer wrapped in a {@code JScrollPane}.
-     * @param expression    The expression to display/
-     * @return  A scrollable TreeViewer
+     * @param expression    the expression to display
+     * @return  a TreeViewer wrapped in a JScrollPane
      */
     public static JScrollPane createScrollableExpression(Expression expression) {
         TreeViewer tv = new TreeViewer(expression);
@@ -59,7 +56,7 @@ public final class TreeViewer extends JPanel implements Scrollable {
 
     /**
      * Create a TreeViewer.
-     * @param expr    The expression to display.
+     * @param expr    the expression to display
      */
     public TreeViewer(Expression expr) {
         super(true);
@@ -67,9 +64,10 @@ public final class TreeViewer extends JPanel implements Scrollable {
     }
 
     /**
-     * Convert an {@code Expression} tree into a {@code Node} tree.
-     * @param expr    The root {@code Expression}
-     * @return  The root of the newly created {@code Node} tree
+     * Converts (recursively) an Expression tree into a Node tree.
+     *
+     * @param expr    the root Expression
+     * @return  the root of the newly created Node tree
      */
     private Node createTree(Expression expr) {
         List<Node> children = new ArrayList<Node>(expr.getOperands().length);
@@ -84,8 +82,7 @@ public final class TreeViewer extends JPanel implements Scrollable {
     }
 
     /**
-     * Compute the size of the root node.  The node will cache its value
-     * implicitly, so {@code sizeComputed} is set to disable future computation.
+     * Cause the root Node of the display tree to calculate its size.
      */
     private void computeSize() {
         if (! sizeComputed) {
