@@ -254,9 +254,9 @@ public class Simulator extends Observable implements ISimulator {
 	 * @return The goal distance metric for scoring.
 	 */
 	public int getGoalDistanceMetric() {
-		double goalDistImprovement = startToGoalDist - goal.getDistance(dinghy);
-        goalDistImprovement = (goalDistImprovement < 0) ? 0 : goalDistImprovement;
-        return 100 * ((int) goalDistImprovement / startToGoalDist);
+		int improvement = startToGoalDist - dinghy.getDistance(goal);
+        improvement = (improvement < 0) ? 0 : improvement;
+        return 100 * (improvement / startToGoalDist);
 	}
 	
 	/**
