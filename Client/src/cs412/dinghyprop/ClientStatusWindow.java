@@ -11,6 +11,10 @@ import java.awt.*;
 
 /**
  * GUI for RMI clientImpl.
+ *
+ * Creates and displays a small JFrame for displaying the server address,
+ * client status, and the number of programs the client has processed for the
+ * server.
  */
 public class ClientStatusWindow extends JFrame {
     private static final long serialVersionUID = 4245107449408098871L;
@@ -45,7 +49,7 @@ public class ClientStatusWindow extends JFrame {
     }
 
     /**
-     * Show this and schedule updates.
+     * Show the frame and start a thread to update it at regular intervals.
      */
     public void run() {
         setVisible(true);
@@ -64,7 +68,7 @@ public class ClientStatusWindow extends JFrame {
     }
 
     /**
-     * Invoke a GUI update on the GUI thread.
+     * Send a GUI update Runnable to the AWT thread.
      */
     public void doUpdate() {
         SwingUtilities.invokeLater(new Runnable() {
@@ -78,8 +82,8 @@ public class ClientStatusWindow extends JFrame {
     }
 
     /**
-     * Inform whether the client reports itself as still running
-     * @return  True for yes, etc.
+     * Query whether the client reports itself as still running.
+     * @return  true for yes, etc.
      */
     private boolean isClientRunning() {
         return clientImpl.isRunning();
