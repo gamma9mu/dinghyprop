@@ -132,7 +132,7 @@ public class DrawWinner extends JPanel implements Observer{
      *
      * @param current  the simulation to run
      */
-	public void setSimulation(ISimulator current) {
+	public void startSimulation(ISimulator current) {
         if (interpreterThread != null)
             interpreterThread = null;
         currentSimulator = (Simulator) current;
@@ -334,7 +334,7 @@ public class DrawWinner extends JPanel implements Observer{
     /**
      * This method starts the animation process every time a user presses the button to request the current winner. It
      * does this by retrieving the current selected simulation and the calling the getCurrentLeader method in the master
-     * program. It then sends the simulation and the program to the setSimulation method.
+     * program. It then sends the simulation and the program to the startSimulation method.
      */
     private void startAnimation() {
         try {
@@ -363,7 +363,7 @@ public class DrawWinner extends JPanel implements Observer{
     private void updateSimulator() {
         try {
             ISimulator sim = sims[dropDown.getSelectedIndex()].clone();
-            setSimulation(sim);
+            startSimulation(sim);
         } catch (CloneNotSupportedException e) {
             reportError("Could not create simulator", e);
         }
