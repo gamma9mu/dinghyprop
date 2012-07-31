@@ -1,18 +1,16 @@
 # DinghyProp
 
-#### Project Information
+## Project Summary
 
     Brian Guthrie and Kevin Reuter
     CS412 - Summer 2012
 
 
-DinghyProp is comprised of three layers: the GP layer, the interpreter, and the
-simulation environment.  The network architecture is a master-slave
-configuration.  The master hosts most of the GP layer, breeding generations of
-programs.  These programs are sent to the slaves which host the interpreter and
-simulation environment.  These sections are used to evaluate the fitness of the
-programs, which is returned to the master for use in selecting programs for
-reproduction.
+DinghyProp uses genetic programming to attempt evolving a navigation program for
+a small boat in a simple, simulated environment.  It uses a client-server model
+where the server performs the majority of the genetic programming and the
+clients are responsible for evaluating the program population for the server.
+
 
 ## Genetic Programming Overview
 
@@ -69,7 +67,7 @@ Ramped half-and-half (depth: 3, terminals: 10% constants)
 Individual with fitness 300 for each test case (assumes a simulation duration
 of 100 iterations) or after 100,000 generations.
 
-### Interpreter Overview
+## Interpreter Summary
 The purpose of the interpreter is the execution of the evolved programs.  The
 features of the interpreter will be limited to supporting the features of the
 language listed above.  The language will use S-expressions and prefix notation
@@ -78,7 +76,7 @@ navigation functions and variables are handled by the simulator while branching,
 arithmetic operators, and comparison operators are handled directly within the
 interpreter.
 
-### Simulation Overview
+## Simulation Summary
 The simulation environment serves to support the interpreter by tracking
 information regarding the dinghy and its environment.  While the interpreter
 evaluates the programs, function calls and variable references are forwarded to
@@ -164,3 +162,4 @@ Given the build location of the monitors JAR and a server address of
 command line:
 
     java -jar out/artifacts/Monitors.jar 131.230.6.172
+
