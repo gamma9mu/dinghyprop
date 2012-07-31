@@ -110,7 +110,7 @@ public class DrawWinner extends JPanel implements Observer{
         update.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startAnimation();
+                updateProgram();
             }
         });
 
@@ -332,11 +332,10 @@ public class DrawWinner extends JPanel implements Observer{
     }
 
     /**
-     * This method starts the animation process every time a user presses the button to request the current winner. It
-     * does this by retrieving the current selected simulation and the calling the getCurrentLeader method in the master
-     * program. It then sends the simulation and the program to the startSimulation method.
+     * Retrieves the current best-fit program from the server and restarts the
+     * animation with the new program.
      */
-    private void startAnimation() {
+    private void updateProgram() {
         try {
             currentProgram = server.getCurrentLeader().program;
             updateSimulator();
