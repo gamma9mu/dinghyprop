@@ -151,4 +151,10 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
     public boolean isRunning() {
         return running;
     }
+
+    @Override
+    public String toString() {
+        return "ClientImpl rmi://" + masterAddress +
+                " (" + " processed: " + count + " -- " + status + ')';
+    }
 }
