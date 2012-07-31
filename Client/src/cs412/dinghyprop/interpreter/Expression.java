@@ -10,20 +10,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Holds a section of a program tree.
+ * Represents a node in the AST of a generated program.
  */
 public final class Expression {
+    /**
+     * Node contents
+     */
     private String operator;
+
+    /**
+     * Subtrees
+     */
     private List<Object> operands;
 
+    /**
+     * Creates an Expression object from an S-expression.
+     *
+     * @param program    the text of the expression tree
+     * @return an Expression tree corresponding to {@code program}'s text
+     * @throws ParsingException if a problem occurs parsing {@code program}
+     */
     public static Expression fromString(String program) throws ParsingException {
         Parser p = new Parser(program);
         return p.parse();
     }
 
     /**
-     * Create a new expression tree node.
-     * @param operator    The operator at this node.
+     * Creates a new expression tree node.
+     *
+     * @param operator    the operator at this node
      */
     public Expression(String operator) {
         this.operator = operator;
@@ -31,32 +46,32 @@ public final class Expression {
     }
 
     /**
-     * Appends an expression tree as an operand to this node.
-     * @param operand    The subtree to add.
+     * Appends an expression tree or value as an operand to this node.  The
+     * argument should be either an Expression object or a Value object.
+     * <b>Important:</b> This method will not check the type of operand.
+     *
+     * @param operand    the subtree or value to add
      */
     public void addOperand(Object operand) {
         operands.add(operand);
     }
 
     /**
-     * Get this node's operator name.
-     * @return  The name of the function to call to evaluate this node.
+     * @return  the name of the function or operator used to evaluate this node
      */
     public String getOperator() {
         return operator;
     }
 
     /**
-     * Obtain the child subtrees under this node.
-     * @return  An array of this node's children.
+     * @return  an array of this expression operands
      */
     public Object[] getOperands() {
         return operands.toArray();
     }
 
     /**
-     * Create a string representation of an expression.
-     * @return  A flat S-expression representing {@code expr}.
+     * @return  a flat, S-expression representation of this expression
      */
     @Override
     public String toString() {
