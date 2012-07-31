@@ -74,7 +74,7 @@ public class DrawWinner extends JPanel implements Observer{
                                 new Parser(currentProgram).parse()
                         ).setVisible(true);
                     } catch (ParsingException pe) {
-                        reportParsingError(pe);
+                        reportError("Non-executable Program", pe);
                     }
             }
 
@@ -153,7 +153,7 @@ public class DrawWinner extends JPanel implements Observer{
                     interpreter.execute();
                 }
             } catch (ParsingException e) {
-                reportParsingError(e);
+                reportError("Non-executable Program", e);
             }
             }
         });
@@ -337,12 +337,13 @@ public class DrawWinner extends JPanel implements Observer{
 
     /**
      * Show an error dialog to report a {@code ParsingException} to the user.
-     * @param e    The exact cause
+     * @param description    A brief description of the error (context)
+     * @param e    The exact cause of the error
      */
-    private void reportParsingError(ParsingException e) {
+    private void reportError(String description, Exception e) {
         JOptionPane.showMessageDialog(this,
                 "Cause: " + e.getLocalizedMessage(),
-                "Non-executable Program", JOptionPane.ERROR_MESSAGE);
+                description, JOptionPane.ERROR_MESSAGE);
     }
 
     /**
