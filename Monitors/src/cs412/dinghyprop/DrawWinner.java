@@ -142,17 +142,17 @@ public class DrawWinner extends JPanel implements Observer{
         interpreterThread = new Thread(new Runnable() {
             @Override
             public void run() {
-            try {
-                Interpreter interpreter = new Interpreter(currentSimulator, prog);
-                Thread me = Thread.currentThread();
-                for (int i = 0; i < 100; i++) {
-                    if (interpreterThread != me)
-                        break;
-                    interpreter.execute();
+                try {
+                    Interpreter interpreter = new Interpreter(currentSimulator, prog);
+                    Thread me = Thread.currentThread();
+                    for (int i = 0; i < 100; i++) {
+                        if (interpreterThread != me)
+                            break;
+                        interpreter.execute();
+                    }
+                } catch (ParsingException e) {
+                    reportError("Non-executable Program", e);
                 }
-            } catch (ParsingException e) {
-                reportError("Non-executable Program", e);
-            }
             }
         });
         interpreterThread.start();
