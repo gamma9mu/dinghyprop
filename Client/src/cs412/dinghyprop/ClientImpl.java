@@ -18,25 +18,53 @@ import java.rmi.server.UnicastRemoteObject;
 
 /**
  * Evaluation client
+ *
+ * Objects of this class connect to the server, obtain a copy of the server's
+ * simulation environments, and register themselves as a callback target for
+ * processing the server's programs.
  */
 public class ClientImpl extends UnicastRemoteObject implements IClient {
     private static final long serialVersionUID = 7075703919341311722L;
 
+    /**
+     * The complete RMI address of the server
+     */
     private String masterAddress;
+
+    /**
+     * Server reference
+     */
     private transient IMaster master = null;
+
+    /**
+     * Copies of the simulators obtained from the server
+     */
     private transient ISimulator[] simulators = null;
+
+    /**
+     * The current status message of this client
+     */
     private String status = "Not Connected";
+
+    /**
+     * Whether this client ist still "running," or more loosely, whether this
+     * client can be expected to produce status updates.
+     *
+     * This field is set to true at object creation and should remain true at
+     * least until this client has been disconnected from the server.
+     */
     private boolean running = true;
 
-    /*
-     * Processed program count
+    /**
+     * A running total of all the programs evaluated by this client
      */
-    int count = 0;
+    private int count = 0;
 
     /**
      * Create a new client evaluator with a set of simulation environments.
+     *
      * @param address    The address of the RMI server
-     * @throws RemoteException
+     * @throws RemoteException inherited from superclass constructors
      */
     public ClientImpl(String address) throws RemoteException {
         super();
@@ -45,9 +73,12 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
 
     /**
      * Attach to the server.
-     * @throws MalformedURLException
-     * @throws NotBoundException
-     * @throws RemoteException
+     *
+     * @throws MalformedURLException if the server address is bad
+     * @throws NotBoundException if no server exists at the given address
+     * @throws RemoteException if this could not connect to the RMI registry or
+     * if an RMI error occurs while either retrieving the simulators or
+     * registering itself as a callback target
      */
     public void initialize() throws MalformedURLException, NotBoundException, RemoteException {
         status = "Looking up server...";
@@ -59,12 +90,6 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
         status = "Awaiting program";
     }
 
-    /**
-     * Calculates the total summed fitness over every test case.
-     * @param program    The program text
-     * @return  The fitness of the program
-     * @throws RemoteException
-     */
     @Override
     public int evaluateProgram(String program) throws RemoteException {
         int fitness = 0;
@@ -94,33 +119,34 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
     }
 
     /**
-     * Get the count of processed programs.
-     * @return  The number programs processed by this client
+     * @return  the cumulative total number programs processed by this client
      */
     public int getCount() {
         return count;
     }
 
     /**
-     * Get the status of the client.
-     * @return  The current status
+     * @return  the current status of this client
      */
     public String getStatus() {
         return status;
     }
 
     /**
-     * Obtain the server's address
-     * @return  The full address string of the server
+     * @return  the full RMI address string of the server this client is (or
+     * was) connected to
      */
     public String getServerAddress() {
         return masterAddress;
     }
 
     /**
-     * Inform whether this is still running.
-     * @return  True while there is a possibility of status updates, false
-     * otherwise
+     * Query whether there is a possibility of updates to the status of this
+     * client.  Essentially, this method reports whether the client is
+     * connected to the server, but this is not necessarily the case if true is
+     * returned.
+     *
+     * @return whether this is still running.
      */
     public boolean isRunning() {
         return running;
