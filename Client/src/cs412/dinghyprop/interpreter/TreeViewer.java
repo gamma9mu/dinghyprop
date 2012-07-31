@@ -10,8 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A creatively named class that displays trees.
@@ -132,26 +130,5 @@ public final class TreeViewer extends JPanel implements Scrollable {
     @Override
     public boolean getScrollableTracksViewportHeight() {
         return false;
-    }
-
-    /**
-     * Testing main.
-     * @param args    ignored
-     */
-    public static void main(String[] args) {
-        Logger log = Logger.getLogger("TreeViewer");
-        Expression expr = null;
-        try {
-            String str = "(hey der (if (< 0 1) (brother) (+ 9 7)) 6)";
-            expr = Expression.fromString(str);
-        } catch (ParsingException e) {
-            log.log(Level.WARNING, "Exception while parsing", e);
-        }
-
-        if (expr != null) {
-            JFrame jf = TreeViewer.createFramedExpression(expr);
-            jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            jf.setVisible(true);
-        }
     }
 }
