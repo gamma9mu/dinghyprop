@@ -56,7 +56,7 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
         simulators = master.getEvaluationSimulators();
         status = "Registering with server...";
         master.registerClient(this);
-        status = "Processing...";
+        status = "Awaiting program";
     }
 
     /**
@@ -71,12 +71,15 @@ public class ClientImpl extends UnicastRemoteObject implements IClient {
 
         for (ISimulator simulator : simulators) {
             try {
+                status = "Creating interpreter";
                 Interpreter interpreter = new Interpreter(simulator.clone(), program);
+                status = "Evaluating...";
                 interpreter.run(100);
                 fitness += interpreter.getFitness();
             } catch (ParsingException ignored) { }
             catch (CloneNotSupportedException ignored) { }
         }
+        status = "Awaiting program";
 
         count++;
 
