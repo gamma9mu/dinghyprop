@@ -11,18 +11,33 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Collects the details of a generated program.
+ * Generated program state management
  */
 public class Program implements Serializable {
     private static final long serialVersionUID = 1364731017270512774L;
+
+    /**
+     * RegEx to split the serialized components for reconstructing a plain-text
+     * serialized Program object.
+     */
     private static final Pattern PARSE_PROGRAM =
             Pattern.compile("^\\[(\\d+)\\]\\s+(.*)$");
+
+    /**
+     * The program text
+     */
     public final String program;
+
+    /**
+     * The computed fitness of the program
+     *
+     * This field is package protected to allow simple access from e.g.
+     * Selector objects.
+     */
     int fitness;
 
     /**
-     * Creates a {@code Program} object.
-     * @param program    The program text.
+     * @param program    the program's text
      */
     public Program(String program) {
         this.fitness = -1;
@@ -30,10 +45,11 @@ public class Program implements Serializable {
     }
 
     /**
-     * Read a program from a line in the format of {@code toString()}.
-     * @param input    The line
-     * @return  A {@code Program} configured from {@code input} or an empty
-     * program if parsing failed.
+     * Read a program from a line in the format used in {@link #toString()}.
+     *
+     * @param input    the String representation of a program
+     * @return  a program object configured from the input String, possibly
+     * having an empty text attribute if parsing failed.
      */
     public static Program fromString(String input) {
         Matcher match = PARSE_PROGRAM.matcher(input);
@@ -49,13 +65,18 @@ public class Program implements Serializable {
     }
 
     /**
-     * Obtain the calculated fitness of this program.
-     * @return  The integer fitness or -1 if none has been calculated.
+     * @return  the integer fitness value of this program
      */
     public int getFitness() {
         return fitness;
     }
 
+    /**
+     * Create a String serializing the necessary details of this program object
+     * suitable for saving and restoring from plain text files.
+     *
+     * @return a String representation of this program
+     */
     @Override
     public String toString() {
         return '[' + Integer.toString(fitness) + "] " + program;
