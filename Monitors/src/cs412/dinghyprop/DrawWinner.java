@@ -126,9 +126,7 @@ public class DrawWinner extends JPanel implements Observer{
                     interpreter.execute();
                 }
             } catch (ParsingException e) {
-                JOptionPane.showMessageDialog(null,
-                        "Cause: " + e.getLocalizedMessage(),
-                        "Non-executable Program", JOptionPane.ERROR_MESSAGE);
+                reportParsingError(e);
             }
             }
         });
@@ -307,14 +305,22 @@ public class DrawWinner extends JPanel implements Observer{
             ).setVisible(true);
             updateSimulator();
         } catch (ParsingException e) {
-            JOptionPane.showMessageDialog(this,
-                    "Cause: " + e.getLocalizedMessage(),
-                    "Non-executable Program", JOptionPane.ERROR_MESSAGE);
+            reportParsingError(e);
         } catch(Exception e) {
             JOptionPane.showMessageDialog(this,
                     "Could not retrieve program\nCause: " + e.getLocalizedMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    /**
+     * Show an error dialog to report a {@code ParsingException} to the user.
+     * @param e    The exact cause
+     */
+    private void reportParsingError(ParsingException e) {
+        JOptionPane.showMessageDialog(this,
+                "Cause: " + e.getLocalizedMessage(),
+                "Non-executable Program", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
