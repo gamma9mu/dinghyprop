@@ -153,6 +153,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
             if (i % 5 == 0) {
                 log.info("Writing checkpoint");
                 writeCheckpoint(String.format("gen_%08d", checkpointFileIndex));
+                checkpointFileIndex++;
             }
 
             log.info("Creating generation #" + Integer.toString(i));
