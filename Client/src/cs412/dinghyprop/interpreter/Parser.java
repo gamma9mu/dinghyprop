@@ -9,16 +9,27 @@ package cs412.dinghyprop.interpreter;
 import java.io.*;
 
 /**
- * A (very) recursive descent parser for the generated programs.
+ * Recursive descent parser for the GP generated programs
+ *
+ * The recursion occurs where "sub"-parsers are created for reading inside the
+ * input's lists.
  */
 public final class Parser {
+    /**
+     * Marks a parser as the top level parser for an input
+     */
     private boolean originator;
+
+    /**
+     * std. lib. tokenizer used as a lexical analyzer
+     */
     private StreamTokenizer lexer;
 
     /**
-     * Create a program parser.
-     * @param inputStream    The program text.
-     * @throws ParsingException if a parsing error occurs.
+     * Parses a program from an InputStream.
+     *
+     * @param inputStream    the program text
+     * @throws ParsingException if a parsing error occurs
      */
     public Parser(InputStream inputStream) throws ParsingException {
         originator = true;
@@ -27,9 +38,10 @@ public final class Parser {
     }
 
     /**
-     * Convenience constructor for a program in string form.
-     * @param inputString    The program text.
-     * @throws ParsingException if a parsing error occurs.
+     * Convenience constructor for a programs in string form
+     *
+     * @param inputString    the program text
+     * @throws ParsingException if a parsing error occurs
      */
     public Parser(String inputString) throws ParsingException {
         originator = true;
@@ -40,9 +52,10 @@ public final class Parser {
     }
 
     /**
-     * Setup the lexical analyzer.
-     * @param reader    The input stream reader
-     * @return  A suitable lexer
+     * Configure the lexical analyzer.
+     *
+     * @param reader    the input stream reader
+     * @return  an s-expression lexer
      */
     private StreamTokenizer createLexer(Reader reader) {
         StreamTokenizer tokenizer = new StreamTokenizer(reader);
@@ -58,6 +71,7 @@ public final class Parser {
 
     /**
      * Ensures the program's first token is a '('.
+     *
      * @throws ParsingException if this assumption fails
      */
     private void checkStart() throws ParsingException {
@@ -72,8 +86,9 @@ public final class Parser {
     }
 
     /**
-     * Internal constructor to maintain lexer state.
-     * @param lexer    The current lexer.
+     * Internal constructor.  Used to maintain lexer state.
+     *
+     * @param lexer    current lexer
      */
     private Parser(StreamTokenizer lexer) {
         originator = false;
@@ -81,9 +96,9 @@ public final class Parser {
     }
 
     /**
-     * Perform the actual parsing of the input program.
-     * @return  an expression object that can be interpreted by an
-     *      {@code Interpreter}.
+     * Performs the parsing of the input program.
+     *
+     * @return  an expression object that can be interpreted by an Interpreter
      * @throws ParsingException if a parsing error occurs.
      */
     public Expression parse() throws ParsingException {
