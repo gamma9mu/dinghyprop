@@ -7,7 +7,8 @@
 package cs412.dinghyprop.interpreter;
 
 /**
- * Stores an interpreter value.
+ * Store interpreter values that can behave well in different execution
+ * contexts
  */
 public final class Value {
     /**
@@ -30,13 +31,21 @@ public final class Value {
      */
     public static final Value FALSE_VALUE = new Value(TYPE.BOOLEAN, 0);
 
+    /**
+     * The current object's numerical value
+     */
     private final int value;
+
+    /**
+     * The current object's type
+     */
     private final TYPE type;
 
     /**
-     * Create a typed value.
-     * @param type     The type
-     * @param value    The value
+     * Creates a typed value.
+     *
+     * @param type     the behavior type
+     * @param value    the numerical value
      */
     private Value(TYPE type, int value) {
         this.type = type;
@@ -44,47 +53,49 @@ public final class Value {
     }
 
     /**
-     * Create a new integer typed {@code Value}.
-     * @param value    The int value
-     * @return  A value storing {@code value}
+     * Create a new integer-typed Value.
+     *
+     * @param value    the integer value to represent
+     * @return  an integer-typed Value storing value
      */
     public static Value newInt(int value) {
         return new Value(TYPE.INTEGER, value);
     }
 
     /**
-     * Get the {@code Value}'s type.
-     * @return  A value from {@code TYPE}
+     * @return  A value from {@link TYPE}
      */
     public TYPE getType() {
         return type;
     }
 
     /**
-     * @return  Whether {@code this} is a boolean.
+     * @return  Whether this is a boolean.
      */
     public boolean isBool() {
         return type == TYPE.BOOLEAN;
     }
 
     /**
-     * @return  Whether {@code this} is an integer.
+     * @return  Whether this is an integer.
      */
     public boolean isInt() {
         return type == TYPE.INTEGER;
     }
 
     /**
-     * @return  Whether {@code this} is null.
+     * @return  Whether this is null.
      */
     public boolean isNull() {
         return type == TYPE.NULL;
     }
 
     /**
-     * Return a representation of {@code this} suitable for use as a
-     * multiplicand.
-     * @return  The value if integer-type or a 1.
+     * Return a representation of this Value suitable for use as a
+     * multiplicand.  Integer-type Values will return themselves and other
+     * types will return 1 (integer, division, and exponentiation identity).
+     *
+     * @return  an int
      */
     public int multiplicand() {
         if (type == TYPE.INTEGER) {
@@ -94,8 +105,11 @@ public final class Value {
     }
 
     /**
-     * Return a representation of {@code this} suitable for use as a addend.
-     * @return  The value if integer-type or a 0.
+     * Return a representation of this Value suitable for use as a addend.
+     * Integer-type Values will return themselves and other types will return 0
+     * (addition, and subtraction identity).
+     *
+     * @return  an int
      */
     public int addend() {
         if (type == TYPE.INTEGER) {
@@ -105,8 +119,9 @@ public final class Value {
     }
 
     /**
-     * Return a representation of {@code this} suitable for use as a boolean
+     * Return a representation of this Value suitable for use as a boolean
      * value.
+     *
      * @return  The value if boolean-type or whether the value is greater than
      * 0.
      */
