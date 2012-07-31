@@ -182,7 +182,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
         log.info("Initializing GP");
         geneticProgram.addPopulationObserver(this);
         geneticProgram.initialize();
-        leader = geneticProgram.getProgram(0); // A safe default
+        frontRunner = geneticProgram.getProgram(0); // A safe default
     }
 
     /**
