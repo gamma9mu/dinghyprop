@@ -59,9 +59,7 @@ public class DrawWinner extends JPanel implements Observer{
         try {
             sims = server.getEvaluationSimulators();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                    "Could not retrieve simulators\nCause: " + e.getLocalizedMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            reportError("Could not retrieve simulators.", e);
         }
 
         // Open a TreeViewer for the current program on double-click
@@ -329,9 +327,7 @@ public class DrawWinner extends JPanel implements Observer{
             currentProgram = server.getCurrentLeader().program;
             updateSimulator();
         } catch(Exception e) {
-            JOptionPane.showMessageDialog(this,
-                    "Could not retrieve program\nCause: " + e.getLocalizedMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            reportError("Could not retrieve program.", e);
         }
     }
 
@@ -354,9 +350,7 @@ public class DrawWinner extends JPanel implements Observer{
             ISimulator sim = sims[dropDown.getSelectedIndex()].clone();
             setSimulation(sim);
         } catch (CloneNotSupportedException e) {
-            JOptionPane.showMessageDialog(this,
-                    "Could not create simulator\nCause: " + e.getLocalizedMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            reportError("Could not create simulator", e);
         }
     }
 
