@@ -12,13 +12,20 @@ import javax.swing.*;
 import java.net.InetAddress;
 
 /**
- * Client class to handle registering a {@code ClientImpl}.
+ * DinghyProp client entry point
+ *
+ * This class' main() determines whether the client is being run from Java
+ * WebStart or the command line and attempts to determine the address of the
+ * server from a system property (in the case of JavaWS) or a command line
+ * argument.  If neither method produces an address, the default (127.0.0.1) is
+ * used.
  */
 public class Client {
 
     /**
-     * Create a client and register it with the master
-     * @param address    The IP address of the master
+     * Create a client, associate it with a status window, and start them both.
+     *
+     * @param address    The address of the master
      */
     public Client(String address) {
         try {
@@ -33,7 +40,11 @@ public class Client {
     }
 
     /**
-     * Optionally read an IP address from the CLI.
+     * Start a new client application.
+     *
+     * Optionally reads an IP address from the CLI, or (when running from Java
+     * WebStart) read the address from a property in the JNLP file.
+     *
      * @param args    An optional IP address
      */
     public static void main(String[] args) {
