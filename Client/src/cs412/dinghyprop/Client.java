@@ -36,7 +36,7 @@ public class Client {
 
     /**
      * Start a new client application.
-     *
+     * <p>
      * Optionally reads an IP address from the CLI, or (when running from Java
      * WebStart) read the address from a property in the JNLP file.
      *
