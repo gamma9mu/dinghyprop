@@ -13,20 +13,46 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Dinghy navigation program interpreter
+ * Program interpreter
+ *
+ * Objects of this class run GP generated programs by the following process:
+ * <ul>
+ *     <li>Have a parser convert the program to an AST</li>
+ *     <li>Walk the AST left to right, depth first</li>
+ *     <li>Nodes are evaluated in post-order</li>
+ *     <li>Function invocations and variable references are passed to a
+ *     simulator</li>
+ * </ul>
  */
 public class Interpreter {
     private static Logger log = Logger.getLogger("Interpreter");
+
+    /**
+     * The simulator tasked with managing the environment, function invocation,
+     * and variable references
+     */
     private ISimulator simulator;
+
+    /**
+     * AST
+     */
     private Expression program;
+
+    /**
+     * Whether execution of the program raised an exception
+     */
     private boolean programRaised = false;
+
+    /**
+     * The original program text
+     */
     private String programText;
 
     /**
-     * Create an interpreter for a {@code Simulator} and program combination.
-     * @param simulator    The {@code Simulator} that provides context to the
-     *                     interpreter
-     * @param program      The program to execute
+     * Creates an interpreter.
+     *
+     * @param simulator    the Simulator that provides context
+     * @param program      the program to execute
      */
     public Interpreter(ISimulator simulator, String program) throws ParsingException {
         this.simulator = simulator;
@@ -35,7 +61,7 @@ public class Interpreter {
     }
 
     /**
-     * Evaluate the program in the simulation
+     * Evaluate the program once.
      */
     public void execute() {
         if (! canContinue())
@@ -51,10 +77,10 @@ public class Interpreter {
 
     /**
      * Evaluate the program in the simulation for a given count of iterations.
-     *
+     * <p>
      * Evaluation will end if the simulation indicates that it cannot continue.
      * 
-     * @param iterations    The iteration count.
+     * @param iterations    the number of times evaluate the program
      */
     public void run(int iterations) {
         while (canContinue() && iterations > 0) {
@@ -64,9 +90,10 @@ public class Interpreter {
     }
 
     /**
-     * Evaluate an {@code Expression} tree
-     * @param expr    The {@code Expression} tree's root
-     * @return  The resulting value from evaluating {@code expr}
+     * Evaluates an Expression tree.
+     *
+     * @param expr    the Expression tree's root
+     * @return  the resulting value from evaluating {@code expr}
      */
     private Value evaluateExpression(Expression expr) throws ExecutionException {
         String operator = expr.getOperator();
@@ -94,10 +121,11 @@ public class Interpreter {
     }
 
     /**
-     * Evaluate an operator on a set of values
-     * @param operator    The name of the operator
-     * @param operands    The value array to operate on
-     * @return  The value returned by applying {@code operator} on
+     * Evaluates an operator on a set of values.
+     *
+     * @param operator    name of the operator
+     * @param operands    value array to operate on
+     * @return  the value returned by applying {@code operator} on
      * {@code operands}
      */
     private Value evaluateOperator(String operator, Value[] operands) {
@@ -130,10 +158,10 @@ public class Interpreter {
     }
 
     /**
-     * Check if all the values in an array are in strictly decreasing order.
-     * @param operands    The value array
-     * @return  {@code true} if the values are strictly decreasing,
-     * {@code false} otherwise.
+     * Checks if all the values in an array are in strictly decreasing order.
+     *
+     * @param operands    value array
+     * @return  true if the values are strictly decreasing, false otherwise
      */
     private Value evalLess(Value[] operands) {
         for (int i = 0; i < operands.length - 1; i++) {
@@ -145,10 +173,10 @@ public class Interpreter {
     }
 
     /**
-     * Check if all the values in an array are in non-increasing order.
-     * @param operands    The value array
-     * @return  {@code true} if the values are non-increasing,
-     * {@code false} otherwise.
+     * Checks if all the values in an array are in non-increasing order.
+     *
+     * @param operands    value array
+     * @return  true if the values are non-increasing, false otherwise
      */
     private Value evalLessOrEqual(Value[] operands) {
         for (int i = 0; i < operands.length - 1; i++) {
@@ -160,10 +188,10 @@ public class Interpreter {
     }
 
     /**
-     * Check if all the values in an array are in strictly increasing order.
-     * @param operands    The value array
-     * @return  {@code true} if the values are strictly increasing,
-     * {@code false} otherwise.
+     * Checks if all the values in an array are in strictly increasing order.
+     *
+     * @param operands    value array
+     * @return  true if the values are strictly increasing, false otherwise
      */
     private Value evalGreater(Value[] operands) {
         for (int i = 0; i < operands.length - 1; i++) {
@@ -175,10 +203,10 @@ public class Interpreter {
     }
 
     /**
-     * Check if all the values in an array are in non-decreasing order.
-     * @param operands    The value array
-     * @return  {@code true} if the values are non-decreasing,
-     * {@code false} otherwise.
+     * Checks if all the values in an array are in non-decreasing order.
+     *
+     * @param operands    value array
+     * @return  true if the values are non-decreasing, false otherwise
      */
     private Value evalGreaterOrEqual(Value[] operands) {
         for (int i = 0; i < operands.length - 1; i++) {
@@ -191,8 +219,9 @@ public class Interpreter {
 
     /**
      * Check an array for value equality.
-     * @param operands    The value array
-     * @return  True if all the values are equal, false otherwise.
+     *
+     * @param operands    value array
+     * @return  true if all the values are equal, false otherwise
      */
     private Value evalEqual(Value[] operands) {
         for (int i = 0; i < operands.length - 1; i++) {
@@ -204,8 +233,9 @@ public class Interpreter {
 
     /**
      * Check an array for value inequality.
-     * @param operands    The value array
-     * @return  {@code true} if all the values are different, {@code false} otherwise.
+     *
+     * @param operands    value array
+     * @return  true if all the values are different, false otherwise
      */
     private Value evalNotEqual(Value[] operands) {
         for (int i = 0; i < operands.length - 1; i++) {
@@ -219,12 +249,12 @@ public class Interpreter {
     }
 
     /**
-     * Evaluate an if construct.
-     * @param operands    The boolean, true, and option false statements.
-     * @return  If the value of the first argument is {@code true}, he value of
-     * the second argument is returned.  Otherwise, the value of the third
-     * argument is returned (or {@code Value.NULL_VALUE} if no third argument
-     * was provided).
+     * Evaluates an if construct.
+     *
+     * @param operands    the boolean, true branch, and optional false branch
+     * @return  If the value of the first argument is true, the value of the
+     * second argument is returned.  Otherwise, the value of the third argument
+     * is returned (or Value.NULL_VALUE if no third argument was provided).
      */
     private Value evalIf(Value[] operands) {
         if (operands[0].bool())
@@ -234,9 +264,10 @@ public class Interpreter {
     }
 
     /**
-     * Sum the arguments.
-     * @param operands    The values to sum
-     * @return  the sum of {@code operands}
+     * Sums the arguments.
+     *
+     * @param operands    Te values to sum
+     * @return  the sum of operands
      */
     private Value evalAdd(Value[] operands) {
         int accum = 0;
@@ -247,9 +278,10 @@ public class Interpreter {
     }
 
     /**
-     * Sequentially subtract values in an array. (Left associative)
-     * @param operands    The value array
-     * @return  the first value less the second less the third, etc.
+     * Sequentially subtracts the values in an array. (Left associative)
+     *
+     * @param operands    the value array
+     * @return  the first value less the second, less the third, etc.
      */
     private Value evalSub(Value[] operands) {
         int accum = operands[0].addend(); // + has 0 as identity
@@ -259,9 +291,10 @@ public class Interpreter {
     }
 
     /**
-     * Multiply an array of values together.
-     * @param operands    The values to multiply together
-     * @return  The product of {@code operands}
+     * Multiplies an array of values together.
+     *
+     * @param operands    the values to multiply together
+     * @return  the product of {@code operands}
      */
     private Value evalMult(Value[] operands) {
         int accum = 1;
@@ -272,9 +305,10 @@ public class Interpreter {
     }
 
     /**
-     * Sequentially divide an array of values.  (Left associative)
-     * @param operands    The values to divide
-     * @return  The first value divided by the second divided by the third, etc.
+     * Sequentially divides an array of values.  (Left associative)
+     *
+     * @param operands    the values to divide
+     * @return  the first value divided by the second, divided by the third, etc.
      */
     private Value evalDivSafe(Value[] operands) {
         int accum = operands[0].multiplicand();
@@ -289,9 +323,10 @@ public class Interpreter {
     }
 
     /**
-     * Exponentiate a series of values. (Left associative)
-     * @param operands    The value array
-     * @return  The first to the power of the second to the power of the third,
+     * Exponentiates a series of values. (Left associative)
+     *
+     * @param operands    the value array
+     * @return  the first to the power of the second, to the power of the third,
      * etc.
      */
     private Value evalExp(Value[] operands) {
@@ -307,8 +342,7 @@ public class Interpreter {
     }
 
     /**
-     * Get the fitness of the program as computed by the simulator.
-     * @return  The fitness of the program, unless the program caused an
+     * @return  the fitness of the program, unless the program caused an
      * exception to be raised.  In that case, return 0.
      */
     public int getFitness() {
@@ -318,8 +352,7 @@ public class Interpreter {
     }
 
     /**
-     * Determine whether execution can continue.
-     * @return  Whether execution can continue
+     * @return  whether execution can continue
      */
     public boolean canContinue() {
         return simulator.canContinue() && ! programRaised;
