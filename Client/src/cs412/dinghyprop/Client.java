@@ -27,16 +27,11 @@ public class Client {
      *
      * @param address    The address of the master
      */
-    public Client(String address) {
-        try {
-            ClientImpl client = new ClientImpl(address);
-            ClientStatusWindow sw = new ClientStatusWindow(client);
-            sw.run();
-            client.initialize();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Cause: " + e.getLocalizedMessage(),
-                    "Error Initializing", JOptionPane.ERROR_MESSAGE);
-        }
+    public static void createClient(String address) throws Exception {
+        ClientImpl client = new ClientImpl(address);
+        ClientStatusWindow sw = new ClientStatusWindow(client);
+        sw.run();
+        client.initialize();
     }
 
     /**
@@ -51,22 +46,27 @@ public class Client {
         String injws = System.getProperty("injws");
         String address = "127.0.0.1";
 
-        if (injws != null && !injws.trim().isEmpty()) {
+        if (injws != null && !injws.trim().isEmpty()) { // Java WebStart
             try {
                 BasicService service = (BasicService) ServiceManager.lookup("javax.jnlp.BasicService");
                 String host = service.getCodeBase().getHost();
                 address = InetAddress.getByName(host).getHostAddress();
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Cause: " + e.getLocalizedMessage(),
-                        "Error Looking Up Server", JOptionPane.ERROR_MESSAGE);
+                        "Error resolving Server Address", JOptionPane.ERROR_MESSAGE);
             }
-        } else if (args.length == 1) {
+        } else if (args.length == 1) { // CLI argument
             address = args[0];
-        } else {
-            System.err.println("Usage: Client [master_address]");
-            System.exit(-1);
         }
 
-        new Client(address);
+        try {
+            createClient(address);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Cause: " + e.getLocalizedMessage(),
+                    "Error Initializing", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Error initializing client caused by:");
+            System.err.println(e.getLocalizedMessage());
+            System.err.println("Usage: Client [master_address]");
+        }
     }
 }
