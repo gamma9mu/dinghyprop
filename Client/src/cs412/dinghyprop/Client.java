@@ -40,7 +40,7 @@ public class Client {
      * Optionally reads an IP address from the CLI, or (when running from Java
      * WebStart) read the address from a property in the JNLP file.
      *
-     * @param args    An optional IP address
+     * @param args    an optional IP address
      */
     public static void main(String[] args) {
         String injws = System.getProperty("injws");
