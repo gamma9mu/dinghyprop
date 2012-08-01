@@ -22,22 +22,55 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Non-distributed GP runner.
+ * Non-distributed version of the DinghyProp genetic programming.
  */
 public class SingleRunner {
     private static Logger log = Logger.getLogger("SingleRunner");
+
+    /**
+     * The population size of the GeneticProgram
+     */
     private static final int popSize = 100;
+
+    /**
+     * The dimensions of the simulation environments to create
+     */
     private static final int SIM_DIM = 20;
+
+    /**
+     * The goal fitness
+     */
     private static final int GOAL = 300;
+
+    /**
+     * The running GeneticProgram
+     */
     private GeneticProgram gp;
+
+    /**
+     * The simulator to use when evaluating programs
+     */
     private ISimulator simulator;
+
+    /**
+     * Whether an individual with the goal fitness has been found
+     */
     private boolean success = false;
+
+    /**
+     * The best seen fitness score
+     */
     private int best = Integer.MIN_VALUE;
+
+    /**
+     * The directory to write checkpoints into
+     */
     private File checkpointDir;
 
     /**
-     * Create a new single-machine GP runner.
-     * @param gp    The GP object to run
+     * Creates a new single-machine GP runner.
+     *
+     * @param gp    the GP object to run
      */
     public SingleRunner(GeneticProgram gp) {
         this.gp = gp;
@@ -52,7 +85,7 @@ public class SingleRunner {
     }
 
     /**
-     * Run the genetic program through 1000 generations or until success.
+     * Runs the genetic program through 1000 generations or until success.
      */
     private void run() {
         for (int iter = 0; iter < 1000; iter++) {
@@ -69,8 +102,9 @@ public class SingleRunner {
     }
 
     /**
-     * Write the current generation to a file.
-     * @param generationIndex    The generation number or -1 for final
+     * Writes the current generation to a file.
+     *
+     * @param generationIndex    the generation number or -1 for final
      *                           generation.
      */
     private void dump(int generationIndex) {
@@ -89,7 +123,7 @@ public class SingleRunner {
     }
 
     /**
-     * Evaluate all the individuals in a population.
+     * Evaluates all the individuals in a population.
      */
     private void runGeneration() {
         int fitnesses = 0;
@@ -111,9 +145,10 @@ public class SingleRunner {
     }
 
     /**
-     * Evaluate a single program in a randomly generated environment.
-     * @param program    The program to evaluate
-     * @return  The evaluated program's fitness
+     * Evaluates a single program in a randomly generated environment.
+     *
+     * @param program    the program to evaluate
+     * @return  the evaluated program's fitness
      */
     private int evaluateProgram(Program program) {
         ISimulator sim;
@@ -137,7 +172,7 @@ public class SingleRunner {
     }
 
     /**
-     * Print the text of the programs with the best fitness.
+     * Prints the text of the programs with the best fitness.
      */
     private void printBest() {
         System.out.println("Programs with best fitness [" + best + "]:");
@@ -155,8 +190,9 @@ public class SingleRunner {
     }
 
     /**
-     * Runs a GP population through 1000 generations.
-     * @param args    One argument: the tournament size.
+     * Runs a GeneticProgram through 1000 generations.
+     *
+     * @param args    one optional argument: the tournament size.
      */
     public static void main(String[] args) {
         GeneticProgram gp = new GeneticProgram(popSize,
@@ -179,8 +215,9 @@ public class SingleRunner {
     }
 
     /**
-     * Run a GP instance.
-     * @param gp    The GP to run
+     * Creates and runs a SingleRunner instance.
+     *
+     * @param gp    the GeneticProgram to use
      */
     public static void run(GeneticProgram gp) {
         SingleRunner sr = new SingleRunner(gp);
