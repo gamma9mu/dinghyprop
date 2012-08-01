@@ -12,9 +12,17 @@ import java.security.SecureRandom;
  * Performs n-size tournament selection.
  */
 public final class TournamentSelector implements Selector {
+    /**
+     * The size of selection tournaments
+     */
     private int tournamentSize;
+
+    /**
+     * A good RNG
+     */
     private SecureRandom rand = new SecureRandom();
 
+    // Register as a Selector
     static {
         try {
             CheckpointLoader.registerSelector("TournamentSelector",
@@ -23,8 +31,9 @@ public final class TournamentSelector implements Selector {
     }
 
     /**
-     * Create a new tournament selector for a given tournament size.
-     * @param tournamentSize    The size of the tournaments (minimum: 2)
+     * Creates a new tournament selector.
+     *
+     * @param tournamentSize    the size of the tournaments (minimum: 2)
      */
     public TournamentSelector(int tournamentSize) {
         this.tournamentSize = tournamentSize;
