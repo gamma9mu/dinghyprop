@@ -10,13 +10,14 @@ import cs412.dinghyprop.genetics.CheckpointLoader;
 import cs412.dinghyprop.genetics.GeneticProgram;
 
 /**
- * Run a GP from a checkpoint.
+ * Entry-point which runs a GeneticProgram, using SingleRunner, from a
+ * checkpoint.
  */
 public class CheckpointSingleRunner {
 
     /**
-     * Runs a check-pointed GP with a fresh {@code SingleRunner}.
-     * @param args    One argument: the checkpoint delivery
+     * Runs a check-pointed GP with a fresh SingleRunner.
+     * @param args    one argument: the checkpoint delivery
      */
     public static void main(String[] args) {
         if (args.length != 1) {
