@@ -15,15 +15,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Simulation directory loader
+ * Loads all files from a directory as simulation environment specifications.
  */
 public class SimulationDirLoader {
 
+    /**
+     * The directory path
+     */
     private File directory;
 
     /**
-     * Create a new directory loader.
-     * @param directory    The directory to load simulators from
+     * Creates a new directory loader.
+     *
+     * @param directory    the directory to load simulators from
      */
     public SimulationDirLoader(String directory) {
         this.directory = new File(directory);
@@ -33,8 +37,9 @@ public class SimulationDirLoader {
     }
 
     /**
-     * Load the simulators from the files in the directory.
-     * @return  An array of the loaded simulators
+     * Loads the simulators from the files in the directory.
+     *
+     * @return  an array of the loaded simulators
      */
     public Simulator[] load() {
         File[] files = getDirectoryFiles();
@@ -48,8 +53,7 @@ public class SimulationDirLoader {
     }
 
     /**
-     * Get a listing of plain files in this loaders directory.
-     * @return  All non-directories in {@code this.directory}
+     * @return a listing of plain files in this loaders directory
      */
     private File[] getDirectoryFiles() {
         return directory.listFiles(new FileFilter() {
@@ -60,6 +64,12 @@ public class SimulationDirLoader {
         });
     }
 
+    /**
+     * Delegates the loading of a file to {@link SimulatorFile}.
+     *
+     * @param file    the file to load from
+     * @return a simulator as specified in {@code file}
+     */
     private Simulator loadFile(File file) {
         SimulatorFile sf = new SimulatorFile(file);
         return sf.getSim();
