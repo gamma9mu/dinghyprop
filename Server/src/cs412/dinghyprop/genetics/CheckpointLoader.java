@@ -22,35 +22,63 @@ import java.util.regex.Pattern;
 public final class CheckpointLoader {
     private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
+    /**
+     * A mapping from the names of classes implementing {@link Selector} to
+     * constructors for those classes.
+     */
     private static Map<String, Constructor> selectors =
             new HashMap<String, Constructor>(1);
 
+    /**
+     * The checkpoint direcotry
+     */
     private File directory;
+
+    /**
+     * The checkpoint file's input stream
+     */
     private BufferedReader in = null;
 
+    /**
+     * The population size of the checkpointed GP
+     */
     private int popSize = 0;
+
+    /**
+     * The checkpointed GP's selector's name
+     */
     private String selector = null;
+
+    /**
+     * The crossover rate of the checkpointed GP
+     */
     private double crossOver = 0.0;
+
+    /**
+     * The mutation rate of the checkpointed GP
+     */
     private double mutation = 0.0;
 
     /**
-     * Register a constructor for a class that implements the {@code Selector}
+     * Registers a constructor for a class that implements the Selector
      * interface.  The constructor can be zero-argument or one(int)-argument.
      *
      * This method should be called from the static initializer of the calling
      * class.
-     * @param name    The unqualified name of the calling class
-     * @param ctor    The constructor
+     *
+     * @param name    the unqualified name of the calling class
+     * @param ctor    the calling class' constructor
      */
     public static void registerSelector(String name, Constructor ctor) {
         selectors.put(name, ctor);
     }
 
     /**
-     * Instantiate a registered {@code Selector}-implementing class.
-     * @param name        The name of the class to instantiate
-     * @param argument    The int-typed argument to the constructor.
-     * @return  A {@code Selector}
+     * Instantiates a registered Selector-implementing class.
+     *
+     * @param name        the name of the class to instantiate
+     * @param argument    the int-typed argument to the constructor.
+     * @return  a Selector as if constructed by {@code new name(argument)}
      * @throws InvocationTargetException if newInstance fails
      * @throws IllegalAccessException if newInstance fails
      * @throws InstantiationException if newInstance fails
@@ -67,9 +95,10 @@ public final class CheckpointLoader {
     }
 
     /**
-     * Instantiate a registered {@code Selector}-implementing class.
-     * @param name        The name of the class to instantiate
-     * @return  A {@code Selector}
+     * Instantiates a registered Selector-implementing class.
+     *
+     * @param name        the name of the class to instantiate
+     * @return a Selector as if constructed by {@code new name()}
      * @throws InvocationTargetException if newInstance fails
      * @throws IllegalAccessException if newInstance fails
      * @throws InstantiationException if newInstance fails
@@ -82,24 +111,27 @@ public final class CheckpointLoader {
     }
 
     /**
-     * Create a new checkpoint loader from a checkpoint directory.
-     * @param checkpointDirectory    The checkpoint directory
+     * Creates a new checkpoint loader for a checkpoint directory.
+     *
+     * @param checkpointDirectory    the checkpoint directory's path
      */
     public CheckpointLoader(File checkpointDirectory) {
         directory = checkpointDirectory;
     }
 
     /**
-     * Create a new checkpoint loader from a checkpoint directory.
-     * @param checkpointDirectory    The path to the checkpoint directory
+     * Creates a new checkpoint loader from a checkpoint directory.
+     *
+     * @param checkpointDirectory    the checkpoint directory's path
      */
     public CheckpointLoader(String checkpointDirectory) {
         directory = new File(checkpointDirectory);
     }
 
     /**
-     * Instantiate the last check-pointed generation.
-     * @return  A {@code GeneticProgram} from this loaders directory
+     * Instantiates the last check-pointed generation.
+     *
+     * @return  a GeneticProgram from this loader's directory
      */
     public GeneticProgram instantiate() {
         if (checkFinished()) return null;
@@ -123,9 +155,10 @@ public final class CheckpointLoader {
     }
 
     /**
-     * Instantiate the selector described by the selector field in the GP's
+     * Instantiates the selector described by the selector field in the GP's
      * data line's selector field.
-     * @return A {@code Selector} or null
+     *
+     * @return a Selector or null
      */
     private Selector createSelector() {
         Pattern splitter = Pattern.compile("(\\w+)\\((\\d*)\\)");
@@ -146,12 +179,13 @@ public final class CheckpointLoader {
     }
 
     /**
-     * Parse the "data line" from a checkpoint file.  The line should have thr
+     * Parses the "data line" from a checkpoint file.  The line should have the
      * form:
      * <pre>
      # &lt;pop_size&gt; &lt;selector&gt; &lt;x-over_rate&gt; &lt;mutation_rate&gt; &lt;reproduction_rate&gt;
      * </pre>
      * including the leading '#'.
+     *
      * @throws IOException  if an exception is thrown while reading the input
      */
     private void readDataLine() throws IOException {
@@ -170,8 +204,9 @@ public final class CheckpointLoader {
     }
 
     /**
-     * Read the programs from the input.
-     * @return  An array of the recreated {@code Program}s
+     * Reads the programs from the input.
+     *
+     * @return  an array of the recreated programs
      * @throws IOException if an error occurs while reading
      */
     private Program[] getPrograms() throws IOException {
@@ -188,9 +223,10 @@ public final class CheckpointLoader {
     }
 
     /**
-     * Check the checkpoint directory for a file listing the final evolved
-     * generation
-     * @return  Whether the GP run completed
+     * Searches the checkpoint directory for a file listing the final evolved
+     * generation.
+     *
+     * @return  whether the GP run completed
      */
     private boolean checkFinished() {
         File finalGP = new File(directory, "final_generation");
@@ -198,9 +234,10 @@ public final class CheckpointLoader {
     }
 
     /**
-     * Find the last file whose name begins with "gen_" when the files are
+     * Finds the last file whose name begins with "gen_" when the files are
      * sorted alphabetically.
-     * @return  The matched file or null
+     *
+     * @return  the matched file or null
      */
     private File getLastGenerationFile() {
         File[] genFiles = directory.listFiles(new FilenameFilter() {
