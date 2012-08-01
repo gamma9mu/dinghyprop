@@ -15,7 +15,6 @@ import cs412.dinghyprop.simulator.ISimulator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -27,12 +26,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * GP master server
+ * GeneticProgram RMI server
  */
 public class Master extends UnicastRemoteObject implements IMaster, IPopulationObserver, Runnable {
     private static final long serialVersionUID = 7213091562277551698L;
     private static Logger log = Logger.getLogger("Master");
+
+    /**
+     * The population size to use for fresh GP runs
+     */
     private static final int POPULATION_SIZE = 10000;
+
+    /**
+     * The number of generations to evaluate before termination
+     */
     private static final int GENERATIONS = 100000;
 
     /**
@@ -72,37 +79,46 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      */
     private static final String address = "Master";
 
-    /*
+    /**
      * Status for program dispatcher.
      */
     private volatile boolean running = true;
 
-    /*
-     * Statistics
+    /**
+     * The best fitness seen from the current generation
      */
-    int best;
-    int worst;
-    Program frontRunner = null;
-
-    /*
-     * Previous generation's leader
-     */
-    Program leader = null;
-
-    /*
-     * Checkpointing directory
-     */
-    File checkpointDir;
-
-    /*
-     * File numbering for checkpoints
-     */
-    int checkpointFileIndex = 0;
+    private int best;
 
     /**
-     * Create a new master object.
-     * @param simulators    The simulation environments to supply to clients
-     * @throws RemoteException
+     * The worst fitness seen from the current generation
+     */
+    private int worst;
+
+    /**
+     * The current generations best-yet program
+     */
+    private Program frontRunner = null;
+
+    /**
+     * Previous generation's leader
+     */
+    private Program leader = null;
+
+    /**
+     * Checkpointing directory
+     */
+    private File checkpointDir;
+
+    /**
+     * File numbering for checkpoints
+     */
+    private int checkpointFileIndex = 0;
+
+    /**
+     * Creates a new server object.
+     *
+     * @param simulators    the simulation environments to supply to clients
+     * @throws RemoteException inherited from superclass constructors
      */
     public Master(GeneticProgram geneticProgram, ISimulator[] simulators, int generations)
             throws RemoteException {
@@ -124,10 +140,10 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
 
     /**
      * Register with RMI and run the GP.
-     * @throws MalformedURLException
-     * @throws RemoteException
+     *
+     * @throws RemoteException if a problem occurs in RMI initialization
      */
-    public synchronized void runGP() throws MalformedURLException, RemoteException {
+    public synchronized void runGP() throws RemoteException {
         initRMI();
         initGP();
 
@@ -166,8 +182,10 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     /**
-     * Register with RMI.
-     * @throws RemoteException
+     * Registers this server with RMI.
+     *
+     * @throws RemoteException if the RMI registry could not be located or the
+     * server could not be bound to its address
      */
     private void initRMI() throws RemoteException {
         log.info("Registering with RMI");
@@ -188,7 +206,8 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     /**
      * Releases clients, stops the program dispatch thread and writes a final
      * checkpoint.
-     * @throws RemoteException
+     *
+     * @throws RemoteException for RMI errors while releasing clients
      */
     private void cleanup() throws RemoteException {
         log.info("GP run complete.");
@@ -203,7 +222,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     /**
-     * Evaluate all the individuals in a population.
+     * Dispatches programs for evaluation.
      */
     @Override
     public void run() {
@@ -218,8 +237,9 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     /**
-     * Write a checkpoint file.
-     * @param filename    The file's name
+     * Writes a checkpoint file.
+     *
+     * @param filename    the file path to write to
      */
     private void writeCheckpoint(String filename) {
         File file = new File(checkpointDir, filename);
@@ -231,9 +251,10 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     /**
-     * Create a thread to handle I/O with a client and evaluate a program.
-     * @param index      The program's index
-     * @param program    The program itself
+     * Creates a thread to handle I/O with a client.
+     *
+     * @param index      the index of the program to send to the client
+     * @param program    the program itself
      */
     private void sendForEvaluation(final int index, final Program program) {
         final IClient client = getNextClient();
@@ -253,10 +274,10 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     /**
-     * "Callback" for evaluation threads that manages fitness update
-     * bookkeeping.
-     * @param index      The index of the program to update
-     * @param fitness    The fitness to assign the program
+     * Updates the fitness of a program with the GeneticProgram.
+     *
+     * @param index      the index of the program to update
+     * @param fitness    the fitness to assign the program
      */
     private synchronized void updateFitness(int index, int fitness) {
         geneticProgram.setProgramFitness(index, fitness);
@@ -285,8 +306,9 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     /**
-     * Enqueue a client for processing, handling notification.
-     * @param client    The {@code IClient} to enqueue
+     * Enqueues a client for processing, handling notification.
+     *
+     * @param client    the IClient to enqueue
      */
     private synchronized void enqueueClient(IClient client) {
         clients.add(client);
@@ -294,8 +316,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     /**
-     * Obtain the next available {@code IClient}.
-     * @return  The {@code IClient} that has been waiting the longest
+     * @return the next available IClient (that has been waiting the longest)
      */
     private synchronized IClient getNextClient() {
         while (clients.isEmpty()) {
@@ -312,9 +333,10 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     /**
-     * Enqueue a program, handling notification.
-     * @param index         The index of the program
-     * @param individual    The program itself
+     * Enqueues a program, handling notification.
+     *
+     * @param index         the index of the program
+     * @param individual    the program itself
      */
     private synchronized void enqueueProgram(int index, Program individual) {
         pendingPrograms.add(new IndexedProgram(index, individual));
@@ -322,9 +344,10 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     /**
-     * Obtain the next program due for processing.
+     * Obtains the next program due for processing.
+     *
      * @return  A {@code Map.Entry&lt;Integer,Program&gt;} where the key is the
-     * index and the value is the {@code Program} to be processed
+     * index and the value is the program to be processed
      */
     private synchronized IndexedProgram getNextProgram() {
         while (pendingPrograms.isEmpty()) {
@@ -336,9 +359,10 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     /**
-     * Update the statistics fields with new fitness information.
-     * @param index      The index of the program the fitness refers to
-     * @param fitness    The latest returned fitness
+     * Updates the statistics fields with new fitness information.
+     *
+     * @param index      the index of a program
+     * @param fitness    the program's fitness
      */
     private void updateStatistic(int index, int fitness) {
         if (fitness < worst)
@@ -350,7 +374,7 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     /**
-     * Reset the statistics fields.
+     * Resets the statistics fields.
      */
     private void resetStatistics() {
         worst = Integer.MAX_VALUE;
@@ -363,10 +387,18 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     /**
-     * Register a new {@code Master} with RMI.
-     * @param args    One required argument, the directory name where simulator files
-     *                are stored, and one optional argument: a checkpoint directory
-     * @throws Exception
+     * Registers a new server with RMI.
+     * <p>
+     * This entry point accepts one required and one option argument.  The
+     * required argument is the directory path to the simulator files and it
+     * appears first.  It is optionally followed by the path to a checkpoint
+     * directory, which (if specified) will load the last version of that GP
+     * and continue it.
+     *
+     * @param args    the directory path where simulator files are stored, and,
+     *                optionally, a checkpoint directory
+     * @throws Exception if RMI problems occur when creating the server or
+     * registering it with the RMI registry
      */
     public static void main(String[] args) throws Exception {
         if (args.length < 1) {
@@ -390,9 +422,10 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
     }
 
     /**
-     * Load a checkpoint of a genetic program.
-     * @param arg    The path to the checkpoint directory
-     * @return  The loaded genetic program, or null on error
+     * Loads a checkpoint of a genetic program.
+     *
+     * @param arg    the path to the checkpoint directory
+     * @return  the loaded genetic program, or null on error
      */
     private static GeneticProgram loadCheckpoint(String arg) {
         CheckpointLoader cpl = new CheckpointLoader(arg);
@@ -408,13 +441,21 @@ public class Master extends UnicastRemoteObject implements IMaster, IPopulationO
      * Manages a program and its index.
      */
     class IndexedProgram {
+        /**
+         * The GeneticProgram's index for the program
+         */
         public int index;
 
-        public Program program;
         /**
-         * Create a new {@code IndexedProgram}.
-         * @param index      The program's index
-         * @param program    The program itself
+         * The program itself
+         */
+        public Program program;
+
+        /**
+         * Creates a new IndexedProgram.
+         *
+         * @param index      the program's index
+         * @param program    the program itself
          */
         public IndexedProgram(int index, Program program) {
             this.index = index;
