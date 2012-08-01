@@ -104,7 +104,8 @@ public final class GeneticProgram {
     private final Random rand = new SecureRandom();
 
     /**
-     * Create a new GP object and initialize its population.
+     * Creates a new GP object and initialize its population.
+     *
      * @param populationSize    the size of population to use
      * @param method            the initialization method
      * @param maxDepth          the maximum initial depth of any individual
@@ -118,6 +119,7 @@ public final class GeneticProgram {
 
     /**
      * Convenience constructor for in-package utilities.
+     *
      * @param population       The population to use
      * @param crossoverRate    The crossover rate
      * @param mutationRate     The mutation rate
@@ -130,7 +132,7 @@ public final class GeneticProgram {
     }
 
     /**
-     * Initialize the first generation.  This is a separate action to allow an
+     * Initializes the first generation.  This is a separate action to allow an
      * object to register itself as a population observer before the first
      * population is created.
      */
@@ -156,8 +158,7 @@ public final class GeneticProgram {
     }
 
     /**
-     * Choose a random terminal.
-     * @return  A randomly chosen terminal
+     * @return  a randomly chosen terminal or constant
      */
     private String randomTerminal() {
         if (rand.nextDouble() < constDensity)
@@ -167,8 +168,7 @@ public final class GeneticProgram {
     }
 
     /**
-     * Choose a random function.
-     * @return  A randomly chosen function
+     * @return  a randomly chosen function
      */
     private String randomFunction() {
         return (String) functions.toArray()[rand.nextInt(functions.size())];
@@ -183,11 +183,12 @@ public final class GeneticProgram {
     }
 
     /**
-     * Grow an individual by randomly choosing from the available
-     * functions and terminals at every point (except leaf nodes,
-     * which are always terminals).
-     * @param maxHeight    The maximum height of the individual
-     * @return  A randomly grown individual
+     * Grow san individual by randomly choosing from the available functions
+     * and terminals at every point (except leaf nodes, which are always
+     * terminals).
+     *
+     * @param maxHeight    the maximum height of the individual
+     * @return  a randomly grown individual
      */
     private String grow(int maxHeight) {
         String res = grow_help(maxHeight);
@@ -199,9 +200,10 @@ public final class GeneticProgram {
     }
 
     /**
-     * Performs the majority of the work of {@code grow(int)}.
-     * @param maxHeight    The maximum height of the individual
-     * @return  A randomly grown individual
+     * Performs the majority of the work of {@link #grow(int)} .
+     *
+     * @param maxHeight    the maximum height of the individual
+     * @return  a randomly grown subtree
      */
     private String grow_help(int maxHeight) {
         int nextMax = maxHeight - 1;
@@ -218,15 +220,15 @@ public final class GeneticProgram {
     }
 
     /**
-     * Grow an individual to fill a tree to a given maximum height.  Only leaf
+     * Grows an individual to fill a tree to a given maximum height.  Only leaf
      * nodes will be terminals.
      *
      * <b>Important:</b> Calling this method with {@code maxHeight} = 1 will
      * produce in a single terminal, which will likely not parse as a valid
      * program.
      *
-     * @param maxHeight    The maximum height of the individual
-     * @return  A newly grown individual
+     * @param maxHeight    the maximum height of the individual
+     * @return  a randomly (fill-)grown individual
      */
     private String fill(int maxHeight) {
         int nextMax = maxHeight - 1;
@@ -242,9 +244,10 @@ public final class GeneticProgram {
     }
 
     /**
-     * Initialize a population using the grow method on half of the individuals
-     * and the fill method on the rest.
-     * @param maxDepth    The maximum depth of any individuals tree
+     * Initializes a population using the grow method on half of the
+     * individuals and the fill method on the rest.
+     *
+     * @param maxDepth    the maximum depth of any individuals tree
      */
     private void rampedHalfAndHalf(int maxDepth) {
         int half = population.length / 2;
@@ -262,16 +265,18 @@ public final class GeneticProgram {
     }
 
     /**
-     * Add an object as a population observer.
-     * @param observer    The observing object
+     * Adds an object as a population observer.
+     *
+     * @param observer    the observing object
      */
     public void addPopulationObserver(IPopulationObserver observer) {
         observers.add(observer);
     }
 
     /**
-     * Remove a registered population observer.
-     * @param observer    The observer to remove
+     * Removes a registered population observer.
+     *
+     * @param observer    the observer to remove
      */
     public void removePopulationObserver(IPopulationObserver observer) {
         if (observers.contains(observer))
@@ -279,82 +284,74 @@ public final class GeneticProgram {
     }
 
     /**
-     * Retrieve the ratio for generating constants versus symbolic terminals.
-     * @return constant:symbolic terminal ratio as a fractional percent
+     * @return the ratio for generating constants versus symbolic terminals as
+     * a fractional percent
      */
     public double getConstDensity() {
         return constDensity;
     }
 
     /**
-     * Retrieve the rate of crossover.
-     * @return  The (average) percent of individuals created through crossover.
+     * @return  the (average) percent of individuals created through crossover
      */
     public double getCrossoverRate() {
         return crossoverRate;
     }
 
     /**
-     * Get the density of if statements to use when growing individuals.
-     * @return  The density of if statements to use when growing individuals
+     * @return  the density of if statements to use when growing individuals
      */
     public double getIfDensity() {
         return ifDensity;
     }
 
     /**
-     * Retrieve the rate of mutation.
-     * @return  The (average) percent of individuals created through mutation.
+     * @return  the (average) percent of individuals created through mutation.
      */
     public double getMutationRate() {
         return mutationRate;
     }
 
     /**
-     * Get the population size.
-     * @return  The size of the population.
+     * @return  the size of the population
      */
     public int getPopulationSize() {
         return populationSize;
     }
 
     /**
-     * Obtain an individual from the population.
-     * @param index    The individuals index into the population
-     * @return  The individual at the requested position
+     * @param index    the individual program's index into the population
+     * @return  the individual at the requested position
      */
     public Program getProgram(int index) {
         return population[index];
     }
 
     /**
-     * Retrieve the reproduction rate (1 - (mutation_rate + crossover_rate).
-     * @return  The (average) percent of individuals that will be reproduced
+     * @return  the (average) percent of individuals that will be reproduced
+     * generally (1 - (mutation_rate + crossover_rate)
      */
     public double getReproductionRate() {
         return reproductionRate;
     }
 
     /**
-     * Obtain the current selector.
-     * @return  The current selector
+     * @return  the current selector
      */
     public Selector getSelector() {
         return selector;
     }
 
     /**
-     * Set the ratio of constants versus symbolics used in generating terminals.
-     * @param constDensity constant:symbolic terminal ratio as a fractional
-     *                     percent
+     * @param constDensity ratio of constants versus symbolics used in
+     *                     generating terminals as a fractional percent
      */
     public void setConstDensity(double constDensity) {
         this.constDensity = constDensity;
     }
 
     /**
-     * Set the crossover rate.
-     * @param crossoverRate    A percent expressed as a decimal [0,1].
+     * @param crossoverRate    crossover rate expressed as a fractional percent
      */
     public void setCrossoverRate(double crossoverRate) {
         this.crossoverRate = crossoverRate;
@@ -362,17 +359,15 @@ public final class GeneticProgram {
     }
 
     /**
-     * Set the density of if statements to use when growing individuals.
-     * @param ifDensity    The density of if statements to use when growing
-     *                     individuals
+     * @param ifDensity    density of if statements to use when growing
+     *                     individuals expressed as a fractional percent
      */
     public void setIfDensity(double ifDensity) {
         this.ifDensity = ifDensity;
     }
 
     /**
-     * Set the mutation rate.
-     * @param mutationRate    A percent expressed as a decimal [0,1].
+     * @param mutationRate    the mutation rat expressed as afraction percent
      */
     public void setMutationRate(double mutationRate) {
         this.mutationRate = mutationRate;
@@ -380,17 +375,15 @@ public final class GeneticProgram {
     }
 
     /**
-     * Set the fitness value of a given program.
-     * @param programIndex    The index into the population of the given program
-     * @param fitness         The fitness value to assign to the program
+     * @param programIndex    the index into the population of a program
+     * @param fitness         the fitness value to assign to that program
      */
     public void setProgramFitness(int programIndex, int fitness) {
         population[programIndex].fitness = fitness;
     }
 
     /**
-     * Set the population selector.
-     * @param selector    The new selector.
+     * @param selector    the population selector
      */
     public void setSelector(Selector selector) {
         this.selector = selector;
@@ -398,8 +391,8 @@ public final class GeneticProgram {
 
     /**
      * Apply the genetic operators to create the next population.
-     * <b> This method will not verify that all individuals have been
-     * evaluated.</b>
+     * <b>Important:</b> This method will not verify that all individuals have been
+     * evaluated.
      */
     public void createNextGeneration() {
         Program[] nextGeneration = new Program[populationSize];
@@ -426,8 +419,9 @@ public final class GeneticProgram {
     }
 
     /**
-     * Notify all the population observers of the creation of a new individual.
-     * @param index    The index of the individual
+     * Notifies any population observers of the creation of a new individual.
+     *
+     * @param index    the index of the created individual
      */
     private void notifyObservers(int index) {
         for (IPopulationObserver observer : observers)
@@ -435,29 +429,32 @@ public final class GeneticProgram {
     }
 
     /**
-     * Convenience method for {@code savePopulation(PrintWriter out)}.
+     * Convenience method for {@link #savePopulation(PrintWriter)}.
+     * <p>
+     * Writes each individual in the population to a OutputStream, one program
+     * to a line and formatted by {@link Program#toString()}.
      *
-     * Write each individual in the population to a {@code OutputStream}, one
-     * program to a line and formatted by {@code Program.toString()}.
-     * @param out    The {@code OutputStream} to save the population to
+     * @param out    the OutputStream to save the population to
      */
     public void savePopulation(OutputStream out) {
         savePopulation(new PrintWriter(out));
     }
 
     /**
-     * Write each individual in the population to a {@code PrintWriter}, one
-     * program to a line and formatted by {@code Program.toString()}.
-     * @param out    The {@code PrintWriter} to save the population to
+     * Writes each individual in the population to a PrintWriter, one program
+     * to a line and formatted by {@link Program#toString()}.
+     *
+     * @param out    the PrintWriter to save the population to
      */
     public void savePopulation(PrintWriter out) {
         out.println(toString());
     }
 
     /**
-     * Crossover 2 selected individuals producing one offspring.
-     * @return  A program produced by replacing one part of its first parent by
-     * a part of its second parent.
+     * Performs crossover on two selected individuals producing one offspring.
+     *
+     * @return  a program produced by replacing one part of its first parent by
+     * a part of its second parent
      */
     private Program crossover() {
         Program p0 = selector.select(population);
@@ -477,9 +474,10 @@ public final class GeneticProgram {
     }
 
     /**
-     * Select a random opening parenthesis from within a string.
-     * @param str    The string to select from
-     * @return  The index of a randomly chosen '('
+     * Selects a random opening parenthesis from within a string.
+     *
+     * @param str    the string to select from
+     * @return  the index of a randomly chosen '('
      */
     private int randomStartParen(String str) {
         int parens = 0;
@@ -496,11 +494,12 @@ public final class GeneticProgram {
     }
 
     /**
-     * Find the matching closing parenthesis to a given opening parenthesis in
+     * Finds the matching closing parenthesis to a given opening parenthesis in
      * an S-expression.
-     * @param str      The S-expression
-     * @param start    The index of the opening parenthesis
-     * @return  The index of the matched closing parenthesis or -1 if none
+     *
+     * @param str      the S-expression
+     * @param start    the index of the opening parenthesis
+     * @return  the index of the matched closing parenthesis or -1 if none
      * could be found
      */
     private int findMatchingParen(String str, int start) {
@@ -526,17 +525,18 @@ public final class GeneticProgram {
     }
 
     /**
-     * Reproduce a selected individual.
-     * @return  A program selected from the population by the {@code selector}.
+     * Performs reproduction on a selected individual.
+     * @return  a program selected from the population by the selector
      */
     private Program reproduce() {
         return selector.select(population);
     }
 
     /**
-     * Mutate a single point of a selected individual.
-     * @return  A new individual with a single point replaced by a new function
-     * or terminal (as appropriate).
+     * Performs point mutation on a single point of a selected individual.
+     *
+     * @return  a new individual with a single point replaced by a new function
+     * or terminal (as appropriate)
      */
     private Program pointMutation() {
         String program = selector.select(population).program;
@@ -556,9 +556,10 @@ public final class GeneticProgram {
     }
 
     /**
-     * Obtain a replacement for any member of an individual
+     * Obtains a replacement for any member of an individual program feature.
+     *
      * @param str    A function or terminal to replace
-     * @return  A function or terminal drawn from the same pool as {@code str}.
+     * @return  a function or terminal drawn from the same pool as {@code str}
      */
     private String getMutationReplacement(String str) {
         String replacement = str; // fallback: no mutation
@@ -586,9 +587,10 @@ public final class GeneticProgram {
     }
 
     /**
-     * Mutate a subtree of a selected individual.
-     * @return  A new individual with a subtree replaced by a newly grown
-     * subtree.
+     * Performs subtree mutation on a subtree of a selected individual.
+     *
+     * @return  a new individual with a subtree replaced by a newly grown
+     * subtree
      */
     private Program subtreeMutation() {
         String program = selector.select(population).program;
@@ -610,11 +612,13 @@ public final class GeneticProgram {
     }
 
     /**
-     * Calculate the depth of a program subtree.
-     * @param program    The program text
-     * @param start      The starting index (first paren.)
-     * @param end        The ending index ({@code start}'s matching paren.)
-     * @return  The depth of the lowest terminal under the substring's subtree.
+     * Calculates the depth of a program subtree.
+     *
+     * @param program    the program text
+     * @param start      the starting index (first parenthesis)
+     * @param end        the ending index (matching parenthesis)
+     * @return  the depth of the lowest terminal found, treating the substring
+     * subtree as an S-expression
      */
     private int getTreeDepth(String program, int start, int end) {
         int maxDepth = 1;
@@ -634,9 +638,9 @@ public final class GeneticProgram {
     }
 
     /**
-     * Ensure the values for {@code crossoverRate}, {@code mutationRate}, and
-     * {@code reproductionRate} are sane; crossover is preferred to mutation is
-     * preferred to reproduction.
+     * Ensures the values for crossover rate, mutation rate, and reproduction
+     * rate are sane; crossover is preferred to mutation is preferred to
+     * reproduction.
      */
     private void ensureValidRates() {
         double total = crossoverRate + mutationRate + reproductionRate;
