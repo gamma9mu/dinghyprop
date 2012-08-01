@@ -7,36 +7,70 @@
 package cs412.dinghyprop.simulator;
 
 import java.util.Observable;
+
 /**
- * Dinghy environment simulator.
+ * Dinghy environment simulator
+ * <p>
+ * Manages the state of a simulation and provides variable referencing and
+ * function invocation to interpreters.
  */
 public class Simulator extends Observable implements ISimulator {
-    // Constant to store the default fitness for termination
+    private static final long serialVersionUID = 3186189958128685645L;
+
+    /**
+     * The default fitness for termination
+     */
 	private static final int DEFAULT_TERMINATION_FITNESS = 300;
-    // Variable to store the goal of the simulation
+
+    /**
+     * The goal of the simulation
+     */
 	private Goal goal = null;
-    // Array to store the obstacles in the simulation
+
+    /**
+     * The obstacles in the simulation
+     */
 	private Obstacle[] obstacles;
-    // Variable to store the dinghy in the simulation
+
+    /**
+     * The dinghy in the simulation
+     */
 	private Dinghy dinghy;
-    // Initial start to goal distance
+
+    /**
+     * Initial start to goal distance
+     */
     private int startToGoalDist = 0;
-    // Variables to store the size of the simulation
-	private int sizeX, sizeY;
-    // Variable to determine if simulation can continue
+
+    /**
+     * The width of the simulation
+     */
+	private int sizeX;
+
+    /**
+     * The height of the simulation
+     */
+    private int sizeY;
+
+    /**
+     * Determines whether simulation can continue
+     */
 	private boolean canContinue = true;
-    // Variable that stores the current termination fitness
+
+    /**
+     * Stores the current termination fitness
+     */
 	private int terminationFitness = DEFAULT_TERMINATION_FITNESS;
-	private static final long serialVersionUID = 3186189958128685645L;
 
 	/**
-	*  Constructor that sets up the simulator environment
-	*  @param maxX The maximum X value for the simulator
-	*  @param maxY The maximum Y value for the simulator
-	*  @param numObstacles The number of obstacles in the simulation
-	*  @param dinghyX The initial X position of the dinghy
-	*  @param dinghyY The initial Y position of the dinghy
-	*/
+	 * Sets up the simulator environment.
+     *
+	 * @param maxX the width of the simulator
+	 * @param maxY the height of the simulator
+	 * @param numObstacles the number of obstacles in the simulator
+	 * @param dinghyX the initial X position of the dinghy
+	 * @param dinghyY the initial Y position of the dinghy
+	 */
 	public Simulator(int maxX, int maxY, int numObstacles, int dinghyX, int dinghyY) {
 		sizeX = maxX;
 		sizeY = maxY;
@@ -45,31 +79,25 @@ public class Simulator extends Observable implements ISimulator {
 	}
 	
 	/**
-	*  This method adds an obstacle to the simulation environment.
-	*  @param index The current index in the array of obstacles
-	*  @param x The X position of this obstacle
-	*  @param y The Y position of this obstacle
-	*/
+	 * Moves an obstacle to the simulation environment.
+     *
+	 * @param index the index of the obstacle
+	 * @param x the new x-position of this obstacle
+	 * @param y the new y-position of this obstacle
+	 */
 	public void addObstacle(int index, int x, int y) {
 		obstacles[index] = new Obstacle(x, y);
 	}
 	
 	/**
-	*  This method adds the goal to the simulation environment
-	*  @param x The X position of the goal
-	*  @param y The Y position of the goal
-	*/
+	 * @param x the x-position of the goal
+	 * @param y the y-position of the goal
+	 */
 	public void setGoal(int x, int y){
 		goal = new Goal(x, y);
         startToGoalDist = dinghy.getDistance(goal);
 	}
 	
-	/**
-	*  This method receives an action from the interpreter and
-	*  tells the dinghy to take that action.
-	*  @param function The action that must be taken by the dinghy
-	*  @throws UnknownFunctionException if the action is not valid.
-	*/
 	@Override
     public void invoke(String function) throws UnknownFunctionException {
         if (function.compareTo("move") == 0)
@@ -101,13 +129,6 @@ public class Simulator extends Observable implements ISimulator {
             canContinue = false;
 	}
 
-	/**
-	*  This method receives a reference to a variable from the interpreter
-	*  and sends back its value.
-	*  @param variable The variable that is referenced by the interpreter.
-	*  @return The value of the referenced variable
-	*  @throws VariableReferenceException If the variable does not exist
-	*/
 	@Override
     public int reference(String variable) throws VariableReferenceException {
 		int[] goalPos = goal.getPosition();
@@ -142,10 +163,11 @@ public class Simulator extends Observable implements ISimulator {
 	}
 
 	/**
-	* Handle a reference to the variable "front".
-	* @param upperBound    A suggested upper bound
-	* @return  the distance to the closest item in front of the dinghy.
-	*/
+	 * Handle a reference to the variable "front".
+     *
+	 * @param upperBound    a suggested upper bound
+	 * @return  the distance to the closest item in front of the dinghy
+	 */
 	private int referenceFront(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
 			int temp = dinghy.getDistanceFront(obstacle);
@@ -158,10 +180,11 @@ public class Simulator extends Observable implements ISimulator {
 	}
 
 	/**
-	* Handle a reference to the variable "left".
-	* @param upperBound    A suggested upper bound
-	* @return  the distance to the closest item to the left of the dinghy.
-	*/
+	 * Handle a reference to the variable "left".
+     *
+	 * @param upperBound    a suggested upper bound
+	 * @return  the distance to the closest item to the left of the dinghy
+	 */
 	private int referenceLeft(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
 			int temp = dinghy.getDistanceLeft(obstacle);
@@ -174,10 +197,11 @@ public class Simulator extends Observable implements ISimulator {
 	}
 
 	/**
-	* Handle a reference to the variable "right".
-	* @param upperBound    A suggested upper bound
-	* @return  the distance to the closest item to the right of the dinghy.
-	*/
+	 * Handle a reference to the variable "right".
+     *
+	 * @param upperBound    a suggested upper bound
+	 * @return  the distance to the closest item to the right of the dinghy
+	 */
 	private int referenceRight(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
 			int temp = dinghy.getDistanceRight(obstacle);
@@ -191,10 +215,11 @@ public class Simulator extends Observable implements ISimulator {
 	}
 
 	/**
-	* Handle a reference to the variable "rear".
-	* @param upperBound    A suggested upper bound
-	* @return  the distance to the closest item to the rear of the dinghy.
-	*/
+	 * Handle a reference to the variable "rear".
+     *
+	 * @param upperBound    a suggested upper bound
+	 * @return  the distance to the closest item to the rear of the dinghy
+	 */
 	private int referenceRear(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
 			int temp = dinghy.getDistanceRear(obstacle);
@@ -208,8 +233,10 @@ public class Simulator extends Observable implements ISimulator {
 	
 	/**
 	 * Handle a reference to the variable "short-left"
-	 * @param upperBound	A suggested upper bound
-	 * @return the distance to the closest item at a 45 degree angle to the left of the dinghy.
+     *
+	 * @param upperBound    a suggested upper bound
+	 * @return the distance to the closest item at a 45 degree angle to the
+     * left of the dinghy
 	 */
 	private int referenceShortLeft(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
@@ -224,8 +251,9 @@ public class Simulator extends Observable implements ISimulator {
 	
 	/**
 	 * Handle a reference to the variable "short-right"
-	 * @param upperBound	A suggested upper bound
-	 * @return the distance to the closest item at a 45 degree angle to the right of the dinghy.
+	 * @param upperBound    a suggested upper bound
+	 * @return the distance to the closest item at a 45 degree angle to the
+     * right of the dinghy
 	 */
 	private int referenceShortRight(int upperBound) {
 		for (Obstacle obstacle : obstacles) {
@@ -239,10 +267,8 @@ public class Simulator extends Observable implements ISimulator {
 	}
 
 	/**
-	*  Calculates the distance travelled for scoring the
-	*  program
-	*  @return The travel metric for scoring
-	*/
+	 * @return the distance travelled (capped at 100)
+	 */
 	public int getTravelMetric() {
 		int travelMetric = dinghy.getDistTravelled();
 		travelMetric = (travelMetric > 100) ? 100 : travelMetric;
@@ -250,8 +276,7 @@ public class Simulator extends Observable implements ISimulator {
 	}
 
     /**
-	 * Compute the percent improvement in the dinghy's distance from the goal
-	 * @return The goal distance metric for scoring.
+	 * @return the percent improvement in the dinghy's distance from the goal
 	 */
 	public int getGoalDistanceMetric() {
 		int improvement = startToGoalDist - dinghy.getDistance(goal);
@@ -260,7 +285,6 @@ public class Simulator extends Observable implements ISimulator {
 	}
 	
 	/**
-	 * Compute a bonus for reaching the goal.
 	 * @return 100 if the goal was reached, 0 if it was not.
 	 */
 	public int getSuccessMetric() {
@@ -270,19 +294,19 @@ public class Simulator extends Observable implements ISimulator {
     }
 
 	/**
-	*  Calculates the fitness of the program. This is calculated by adding
-	*  the goal distance metric, the success metric, and the travel metric.
-	*  @return The fitness of the program
-	*/
+	 * Calculates the fitness of the program. This is calculated by adding the
+     * goal distance metric, the success metric, and the travel metric.
+     *
+	 * @return the fitness of the program
+	 */
 	@Override
     public int getFitness() {
 		return getGoalDistanceMetric() + getSuccessMetric() + getTravelMetric();
 	}
 
 	/**
-	* Determine whether execution can continue.
-	* @return  Whether execution can continue
-	*/
+	 * @return  whether execution can continue
+	 */
 	@Override
     public boolean canContinue() {
 		return getFitness() < terminationFitness && canContinue;
@@ -302,45 +326,37 @@ public class Simulator extends Observable implements ISimulator {
 	}
 
 	/**
-	* Set the termination fitness currently in use.
-	* @param terminationFitness    The new goal fitness
-	*/
+	 * @param terminationFitness    the new goal fitness
+	 */
 	public void setTerminationFitness(int terminationFitness) {
 		this.terminationFitness = terminationFitness;
 	}
 	
 	/**
-	*  Gets the size of the simulation environment.
-	*  @return The size of the simulation environment.
-	*/
+	 * @return the size of the simulation environment.
+	 */
 	public int[] getSize() {
         return new int[]{sizeX, sizeY};
 	}
 	
 	/**
-	*  Gets the position of the goal.
-	*  @return The position of the goal.
-	*/
+	 * @return The position of the goal.
+	 */
 	public int[] getGoal() {
 		return goal.getPosition();
 	}
 	
 	/**
-	*  Gets the obstacles.
-	*  @return The array of obstacles.
-	*/
+	 * @return the array of obstacles.
+	 */
 	public Obstacle[] getObstacles() {
 		return obstacles;
 	}
 
     /**
-     * Gets the dinghy position
-     * @return An array containing the current position of the dinghy
+     * @return xy-array of the dinghy's current position
      */
     public int[] getDinghy() {
 		return dinghy.getPosition();
 	}
-	
-
-	
 }
