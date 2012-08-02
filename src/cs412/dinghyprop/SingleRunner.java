@@ -26,6 +26,7 @@ import java.util.logging.Logger;
  * Non-distributed version of the DinghyProp genetic programming.
  */
 public class SingleRunner implements IMaster {
+    private static final long serialVersionUID = 8558983861071255805L;
     private static Logger log = Logger.getLogger("SingleRunner");
 
     /**
