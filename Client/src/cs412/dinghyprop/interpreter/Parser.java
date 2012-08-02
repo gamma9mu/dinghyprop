@@ -89,23 +89,43 @@ public final class Parser {
         // Trap reader exceptions
         try {
             checkStart();
+            Expression expr = parseSymbolicExpression();
+            checkEnd();
+            return expr;
+        } catch (IOException e) {
+            // Wrap reader exceptions in ParsingException
+            throw new ParsingException("Error reading program text.", e);
+        }
+    }
 
-            Expression expr = new Expression(lexer.sval);
+    /**
+     * Parses the S-Expression from the lexer output.  The lexer should be
+     * positioned on the first symbol after the opening parenthesis.
+     *
+     * @return the parse tree of the input
+     * @throws IOException if a read error occurs in the lexer
+     * @throws ParsingException if the input cannot be parsed successfully
+     */
+    private Expression parseSymbolicExpression() throws IOException, ParsingException {
+        Expression expr = new Expression(lexer.sval);
 
-            int t = lexer.nextToken();
-            while (t != StreamTokenizer.TT_EOF) {
-                if (t == ')') {
+        int t = lexer.nextToken();
+        while (t != StreamTokenizer.TT_EOF) {
+            switch (t) {
+                case ')':
                     if (stack.empty())
-                        break;
+                        return expr;
                     stack.peek().addOperand(expr);
                     expr = stack.pop();
-                } else if (t == '(') { // descend into a sub-expression
+                    break;
+                case '(': // descend into a sub-expression
                     stack.push(expr);
                     if (lexer.nextToken() != StreamTokenizer.TT_WORD) {
                         throw new ParsingException("Expected symbol. Got: " + lexer.ttype);
                     }
                     expr = new Expression(lexer.sval);
-                } else if (t == StreamTokenizer.TT_WORD) {
+                    break;
+                case StreamTokenizer.TT_WORD:
                     try {
                         // test for a number
                         expr.addOperand(Value.newInt(Integer.parseInt(lexer.sval)));
@@ -113,19 +133,14 @@ public final class Parser {
                         // fall back on a symbol
                         expr.addOperand(lexer.sval);
                     }
-                } else {
+                    break;
+                default:
                     throw new ParsingException("Unknown token type: " + lexer.ttype);
-                }
-                t = lexer.nextToken();
             }
-
-            checkEnd();
-
-            return expr;
-        } catch (IOException e) {
-            // Wrap reader exceptions in ParsingException
-            throw new ParsingException("Error reading program text.", e);
+            t = lexer.nextToken();
         }
+
+        throw new ParsingException("Expected end of input.  Got: " + lexer.ttype);
     }
 
     /**
