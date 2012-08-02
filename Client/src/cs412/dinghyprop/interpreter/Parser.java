@@ -62,7 +62,7 @@ public final class Parser {
     }
 
     /**
-     * Ensures the program's first token is a '(' followed by a symbol.
+     * Ensures the program's first token is '(' and is followed by a symbol.
      * <p>
      * The first symbol in the input will be the current value of the lexer
      * after this call completes.
@@ -119,20 +119,26 @@ public final class Parser {
                 t = lexer.nextToken();
             }
 
-            // Ensure the S-exp is terminated
-            if (t != ')') {
-                throw new ParsingException("Unexpected end of input.");
-            }
-
-            // Ensure the input has ended
-            if (lexer.nextToken() != StreamTokenizer.TT_EOF) {
-                throw new ParsingException("Expected end of input.  Got: " + lexer.ttype);
-            }
+            checkEnd();
 
             return expr;
         } catch (IOException e) {
             // Wrap reader exceptions in ParsingException
             throw new ParsingException("Error reading program text.", e);
         }
+    }
+
+    /**
+     * Ensures the program's last token is ')' and is followed by EOF.
+     *
+     * @throws IOException if reading the input fails
+     * @throws ParsingException if this assumption fails
+     */
+    private void checkEnd() throws ParsingException, IOException {
+        if (lexer.ttype != ')')
+            throw new ParsingException("Unexpected end of input.");
+
+        if (lexer.nextToken() != StreamTokenizer.TT_EOF)
+            throw new ParsingException("Expected end of input.  Got: " + lexer.ttype);
     }
 }
