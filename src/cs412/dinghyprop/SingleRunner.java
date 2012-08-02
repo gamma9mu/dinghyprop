@@ -191,7 +191,7 @@ public class SingleRunner extends UnicastRemoteObject implements IMaster {
             try {
                 Interpreter interpreter = new Interpreter(sim, program.program);
                 interpreter.run(100);
-                fitness = interpreter.getFitness();
+                fitness += interpreter.getFitness();
             } catch (ParsingException e) {
                 log.log(Level.WARNING, "Program failed to compile or run.", e);
                 log.log(Level.WARNING, program.toString());
