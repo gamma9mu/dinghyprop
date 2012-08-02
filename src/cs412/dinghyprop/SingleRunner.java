@@ -40,7 +40,7 @@ public class SingleRunner {
     /**
      * The goal fitness
      */
-    private static final int GOAL = 300;
+    private int goal;
 
     /**
      * The running GeneticProgram
@@ -76,6 +76,7 @@ public class SingleRunner {
         this.gp = gp;
         gp.initialize();
         simulator = new SimulatorRandom(SIM_DIM, SIM_DIM, 10).getSimulator();
+        goal = simulator.getTerminationFitness();
         String checkpointDirName = "gp_" + new Date().toString().replace(' ', '_');
         checkpointDir = new File(checkpointDirName);
         if (!checkpointDir.mkdir()) {
@@ -138,7 +139,7 @@ public class SingleRunner {
         }
         System.out.println("Max: " + maxFitness
                 + "\tAvg: " + (fitnesses / popSize));
-        if (maxFitness >= GOAL) {
+        if (maxFitness >= goal) {
             success = true;
             best = maxFitness;
         }
