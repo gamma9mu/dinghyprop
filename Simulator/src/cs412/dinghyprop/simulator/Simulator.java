@@ -100,6 +100,9 @@ public class Simulator extends Observable implements ISimulator {
 	
 	@Override
     public void invoke(String function) throws UnknownFunctionException {
+        if (! canContinue)
+            return;
+
         if (function.compareTo("move") == 0)
             invokeMove();
         else if (function.compareTo("turn-left") == 0)
