@@ -18,6 +18,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +28,7 @@ import java.util.logging.Logger;
 /**
  * Non-distributed version of the DinghyProp genetic programming.
  */
-public class SingleRunner implements IMaster {
+public class SingleRunner extends UnicastRemoteObject implements IMaster {
     private static final long serialVersionUID = 8558983861071255805L;
     private static Logger log = Logger.getLogger("SingleRunner");
 
@@ -78,8 +81,14 @@ public class SingleRunner implements IMaster {
      * Creates a new single-machine GP runner.
      *
      * @param gp    the GP object to run
+     * @throws RemoteException inherited
      */
-    public SingleRunner(GeneticProgram gp) {
+    public SingleRunner(GeneticProgram gp) throws RemoteException {
+        super(54614);
+
+        Registry registry = LocateRegistry.getRegistry();
+        registry.rebind("Master", this);
+
         this.gp = gp;
         gp.initialize();
         simulators = new ISimulator[] {
@@ -254,8 +263,12 @@ public class SingleRunner implements IMaster {
      * @param gp    the GeneticProgram to use
      */
     public static void run(GeneticProgram gp) {
-        SingleRunner sr = new SingleRunner(gp);
-        sr.run();
-        sr.printBest();
+        try {
+            SingleRunner sr = new SingleRunner(gp);
+            sr.run();
+            sr.printBest();
+        } catch (RemoteException e) {
+            log.throwing("SingleRunner", "run", e);
+        }
     }
 }
