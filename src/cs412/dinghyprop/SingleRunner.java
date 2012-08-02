@@ -47,7 +47,7 @@ public class SingleRunner implements IMaster {
     /**
      * The running GeneticProgram
      */
-    private GeneticProgram gp;
+    private transient GeneticProgram gp;
 
     /**
      * The simulators to use when evaluating programs
