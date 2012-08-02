@@ -7,23 +7,21 @@
 package cs412.dinghyprop.interpreter;
 
 import java.io.*;
+import java.util.Stack;
 
 /**
- * Recursive descent parser for the GP generated programs
- *
- * The recursion occurs where "sub"-parsers are created for reading inside the
- * input's lists.
+ * Stack-based parser for the GP generated programs
  */
 public final class Parser {
-    /**
-     * Marks a parser as the top level parser for an input
-     */
-    private boolean originator;
-
     /**
      * std. lib. tokenizer used as a lexical analyzer
      */
     private StreamTokenizer lexer;
+
+    /**
+     * AST stack
+     */
+    Stack<Expression> stack = new Stack<Expression>();
 
     /**
      * Parses a program from an InputStream.
@@ -32,7 +30,6 @@ public final class Parser {
      * @throws ParsingException if a parsing error occurs
      */
     public Parser(InputStream inputStream) throws ParsingException {
-        originator = true;
         lexer = createLexer(new BufferedReader(new InputStreamReader(inputStream)));
         checkStart();
     }
@@ -44,7 +41,6 @@ public final class Parser {
      * @throws ParsingException if a parsing error occurs
      */
     public Parser(String inputString) throws ParsingException {
-        originator = true;
         Reader r = new BufferedReader(new InputStreamReader(
                 new ByteArrayInputStream(inputString.getBytes())));
         lexer = createLexer(r);
@@ -86,16 +82,6 @@ public final class Parser {
     }
 
     /**
-     * Internal constructor.  Used to maintain lexer state.
-     *
-     * @param lexer    current lexer
-     */
-    private Parser(StreamTokenizer lexer) {
-        originator = false;
-        this.lexer = lexer;
-    }
-
-    /**
      * Performs the parsing of the input program.
      *
      * @return  an expression object that can be interpreted by an Interpreter
@@ -106,29 +92,35 @@ public final class Parser {
         try {
             // Test for a proper start.
             if (lexer.nextToken() != StreamTokenizer.TT_WORD) {
-                System.err.println("type: " + lexer.ttype);
-                throw new ParsingException("Operator must be a symbol.");
+                throw new ParsingException("Expected symbol. Got: " + lexer.ttype);
             }
 
             Expression expr = new Expression(lexer.sval);
 
             int t = lexer.nextToken();
-            while (t != ')' && t != StreamTokenizer.TT_EOF) {
-                Object obj;
-                if (t == '(') { // descend into a sub-expression
-                    obj = new Parser(lexer).parse();
+            while (t != StreamTokenizer.TT_EOF) {
+                if (t == ')') {
+                    if (stack.empty())
+                        break;
+                    stack.peek().addOperand(expr);
+                    expr = stack.pop();
+                } else if (t == '(') { // descend into a sub-expression
+                    stack.push(expr);
+                    if (lexer.nextToken() != StreamTokenizer.TT_WORD) {
+                        throw new ParsingException("Expected symbol. Got: " + lexer.ttype);
+                    }
+                    expr = new Expression(lexer.sval);
                 } else if (t == StreamTokenizer.TT_WORD) {
                     try {
                         // test for a number
-                        obj = Value.newInt(Integer.parseInt(lexer.sval));
+                        expr.addOperand(Value.newInt(Integer.parseInt(lexer.sval)));
                     } catch (NumberFormatException ignored) {
                         // fall back on a symbol
-                        obj = lexer.sval;
+                        expr.addOperand(lexer.sval);
                     }
                 } else {
                     throw new ParsingException("Unknown token type: " + lexer.ttype);
                 }
-                expr.addOperand(obj);
                 t = lexer.nextToken();
             }
 
@@ -137,12 +129,9 @@ public final class Parser {
                 throw new ParsingException("Unexpected end of input.");
             }
 
-            // If this is the original parser, ensure the input has ended
-            if (originator) {
-                int last = lexer.nextToken();
-                if (last != StreamTokenizer.TT_EOF) {
-                    throw new ParsingException("Expected end of input.  Got: " + last);
-                }
+            // Ensure the input has ended
+            if (lexer.nextToken() != StreamTokenizer.TT_EOF) {
+                throw new ParsingException("Expected end of input.  Got: " + lexer.ttype);
             }
 
             return expr;
