@@ -269,43 +269,22 @@ public class Simulator extends Observable implements ISimulator {
 		return upperBound;
 	}
 
-	/**
-	 * @return the distance travelled (capped at 100)
-	 */
-	public int getTravelMetric() {
-		int travelMetric = dinghy.getDistTravelled();
-		travelMetric = (travelMetric > 100) ? 100 : travelMetric;
-		return travelMetric;
-	}
-
     /**
-	 * @return the percent improvement in the dinghy's distance from the goal
-	 */
-	public int getGoalDistanceMetric() {
-		int improvement = startToGoalDist - dinghy.getDistance(goal);
-        improvement = (improvement < 0) ? 0 : improvement;
-        return 100 * (improvement / startToGoalDist);
-	}
-	
-	/**
-	 * @return 100 if the goal was reached, 0 if it was not.
-	 */
-	public int getSuccessMetric() {
-        if(goal.success(dinghy))
-            return 100;
-        return 0;
-    }
-
-	/**
-	 * Calculates the fitness of the program. This is calculated by adding the
-     * goal distance metric, the success metric, and the travel metric.
+	 * Calculates the fitness of the program.
      *
-	 * @return the fitness of the program
+     * @return the percent improvement in the dinghy's distance from the goal
 	 */
 	@Override
     public int getFitness() {
-		return getGoalDistanceMetric() + getSuccessMetric() + getTravelMetric();
-	}
+        int improvement = startToGoalDist - dinghy.getDistance(goal);
+        improvement = (improvement < 0) ? 0 : improvement;
+        return 100 * (improvement / startToGoalDist);
+    }
+
+    @Override
+    public int getTerminationFitness() {
+        return 100;
+    }
 
 	/**
 	 * @return  whether execution can continue
@@ -321,11 +300,6 @@ public class Simulator extends Observable implements ISimulator {
 		clone.dinghy = new Dinghy(dinghy);
 		System.arraycopy(obstacles, 0, clone.obstacles, 0, obstacles.length);
 		return clone;
-	}
-
-	@Override
-    public int getTerminationFitness() {
-		return terminationFitness;
 	}
 
 	/**

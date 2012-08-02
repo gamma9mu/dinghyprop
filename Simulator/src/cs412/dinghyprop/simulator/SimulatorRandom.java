@@ -88,11 +88,4 @@ public class SimulatorRandom {
     public ISimulator getSimulator() {
         return sim;
     }
-
-	@Override
-    public String toString() {
-		String result = "";
-		result += "Distance metric: " + sim.getGoalDistanceMetric();
-		return result;
-	}
 }
