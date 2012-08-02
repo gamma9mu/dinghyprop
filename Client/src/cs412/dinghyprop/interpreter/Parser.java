@@ -62,20 +62,25 @@ public final class Parser {
     }
 
     /**
-     * Ensures the program's first token is a '('.
+     * Ensures the program's first token is a '(' followed by a symbol.
+     * <p>
+     * The first symbol in the input will be the current value of the lexer
+     * after this call completes.
      *
      * @throws IOException if reading the input fails
      * @throws ParsingException if this assumption fails
      */
     private void checkStart() throws ParsingException, IOException {
         lexer.nextToken();
-        if (lexer.ttype != '(') {
+        if (lexer.ttype != '(')
             throw new ParsingException("Program does not begin with '('.");
-        }
+
+        if (lexer.nextToken() != StreamTokenizer.TT_WORD)
+            throw new ParsingException("Expected symbol. Got: " + lexer.ttype);
     }
 
     /**
-     * Performs the parsing of the input program.
+     * Parses the input program.
      *
      * @return  an expression object that can be interpreted by an Interpreter
      * @throws ParsingException if a parsing error occurs.
@@ -84,11 +89,6 @@ public final class Parser {
         // Trap reader exceptions
         try {
             checkStart();
-
-            // Test for a proper start.
-            if (lexer.nextToken() != StreamTokenizer.TT_WORD) {
-                throw new ParsingException("Expected symbol. Got: " + lexer.ttype);
-            }
 
             Expression expr = new Expression(lexer.sval);
 
