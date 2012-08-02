@@ -12,7 +12,6 @@ import cs412.dinghyprop.genetics.TournamentSelector;
 import cs412.dinghyprop.interpreter.Interpreter;
 import cs412.dinghyprop.interpreter.ParsingException;
 import cs412.dinghyprop.simulator.ISimulator;
-import cs412.dinghyprop.simulator.SimulatorRandom;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,11 +35,6 @@ public class SingleRunner extends UnicastRemoteObject implements IMaster {
      * The population size of the GeneticProgram
      */
     private static final int popSize = 100;
-
-    /**
-     * The dimensions of the simulation environments to create
-     */
-    private static final int SIM_DIM = 20;
 
     /**
      * The goal fitness
@@ -83,7 +77,7 @@ public class SingleRunner extends UnicastRemoteObject implements IMaster {
      * @param gp    the GP object to run
      * @throws RemoteException inherited
      */
-    public SingleRunner(GeneticProgram gp) throws RemoteException {
+    public SingleRunner(GeneticProgram gp, ISimulator[] simulators) throws RemoteException {
         super(54614);
 
         Registry registry = LocateRegistry.getRegistry();
@@ -91,10 +85,7 @@ public class SingleRunner extends UnicastRemoteObject implements IMaster {
 
         this.gp = gp;
         gp.initialize();
-        simulators = new ISimulator[] {
-                new SimulatorRandom(SIM_DIM, SIM_DIM, 10).getSimulator(),
-                new SimulatorRandom(SIM_DIM, SIM_DIM, 10).getSimulator()
-        };
+        this.simulators = simulators;
 
         goal = 0;
         for (ISimulator simulator : simulators)
@@ -235,26 +226,30 @@ public class SingleRunner extends UnicastRemoteObject implements IMaster {
     /**
      * Runs a GeneticProgram through 1000 generations.
      *
-     * @param args    one optional argument: the tournament size.
+     * @param args    one optional argument: -t followed by the tournament size
+     *                one required argument: the simulation spec directory path
      */
     public static void main(String[] args) {
         GeneticProgram gp = new GeneticProgram(popSize,
                 GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 5);
 
-        int tournamentSize = 4;
-        if (args.length == 1) {
+        SimulationDirLoader sdl = null;
+        if (args.length == 3 && args[0].compareTo("-t") == 0) {
             try {
-                tournamentSize = Integer.parseInt(args[0]);
+                int tournamentSize = Integer.parseInt(args[1]);
+                gp.setSelector(new TournamentSelector(tournamentSize));
             } catch (NumberFormatException nfe) {
                 System.err.println(nfe.getLocalizedMessage());
-                System.err.println("Usage: SingleRunner [tournament_size]");
-                System.exit(0);
+                usage();
             }
+            sdl = new SimulationDirLoader(args[2]);
+        } else if (args.length == 1) {
+            sdl = new SimulationDirLoader(args[0]);
+        } else {
+            usage();
         }
 
-        gp.setSelector(new TournamentSelector(tournamentSize));
-
-        run(gp);
+        run(gp, sdl.load());
     }
 
     /**
@@ -262,13 +257,21 @@ public class SingleRunner extends UnicastRemoteObject implements IMaster {
      *
      * @param gp    the GeneticProgram to use
      */
-    public static void run(GeneticProgram gp) {
+    public static void run(GeneticProgram gp, ISimulator[] simulators) {
         try {
-            SingleRunner sr = new SingleRunner(gp);
+            SingleRunner sr = new SingleRunner(gp, simulators);
             sr.run();
             sr.printBest();
         } catch (RemoteException e) {
             log.throwing("SingleRunner", "run", e);
         }
+    }
+
+    /**
+     * Prints usage message and exits with an error return.
+     */
+    private static void usage() {
+        System.err.println("Usage: SingleRunner [tournament_size] <simulation_dir>");
+        System.exit(-1);
     }
 }
