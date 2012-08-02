@@ -17,6 +17,7 @@ import cs412.dinghyprop.simulator.SimulatorRandom;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +25,7 @@ import java.util.logging.Logger;
 /**
  * Non-distributed version of the DinghyProp genetic programming.
  */
-public class SingleRunner {
+public class SingleRunner implements IMaster {
     private static Logger log = Logger.getLogger("SingleRunner");
 
     /**
@@ -200,6 +201,20 @@ public class SingleRunner {
                 System.out.println(program.toString() + '\n');
             }
         }
+    }
+
+    @Override
+    public ISimulator[] getEvaluationSimulators() throws RemoteException {
+        return simulators;
+    }
+
+    @Override
+    public void registerClient(IClient client) throws RemoteException {
+    }
+
+    @Override
+    public Program getCurrentLeader() throws RemoteException {
+        return bestProgram;
     }
 
     @Override
