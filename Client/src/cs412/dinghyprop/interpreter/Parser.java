@@ -21,30 +21,26 @@ public final class Parser {
     /**
      * AST stack
      */
-    Stack<Expression> stack = new Stack<Expression>();
+    private Stack<Expression> stack = new Stack<Expression>();
 
     /**
      * Parses a program from an InputStream.
      *
      * @param inputStream    the program text
-     * @throws ParsingException if a parsing error occurs
      */
-    public Parser(InputStream inputStream) throws ParsingException {
+    public Parser(InputStream inputStream) {
         lexer = createLexer(new BufferedReader(new InputStreamReader(inputStream)));
-        checkStart();
     }
 
     /**
      * Convenience constructor for a programs in string form
      *
      * @param inputString    the program text
-     * @throws ParsingException if a parsing error occurs
      */
-    public Parser(String inputString) throws ParsingException {
+    public Parser(String inputString) {
         Reader r = new BufferedReader(new InputStreamReader(
                 new ByteArrayInputStream(inputString.getBytes())));
         lexer = createLexer(r);
-        checkStart();
     }
 
     /**
@@ -68,14 +64,11 @@ public final class Parser {
     /**
      * Ensures the program's first token is a '('.
      *
+     * @throws IOException if reading the input fails
      * @throws ParsingException if this assumption fails
      */
-    private void checkStart() throws ParsingException {
-        try {
-            lexer.nextToken();
-        } catch (IOException e) {
-            throw new ParsingException("Error reading program text.", e);
-        }
+    private void checkStart() throws ParsingException, IOException {
+        lexer.nextToken();
         if (lexer.ttype != '(') {
             throw new ParsingException("Program does not begin with '('.");
         }
@@ -90,6 +83,8 @@ public final class Parser {
     public Expression parse() throws ParsingException {
         // Trap reader exceptions
         try {
+            checkStart();
+
             // Test for a proper start.
             if (lexer.nextToken() != StreamTokenizer.TT_WORD) {
                 throw new ParsingException("Expected symbol. Got: " + lexer.ttype);
