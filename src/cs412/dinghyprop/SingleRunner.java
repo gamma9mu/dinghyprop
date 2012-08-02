@@ -63,6 +63,11 @@ public class SingleRunner {
     private int best = Integer.MIN_VALUE;
 
     /**
+     * The best program seen
+     */
+    private Program bestProgram = new Program("(+ 0 0)");
+
+    /**
      * The directory to write checkpoints into
      */
     private File checkpointDir;
@@ -134,14 +139,17 @@ public class SingleRunner {
             int fitness = evaluateProgram(program);
             gp.setProgramFitness(i, fitness);
 
+            if (fitness > maxFitness) {
+                best = fitness;
+                bestProgram = program;
+            }
+
             fitnesses += fitness;
-            maxFitness = (fitness > maxFitness) ? fitness : maxFitness;
         }
         System.out.println("Max: " + maxFitness
                 + "\tAvg: " + (fitnesses / popSize));
-        if (maxFitness >= goal) {
+        if (best >= goal) {
             success = true;
-            best = maxFitness;
         }
     }
 
