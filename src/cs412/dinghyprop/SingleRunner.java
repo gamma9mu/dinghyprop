@@ -197,7 +197,7 @@ public class SingleRunner {
      */
     public static void main(String[] args) {
         GeneticProgram gp = new GeneticProgram(popSize,
-                GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 10);
+                GeneticProgram.INIT_POP_METHOD.RHALF_AND_HALF, 5);
 
         int tournamentSize = 4;
         if (args.length == 1) {
