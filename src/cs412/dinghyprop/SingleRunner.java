@@ -152,6 +152,7 @@ public class SingleRunner {
             }
 
             fitnesses += fitness;
+            maxFitness = (fitness > maxFitness) ? fitness : maxFitness;
         }
         System.out.println("Max: " + maxFitness
                 + "\tAvg: " + (fitnesses / popSize));
