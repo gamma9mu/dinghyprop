@@ -48,9 +48,9 @@ public class SingleRunner {
     private GeneticProgram gp;
 
     /**
-     * The simulator to use when evaluating programs
+     * The simulators to use when evaluating programs
      */
-    private ISimulator simulator;
+    private ISimulator[] simulators;
 
     /**
      * Whether an individual with the goal fitness has been found
@@ -80,8 +80,15 @@ public class SingleRunner {
     public SingleRunner(GeneticProgram gp) {
         this.gp = gp;
         gp.initialize();
-        simulator = new SimulatorRandom(SIM_DIM, SIM_DIM, 10).getSimulator();
-        goal = simulator.getTerminationFitness();
+        simulators = new ISimulator[] {
+                new SimulatorRandom(SIM_DIM, SIM_DIM, 10).getSimulator(),
+                new SimulatorRandom(SIM_DIM, SIM_DIM, 10).getSimulator()
+        };
+
+        goal = 0;
+        for (ISimulator simulator : simulators)
+            goal += simulator.getTerminationFitness();
+
         String checkpointDirName = "gp_" + new Date().toString().replace(' ', '_');
         checkpointDir = new File(checkpointDirName);
         if (!checkpointDir.mkdir()) {
@@ -160,23 +167,24 @@ public class SingleRunner {
      * @return  the evaluated program's fitness
      */
     private int evaluateProgram(Program program) {
-        ISimulator sim;
-        try {
-            sim = simulator.clone();
-        } catch (CloneNotSupportedException ignored) {
-            return 0;
-        }
-
         int fitness = 0;
-        try {
-            Interpreter interpreter = new Interpreter(sim, program.program);
-            interpreter.run(100);
-            fitness = interpreter.getFitness();
-        } catch (ParsingException e) {
-            log.log(Level.WARNING, "Program failed to compile or run.", e);
-            log.log(Level.WARNING, program.toString());
-        }
+        for (ISimulator simulator : simulators) {
+            ISimulator sim;
+            try {
+                sim = simulator.clone();
+            } catch (CloneNotSupportedException ignored) {
+                return 0;
+            }
 
+            try {
+                Interpreter interpreter = new Interpreter(sim, program.program);
+                interpreter.run(100);
+                fitness = interpreter.getFitness();
+            } catch (ParsingException e) {
+                log.log(Level.WARNING, "Program failed to compile or run.", e);
+                log.log(Level.WARNING, program.toString());
+            }
+        }
         return fitness;
     }
 
