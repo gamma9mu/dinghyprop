@@ -271,7 +271,7 @@ public class SingleRunner extends UnicastRemoteObject implements IMaster {
      * Prints usage message and exits with an error return.
      */
     private static void usage() {
-        System.err.println("Usage: SingleRunner [tournament_size] <simulation_dir>");
+        System.err.println("Usage: SingleRunner [-t <tournament_size>] <simulation_dir>");
         System.exit(-1);
     }
 }
